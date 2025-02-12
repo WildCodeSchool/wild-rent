@@ -20,7 +20,7 @@
 | Footer | Contacts |
 | Footer | Réseaux sociaux |
 
-## Technos utilisés
+## ⚙️ Technos
 
 Tailwind
 

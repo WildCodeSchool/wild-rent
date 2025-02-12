@@ -1,5 +1,21 @@
 # Wild Rent Project 
 
+This project is developed as part of our training to obtain the CDA (Concepteur Développeur d'Applications) title. 
+It is a web application that allows users to rent outdoor sports equipment easily and efficiently.  
+
+Our team consists of five developers, working together to build a user-friendly and functional platform.  
+
+## Team & GitHub Profiles
+ - Annie (https://)
+ - Laetitia
+ - Thomas
+ - Roman
+ - Alix (https://github.com/Halicksse)
+
+
+## Features
+
+
 ## Composants
 
 | Section | Composant | 
@@ -20,7 +36,7 @@
 | Footer | Contacts |
 | Footer | Réseaux sociaux |
 
-## Technos utilisés
+## Technologies used
 
 Tailwind
 

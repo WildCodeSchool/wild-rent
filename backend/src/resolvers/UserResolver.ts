@@ -1,4 +1,5 @@
-import "dotenv/config"; // permet l'utilisation de process.env (example: process.env.RESEND_API_KEY)
+// permet l'utilisation de process.env (example: process.env.RESEND_API_KEY)
+import "dotenv/config"; 
 import { Query, Mutation, Resolver, Arg, Ctx, Field, ObjectType } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
@@ -57,7 +58,7 @@ export class UserResolver {
       console.log({ data });
     })();
     console.log("result", result);
-    return "The user was created";
+    return "Temp user was created, validate with confirmation email";
   }
 
   @Mutation(() => String)

@@ -5,6 +5,12 @@ export class TempUser extends BaseEntity {
   id: number;
 
   @Column()
+  first_name: string;
+
+  @Column()
+  last_name: string;
+
+  @Column()
   email: string;
 
   @Column()
@@ -12,4 +18,7 @@ export class TempUser extends BaseEntity {
 
   @Column()
   random_code: string;
+
+  @Column()
+  phone_number: string;
 }

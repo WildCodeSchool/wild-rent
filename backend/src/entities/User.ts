@@ -19,7 +19,7 @@ export class User extends BaseEntity {
   id: number;
 
   @Field()
-  @Column({ nullable: true })
+  @Column()
   first_name: string;
 
   @Field()
@@ -27,7 +27,7 @@ export class User extends BaseEntity {
   last_name: string;
 
   @Field()
-  @Column()
+  @Column({ default: "USER" })
   role: string;
 
   @Field()

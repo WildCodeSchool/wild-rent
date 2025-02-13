@@ -1,3 +1,4 @@
+import { ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -6,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 
+@ObjectType()
 @Entity()
 export class ForgotPassword extends BaseEntity {
   @PrimaryGeneratedColumn()

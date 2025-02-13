@@ -1,5 +1,4 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
 @Entity()
 export class TempUser extends BaseEntity {
   @PrimaryGeneratedColumn()

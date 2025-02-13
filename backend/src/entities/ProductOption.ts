@@ -28,8 +28,6 @@ export class ProductOption extends BaseEntity {
   available_quantity: number;
 
   @Field(() => Product)
-  @ManyToOne(() => Product, (product) => product.product_options, {
-    eager: true,
-  })
+  @ManyToOne(() => Product, (product) => product.product_options)
   product: Product;
 }

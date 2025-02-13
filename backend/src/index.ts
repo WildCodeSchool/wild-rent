@@ -4,6 +4,7 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./resolvers/UserResolver";
 import { dataSource } from "./config/db";
+import "reflect-metadata";
 
 const start = async () => {
   await dataSource.initialize();

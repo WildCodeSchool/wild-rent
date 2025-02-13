@@ -5,12 +5,13 @@ import { buildSchema } from "type-graphql";
 import { UserResolver } from "./resolvers/UserResolver";
 import { dataSource } from "./config/db";
 import "reflect-metadata";
+import { CategoryResolver } from "./resolvers/CategoryResolver";
 
 const start = async () => {
   await dataSource.initialize();
 
   const schema = await buildSchema({
-    resolvers: [UserResolver],
+    resolvers: [UserResolver, CategoryResolver],
   });
 
   const server = new ApolloServer({

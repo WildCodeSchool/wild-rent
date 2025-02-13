@@ -15,6 +15,33 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTimeISO: { input: any; output: any; }
+};
+
+export type Address = {
+  __typename?: 'Address';
+  city: Scalars['String']['output'];
+  country: Scalars['String']['output'];
+  street: Scalars['String']['output'];
+  zipcode: Scalars['String']['output'];
+};
+
+export type Order = {
+  __typename?: 'Order';
+  created_at: Scalars['DateTimeISO']['output'];
+  products_in_order: Array<ProductInOrder>;
+  rental_end_date: Scalars['DateTimeISO']['output'];
+  rental_start_date: Scalars['DateTimeISO']['output'];
+  status: Scalars['String']['output'];
+  total_price: Scalars['Float']['output'];
+  user: User;
+};
+
+export type ProductInOrder = {
+  __typename?: 'ProductInOrder';
+  order: Order;
+  quantity: Scalars['Float']['output'];
+  total_price: Scalars['Float']['output'];
 };
 
 export type Query = {
@@ -24,21 +51,28 @@ export type Query = {
 
 export type User = {
   __typename?: 'User';
+  address: Address;
+  created_at: Scalars['DateTimeISO']['output'];
+  email: Scalars['String']['output'];
+  first_name: Scalars['String']['output'];
+  hashed_password: Scalars['String']['output'];
   id: Scalars['Float']['output'];
-  name: Scalars['String']['output'];
+  last_name: Scalars['String']['output'];
+  orders: Array<Order>;
+  phone_number: Scalars['String']['output'];
+  role: Scalars['String']['output'];
 };
 
 export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers: Array<{ __typename?: 'User', id: number, name: string }> };
+export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers: Array<{ __typename?: 'User', id: number }> };
 
 
 export const GetAllUsersDocument = gql`
     query GetAllUsers {
   getAllUsers {
     id
-    name
   }
 }
     `;

@@ -121,6 +121,7 @@ export class UserResolver {
       email: tempUser.email,
       phone_number: tempUser.phone_number,
       hashed_password: tempUser.hashed_password,
+      created_at: new Date
     });
     tempUser.remove();
     return "ok";

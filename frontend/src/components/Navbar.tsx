@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useGetAllCategoriesQuery } from "../generated/graphql-types";
-import { normalizeForUrl } from "../assets/utils";
+import { normalizeStringForUrl } from "../assets/utils";
 
 const Navbar = () => {
   const { loading, error, data } = useGetAllCategoriesQuery();
@@ -13,7 +13,7 @@ const Navbar = () => {
         {data.getAllCategories.map((category) => (
           <Link
             key={category.id}
-            to={`/produits/categorie/${normalizeForUrl(category.title)}`}
+            to={`/produits/categorie/${normalizeStringForUrl(category.title)}`}
             className="text-white font-bold hover:underline hidden sm:flex gap-x-6"
           >
             {category.title}

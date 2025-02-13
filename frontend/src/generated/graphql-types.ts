@@ -58,6 +58,27 @@ export type MutationDeleteCategoryArgs = {
 
 export type MutationModifyCategoryArgs = {
   data: CategoryInput;
+export type Mutation = {
+  __typename?: 'Mutation';
+  confirmEmail: Scalars['String']['output'];
+  login: Scalars['String']['output'];
+  logout: Scalars['String']['output'];
+  register: Scalars['String']['output'];
+};
+
+
+export type MutationConfirmEmailArgs = {
+  code_by_user: Scalars['String']['input'];
+};
+
+
+export type MutationLoginArgs = {
+  data: UserInput;
+};
+
+
+export type MutationRegisterArgs = {
+  data: UserInput;
 };
 
 export type Order = {
@@ -126,7 +147,9 @@ export type QueryGetProductByIdArgs = {
 
 
 export type QueryGetProductOptionsArgs = {
-  productId: Scalars['Float']['input'];
+  productId: Scalars["Float"]["input"];
+  id: Scalars['Float']['input'];
+  getUserInfo: UserInfo;
 };
 
 export type User = {
@@ -144,6 +167,21 @@ export type User = {
 };
 
 export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+export type UserInfo = {
+  __typename?: 'UserInfo';
+  email?: Maybe<Scalars['String']['output']>;
+  isLoggedIn: Scalars['Boolean']['output'];
+};
+
+export type UserInput = {
+  email: Scalars['String']['input'];
+  first_name: Scalars['String']['input'];
+  last_name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  phone_number: Scalars['String']['input'];
+};
+
+export type GetAllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetAllCategoriesQuery = { __typename?: 'Query', getAllCategories: Array<{ __typename?: 'Category', id: number, image: string, title: string }> };

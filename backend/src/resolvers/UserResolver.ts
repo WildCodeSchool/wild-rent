@@ -1,11 +1,12 @@
-import { UserInput } from "../inputs/UserInputs";
+import "dotenv/config"; // permet l'utilisation de process.env (example: process.env.RESEND_API_KEY)
+import { Query, Mutation, Resolver, Arg, Ctx, Field, ObjectType } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
+import { UserInput } from "../inputs/UserInputs";
+import { Resend } from 'resend';
 import * as argon2 from "argon2";
 import { v4 as uuidv4 } from 'uuid';
 import * as jwt from "jsonwebtoken";
-import { Resend } from 'resend';
-import { Query, Mutation, Resolver, Arg, Ctx, Field, ObjectType } from "type-graphql";
 
 @ObjectType()
 class UserInfo {
@@ -35,6 +36,7 @@ export class UserResolver {
       hashed_password: await argon2.hash(new_user_data.password),
       random_code: random_code,
     });
+
     const resend = new Resend(process.env.RESEND_API_KEY);
 
     (async function() {
@@ -112,5 +114,4 @@ export class UserResolver {
     tempUser.remove();
     return "ok";
   }
-
 }

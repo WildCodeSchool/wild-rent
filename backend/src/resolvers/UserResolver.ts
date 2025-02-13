@@ -19,6 +19,7 @@ class UserInfo {
 
 @Resolver(User)
 export class UserResolver {
+
   @Query(() => [User])
   async getAllUsers() {
     const users = await User.find();
@@ -39,17 +40,16 @@ export class UserResolver {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
 
-    (async function() {
+    (async function () {
       const { data, error } = await resend.emails.send({
         from: "Acme <onboarding@resend.dev>",
         to: [new_user_data.email],
         subject: "Verify Email",
         html: `
-          <p>Please click the link below to confirm your email address</p>
-          <a href="http://localhost:7000/confirm/${random_code}">
-            http://localhost:7000/confirm/${random_code}
-          </a>
-          `,
+                <p>Please click the link below to confirm your email adress</p>
+                <a href=${process.env.URL_CONFIRMATION_PAGE}${random_code}>
+                ${process.env.URL_CONFIRMATION_PAGE}${random_code}</a>
+                `,
       });
       if (error) {
         return console.error({ error });

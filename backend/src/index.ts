@@ -3,6 +3,7 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./resolvers/UserResolver";
+import { ProductResolver } from "./resolvers/ProductResolver";
 import { dataSource } from "./config/db";
 import "reflect-metadata";
 
@@ -10,7 +11,7 @@ const start = async () => {
   await dataSource.initialize();
 
   const schema = await buildSchema({
-    resolvers: [UserResolver],
+    resolvers: [UserResolver, ProductResolver],
   });
 
   const server = new ApolloServer({

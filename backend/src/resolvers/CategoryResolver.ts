@@ -1,11 +1,37 @@
 import { Category } from "../entities/Category";
-import { Query, Resolver } from "type-graphql";
+import { CategoryInput } from "../inputs/CategoryInput";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 
 @Resolver(Category)
 export class CategoryResolver {
   @Query(() => [Category])
   async getAllCategories() {
-    const categories = await Category.find();
-    return categories;
+    return await Category.find();
+  }
+
+  @Mutation(() => Category)
+  async createNewCategory(@Arg("title") title: string) {
+    const newCategory = await Category.save({
+      title: title,
+    });
+    return newCategory;
+  }
+
+  @Mutation(() => Category)
+  async modifyCategory(@Arg("data") newData: CategoryInput) {
+    let categoryToUpdate = await Category.findOneByOrFail({ id: newData.id });
+    categoryToUpdate = Object.assign(categoryToUpdate, newData);
+    const newCategory = await categoryToUpdate.save();
+    return newCategory;
+  }
+
+  @Mutation(() => String)
+  async deleteCategory(@Arg("id") id: number) {
+    const result = await Category.delete(id);
+    if (result.affected === 1) {
+      return "Category as been deleted";
+    } else {
+      throw new Error("Category has not been found");
+    }
   }
 }

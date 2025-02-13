@@ -1,12 +1,21 @@
 // permet l'utilisation de process.env (example: process.env.RESEND_API_KEY)
-import "dotenv/config"; 
-import { Query, Mutation, Resolver, Arg, Ctx, Field, ObjectType } from "type-graphql";
+import "dotenv/config";
+import {
+  Query,
+  Mutation,
+  Resolver,
+  Arg,
+  Ctx,
+  Field,
+  ObjectType,
+} from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
-import { UserInput } from "../inputs/UserInputs";
-import { Resend } from 'resend';
+import { UserInput } from "../inputs/UserInput";
+import { LoginInput } from "../inputs/LoginInput";
+import { Resend } from "resend";
 import * as argon2 from "argon2";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
 
 @ObjectType()
@@ -20,12 +29,11 @@ class UserInfo {
 
 @Resolver(User)
 export class UserResolver {
-
   @Query(() => [User])
   async getAllUsers() {
     const users = await User.find();
     return users;
-  };
+  }
 
   @Mutation(() => String)
   async register(@Arg("data") new_user_data: UserInput) {
@@ -62,7 +70,7 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-  async login(@Arg("data") login_user_data: UserInput, @Ctx() context: any) {
+  async login(@Arg("data") login_user_data: LoginInput, @Ctx() context: any) {
     let is_password_correct = false;
     const user = await User.findOneBy({ email: login_user_data.email });
     if (user) {
@@ -104,7 +112,9 @@ export class UserResolver {
 
   @Mutation(() => String)
   async confirmEmail(@Arg("code_by_user") code_by_user: string) {
-    const tempUser = await TempUser.findOneByOrFail({ random_code: code_by_user });
+    const tempUser = await TempUser.findOneByOrFail({
+      random_code: code_by_user,
+    });
     await User.save({
       first_name: tempUser.first_name,
       last_name: tempUser.last_name,

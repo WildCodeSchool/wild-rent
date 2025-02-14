@@ -1,5 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, useState } from "react";
-// import { DotButton, useDotButton } from "./CarouselDotButtons";
+import { ReactNode, useCallback, useEffect, useState } from "react";
 import { EmblaCarouselType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
 import {
@@ -12,17 +11,20 @@ const Carousel = ({ children }: { children: ReactNode }) => {
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
 
+  // Function to check if possible to scroll in each direction and set state of arrow button accordingly. UseCallBack to memoise function and avoid unnecessary re-renders.
   const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
     setPrevBtnDisabled(!emblaApi.canScrollPrev());
     setNextBtnDisabled(!emblaApi.canScrollNext());
   }, []);
 
+  // When component mounts check if caroussel is scrollable and set up event listener to re-do the check evey time the user interacts with the carousel
   useEffect(() => {
     if (!emblaApi) return;
     onSelect(emblaApi);
     emblaApi.on("reInit", onSelect).on("select", onSelect);
   }, [emblaApi, onSelect]);
 
+  // Functions to scroll the carousel left or right using embla API methods
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
   }, [emblaApi]);

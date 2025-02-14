@@ -36,7 +36,7 @@ const Carousel = ({ children }: { children: ReactNode }) => {
   return (
     <section className="embla w-full flex flex-col">
       <div className="embla__viewport overflow-hidden" ref={emblaRef}>
-        <div className="embla__container flex ml-8">{children}</div>
+        <div className="embla__container flex my-2 mr-4">{children}</div>
       </div>
 
       <div className="flex px-4 gap-4 items-center w-full justify-center mt-8">

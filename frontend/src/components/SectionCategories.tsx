@@ -9,7 +9,7 @@ function SectionCategories() {
   if (categories)
     return (
       <>
-        <div className="flex flex-col w-full items-center gap-6 lg:hidden">
+        <div className="flex flex-col w-full items-center gap-6 lg:hidden py-4">
           {categories.map((category) => (
             <CategoryCard
               id={category.id}
@@ -18,7 +18,7 @@ function SectionCategories() {
             />
           ))}
         </div>
-        <div className="lg:flex flex-col w-full items-center gap-6 hidden">
+        <div className="lg:flex flex-col w-full items-center gap-6 hidden py-4">
           {categories.map((category) => (
             <CategoryCarousel id={category.id} title={category.title} />
           ))}

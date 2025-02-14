@@ -20,6 +20,10 @@ export class Category extends BaseEntity {
   @Column({ unique: true })
   title: string;
 
+  @Field()
+  @Column({nullable:true})
+  image: string;
+
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
 }

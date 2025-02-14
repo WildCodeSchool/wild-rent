@@ -1,6 +1,6 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import Layout from "./pages/Layout";
+import Layout from "./pages/layout";
 import Home from "./pages/Home";
 import ProductsByCategories from "./pages/ProductsByCategories";
 import ProductDetails from "./pages/ProductDetails";
@@ -14,7 +14,7 @@ function App() {
           path="produits/categorie/:title"
           element={<ProductsByCategories />}
         />
-        <Route path="product/:id" element={<ProductDetails />} />
+        <Route path="/produit/:id" element={<ProductDetails />} />
       </Route>
     </Routes>
   );

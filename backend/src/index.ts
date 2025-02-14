@@ -6,12 +6,13 @@ import { UserResolver } from "./resolvers/UserResolver";
 import { ProductResolver } from "./resolvers/ProductResolver";
 import { dataSource } from "./config/db";
 import "reflect-metadata";
+import { ProductOptionResolver } from "./resolvers/ProductOptionResolver";
 
 const start = async () => {
   await dataSource.initialize();
 
   const schema = await buildSchema({
-    resolvers: [UserResolver, ProductResolver],
+    resolvers: [UserResolver, ProductResolver, ProductOptionResolver],
   });
 
   const server = new ApolloServer({

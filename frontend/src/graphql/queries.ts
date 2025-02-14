@@ -8,6 +8,17 @@ export const GET_ALL_USERS = gql`
   }
 `;
 
+export const GET_PRODUCT_OPTIONS_BY_ID_PRODUCT = gql`
+  query GetProductOptions($productId: Float!) {
+    getProductOptions(productId: $productId) {
+      id
+      size
+      total_quantity
+      available_quantity
+    }
+  }
+`;
+
 export const GET_PRODUCT_BY_ID = gql`
   query GetProductById($getProductByIdId: Float!) {
     getProductById(id: $getProductByIdId) {
@@ -24,11 +35,11 @@ export const GET_PRODUCT_BY_ID = gql`
         id
         url
       }
-      # product_options {
-      #   size
-      #   id
-      #   available_quantity
-      # }
+      product_options {
+        size
+        id
+        available_quantity
+      }
     }
   }
 `;

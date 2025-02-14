@@ -33,46 +33,99 @@ export const Register = () => {
     });
   };
 
+  const inputRegisterClasses = "w-full px-4 py-2 border text-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400";
+
+  const labelRegisterClasses = "block text-gray-600 font-semibold mb-1"
+  
   return (
-    <>
-      <h2>Register</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input
-          defaultValue={"Jojo"}
-          placeholder="Prénom"
-          {...register("first_name", { required: true })}
-        />
-        {errors.password && <span>This field is required</span>}
+    <div className="flex justify-center items-center h-screen bg-light-beige">
+      <div className="bg-white p-8 rounded-lg shadow-md h-full md:h-auto w-full md:w-auto">
+        <h2 className="text-2xl font-semibold text-center text-gray-600 mb-4">
+          Inscription
+        </h2>
 
-        <input
-          defaultValue={"L'abricot"}
-          placeholder="Nom de famille"
-          {...register("last_name", { required: true })}
-        />
-        {errors.password && <span>This field is required</span>}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label className={labelRegisterClasses}>Prénom</label>
+            <input
+              defaultValue={"Jojo"}
+              placeholder="Prénom"
+              {...register("first_name", { required: true })}
+              className={inputRegisterClasses}
+            />
+            {errors.first_name && (
+              <span className="text-red-500 text-sm">Ce champ est requis</span>
+            )}
+          </div>
 
-        <input
-          defaultValue={"0683201456"}
-          placeholder="Numéro de téléphone"
-          {...register("phone_number", { required: true })}
-        />
-        {errors.password && <span>This field is required</span>}
+          <div>
+            <label className={labelRegisterClasses}>Nom de famille</label>
+            <input
+              defaultValue={"L'abricot"}
+              placeholder="Nom de famille"
+              {...register("last_name", { required: true })}
+              className={inputRegisterClasses}
+            />
+            {errors.last_name && (
+              <span className="text-red-500 text-sm">Ce champ est requis</span>
+            )}
+          </div>
 
-        <input
-          defaultValue={"test"}
-          placeholder="Mot de passe"
-          type="password"
-          {...register("password", { required: true })}
-        />
-        {errors.password && <span>This field is required</span>}
-        <input
-          defaultValue={"personne@gmail.com"}
-          placeholder="Email"
-          {...register("email", { required: true })}
-        />
-        {errors.password && <span>This field is required</span>}
-        <input type="submit" />
-      </form>
-    </>
+          <div>
+            <label className={labelRegisterClasses}>Email</label>
+            <input
+              defaultValue={"personne@gmail.com"}
+              placeholder="Email"
+              {...register("email", { required: true })}
+              className={inputRegisterClasses}
+            />
+            {errors.email && (
+              <span className="text-red-500 text-sm">Ce champ est requis</span>
+            )}
+          </div>
+
+          <div>
+            <label className={labelRegisterClasses}>Numéro de téléphone</label>
+            <input
+              defaultValue={"0636656565"}
+              placeholder="Numéro de téléphone"
+              {...register("phone_number", { required: true })}
+              className={inputRegisterClasses}
+            />
+            {errors.phone_number && (
+              <span className="text-red-500 text-sm">Ce champ est requis</span>
+            )}
+          </div>
+
+          <div>
+            <label className={labelRegisterClasses}>Mot de passe</label>
+            <input
+              defaultValue={"test"}
+              placeholder="Mot de passe"
+              type="password"
+              {...register("password", { required: true })}
+              className={inputRegisterClasses}
+            />
+            {errors.password && (
+              <span className="text-red-500 text-sm">Ce champ est requis</span>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="w-full mt-3.5 bg-green shadow-xl text-white py-2 rounded-4xl hover:bg-blue transition duration-300"
+          >
+            S'inscrire
+          </button>
+        </form>
+
+        <p className="text-center text-gray-600 mt-4">
+          Vous avez déjà un compte ?{" "}
+          <a href="/login" className="text-green font-bold underline">
+            Connectez-vous ici
+          </a>
+        </p>
+      </div>
+    </div>
   );
 };

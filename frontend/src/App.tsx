@@ -1,11 +1,11 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import Layout from "./pages/layout";
+import { Register } from "./pages/Register";
+import { Login } from "./pages/Login";
 import Home from "./pages/Home";
 import ProductsByCategories from "./pages/ProductsByCategories";
 import ProductDetails from "./pages/ProductDetails";
-import { Register } from "./pages/Register";
-import { Login } from "./pages/Login";
+import { Layout } from "./pages/Layout";
 import ConfirmEmailPage from "./pages/ConfirmEmail";
 import { ToastContainer } from "react-toastify";
 

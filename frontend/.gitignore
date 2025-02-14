@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# codegen graphql types
+src/generated/graphql-types.ts

@@ -9,7 +9,7 @@ const Navbar = () => {
   if (error) return <p> Error : {error.message}</p>;
   if (data) {
     return (
-      <nav className="bg-[#52796F] flex items-center justify-center sm:justify-between px-6 py-3">
+      <nav className="bg-green flex items-center justify-center sm:justify-between px-6 py-3">
         {data.getAllCategories.map((category) => (
           <Link
             key={category.id}

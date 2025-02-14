@@ -4,7 +4,7 @@ import Navbar from "./Navbar";
 const Header = () => {
   return (
     <>
-      <div className="bg-[#F8F6EF] flex items-center justify-between px-4 md:px-8 py-3">
+      <div className="bg-light-beige flex items-center justify-between px-4 md:px-8 py-3">
         <div className="md:hidden">
           <img
             src="/assets/images/burger-bar.png"
@@ -26,7 +26,7 @@ const Header = () => {
 
         <div className="flex items-center gap-x-4">
           <Link
-            className="flex flex-col items-center hover:underline text-[#52796F]"
+            className="flex flex-col items-center hover:underline text-green"
             to={"/user"}
           >
             <img
@@ -34,12 +34,12 @@ const Header = () => {
               alt="user icon"
               className="w-6 h-6 md:w-8 md:h-8"
             />
-            <span className="hidden md:block text-sm text-[#52796F]">
+            <span className="hidden md:block text-sm text-green">
               Mon compte
             </span>
           </Link>
           <Link
-            className="flex flex-col items-center hover:underline text-[#52796F]"
+            className="flex flex-col items-center hover:underline text-green"
             to={"/panier"}
           >
             <img
@@ -47,7 +47,7 @@ const Header = () => {
               alt="cart"
               className="w-6 h-6 md:w-8 md:h-8"
             />
-            <span className="hidden md:block text-sm text-[#52796F]">
+            <span className="hidden md:block text-sm text-green">
               Mon panier
             </span>
           </Link>

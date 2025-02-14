@@ -24,8 +24,8 @@ export const Login = () => {
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log("data", data);
     login({
-      variables: { data: { email: data.email, password: data.password } },
-      onCompleted: () => navigate("/dashboard"), // Redirige après connexion
+      variables: { data: { email: data.email, password: data.password } }, 
+      onCompleted: () => navigate("/"), 
     });
   };
 
@@ -58,7 +58,7 @@ export const Login = () => {
               placeholder="Mot de passe"
               defaultValue="test"
               {...register("password", { required: true })}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
             {errors.password && (
               <span className="text-red-500 text-sm">

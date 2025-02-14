@@ -69,7 +69,8 @@ export const Login = () => {
 
           <button
             type="submit"
-            className="w-full bg-green text-white py-2 rounded-2xl hover:bg-blue transition duration-300"
+            className="w-full bg-green text-white py-2 rounded-2xl hover:bg-blue transition duration-300 cursor-pointer
+"
           >
             Se connecter
           </button>

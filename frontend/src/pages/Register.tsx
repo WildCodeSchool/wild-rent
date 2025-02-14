@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRegisterMutation, UserInput } from "../generated/graphql-types";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const Register = () => {
   const [registerMutation] = useRegisterMutation();
@@ -23,9 +24,9 @@ export const Register = () => {
           password: data.password,
         },
       },
-      onCompleted: (result) => {
-        console.log("result", result);
-        navigate("/confirm");
+      onCompleted: () => {
+        toast.success("Consultez vos emails afin de finaliser votre inscription !")
+        navigate("/");
       },
       onError: (error) => {
         console.log("error", error);
@@ -113,7 +114,8 @@ export const Register = () => {
 
           <button
             type="submit"
-            className="w-full mt-3.5 bg-green shadow-xl text-white py-2 rounded-4xl hover:bg-blue transition duration-300"
+            className="w-full mt-3.5 bg-green shadow-xl text-white py-2 rounded-4xl hover:bg-blue transition duration-300 cursor-pointer
+"
           >
             S'inscrire
           </button>

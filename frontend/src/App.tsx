@@ -6,6 +6,8 @@ import Home from "./pages/Home";
 import ProductsByCategories from "./pages/ProductsByCategories";
 import ProductDetails from "./pages/ProductDetails";
 import { Layout } from "./pages/Layout";
+import ConfirmEmailPage from "./pages/ConfirmEmail";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -20,8 +22,10 @@ function App() {
           <Route path="product/:id" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="confirm/:code?" element={<ConfirmEmailPage />} />
         </Route>
       </Routes>
+      <ToastContainer theme="colored" />
     </>
   );
 }

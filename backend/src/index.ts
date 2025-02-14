@@ -4,6 +4,7 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./resolvers/UserResolver";
 import { ProductResolver } from "./resolvers/ProductResolver";
+import { CategoryResolver } from "./resolvers/CategoryResolver";
 import { dataSource } from "./config/db";
 import "reflect-metadata";
 import { ProductOptionResolver } from "./resolvers/ProductOptionResolver";
@@ -12,7 +13,12 @@ const start = async () => {
   await dataSource.initialize();
 
   const schema = await buildSchema({
-    resolvers: [UserResolver, ProductResolver, ProductOptionResolver],
+    resolvers: [
+      UserResolver,
+      CategoryResolver,
+      ProductResolver,
+      ProductOptionResolver,
+    ],
   });
 
   const server = new ApolloServer({

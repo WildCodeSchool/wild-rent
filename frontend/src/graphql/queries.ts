@@ -59,8 +59,8 @@ export const GET_PRODUCT_BY_ID = gql`
         id
         available_quantity
       }
+    }
   }
-}
 `;
 
 export const GET_USER_INFO = gql`

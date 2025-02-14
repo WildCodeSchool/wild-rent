@@ -3,10 +3,10 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./resolvers/UserResolver";
-import { ProductResolver } from "./resolvers/ProductResolver";
-import { CategoryResolver } from "./resolvers/CategoryResolver";
 import { dataSource } from "./config/db";
 import "reflect-metadata";
+import { CategoryResolver } from "./resolvers/CategoryResolver";
+import { ProductResolver } from "./resolvers/ProductResolver";
 import { ProductOptionResolver } from "./resolvers/ProductOptionResolver";
 
 const start = async () => {

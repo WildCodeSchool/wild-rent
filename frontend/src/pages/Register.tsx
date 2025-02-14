@@ -74,7 +74,7 @@ export const Register = () => {
           <div>
             <label className={labelRegisterClasses}>Email</label>
             <input
-              defaultValue={"personne@gmail.com"}
+              defaultValue={"romanbeldent@gmail.com"}
               placeholder="Email"
               {...register("email", { required: true })}
               className={inputRegisterClasses}

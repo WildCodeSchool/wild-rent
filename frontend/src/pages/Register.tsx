@@ -114,8 +114,7 @@ export const Register = () => {
 
           <button
             type="submit"
-            className="w-full mt-3.5 bg-green shadow-xl text-white py-2 rounded-4xl hover:bg-blue transition duration-300 cursor-pointer
-"
+            className="w-full mt-3.5 bg-green shadow-xl text-white py-2 rounded-4xl hover:bg-blue transition duration-300 cursor-pointer"
           >
             S'inscrire
           </button>

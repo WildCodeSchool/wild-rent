@@ -28,17 +28,23 @@ const ConfirmEmailPage = () => {
             }
         })
     };
+
+    const inputRegisterClasses = "w-full px-4 py-2 border text-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400";
+
     return (
         <>
-            <h2>Rentrez votre code afin de créer votre compte TGC !</h2>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <h2 className="text-2xl pt-10 font-semibold text-center text-gray-600 mb-4">Cliquez sur le bouton ci-dessous pour créer votre compte Wild Rent !</h2>
+            <form onSubmit={handleSubmit(onSubmit) } className="flex flex-col items-center">
                 <input
                     defaultValue={code}
-                    type="password"
+                    type="hidden"
+                    className={inputRegisterClasses}
                     {...register("code", { required: true })}
                 />
                 {errors.code && <span>This field is required</span>}
-                <input type="submit" />
+                <button type="submit"
+                    className="w-100 mb-10 mt-3.5 bg-green shadow-xl text-white py-2 rounded-4xl hover:bg-blue transition duration-300 cursor-pointer"> Créer votre compte
+                </button>
             </form>
         </>
     );

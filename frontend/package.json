@@ -14,11 +14,16 @@
     "@apollo/client": "^3.12.11",
     "@tailwindcss/vite": "^4.0.6",
     "embla-carousel-react": "^8.5.2",
+    "date-fns": "^4.1.0",
     "graphql": "^16.10.0",
     "react": "^19.0.0",
+    "react-calendar": "^5.1.0",
+    "react-datepicker": "^8.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.4.0",
     "react-router-dom": "^7.1.5",
+    "react-toastify": "^11.0.3",
+    "react-use-cart": "^1.14.0",
     "tailwindcss": "^4.0.6"
   },
   "devDependencies": {

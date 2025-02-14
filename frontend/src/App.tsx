@@ -1,8 +1,9 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
-import Layout from "./pages/layout";
+import Layout from "./pages/Layout";
 import Home from "./pages/Home";
 import ProductsByCategories from "./pages/ProductsByCategories";
+import ProductDetails from "./pages/ProductDetails";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           path="produits/categorie/:title"
           element={<ProductsByCategories />}
         />
+        <Route path="product/:id" element={<ProductDetails />} />
       </Route>
     </Routes>
   );

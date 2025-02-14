@@ -19,7 +19,7 @@ function App() {
             path="produits/categorie/:title"
             element={<ProductsByCategories />}
           />
-          <Route path="product/:id" element={<ProductDetails />} />
+          <Route path="produit/:id" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="confirm/:code?" element={<ConfirmEmailPage />} />

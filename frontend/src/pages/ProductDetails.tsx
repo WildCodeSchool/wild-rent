@@ -12,10 +12,12 @@ const ProductDetails = () => {
   const { loading, error, data } = useGetProductByIdQuery({
     variables: { getProductByIdId: parseInt(id) },
   });
+
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [duration, setDuration] = useState<number>(0);
   const [selectedSize, setSelectedSize] = useState<string>("");
+
   const products = data?.getProductById;
 
   const calculateDuration = (start: Date | null, end: Date | null) => {
@@ -29,81 +31,40 @@ const ProductDetails = () => {
   };
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :</p>;
+  if (error) return <p>Error loading product</p>;
 
-  if (data) {
-    return (
-      <div className="flex flex-row">
-        <div>
-          <img src={products?.pictures[0].url} alt="Chaussure" />
+  return (
+    <div className="flex flex-col md:flex-row items-start gap-10 p-10 bg-white shadow-md rounded-lg max-w-4xl mx-auto">
+      {/* Image Section */}
+      <div className="flex flex-col gap-4">
+        <img
+          src={products?.pictures[0].url}
+          alt={products?.name}
+          className="w-64 h-64 object-cover rounded-lg"
+        />
+        <div className="flex gap-2">
+          {products?.pictures.slice(0, 4).map((pic: any, index: number) => (
+            <img
+              key={index}
+              src={pic.url}
+              alt="Preview"
+              className="w-14 h-14 object-cover rounded-md border"
+            />
+          ))}
         </div>
-        <div>
-          <div className="flex flex-row">
-            <div>
-              <h2>{products?.name}</h2>
-              <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">Start</label>
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date) => {
-                    setStartDate(date);
-                    calculateDuration(date, endDate);
-                  }}
-                  dateFormat="dd/MM/yyyy"
-                  placeholderText="Sélectionner une date"
-                  className="border rounded-md p-2 text-sm"
-                />
-              </div>
-              <div className="flex flex-col">
-                <label className="text-sm font-medium mb-1">End</label>
-                <DatePicker
-                  selected={endDate}
-                  onChange={(date) => {
-                    setEndDate(date);
-                    calculateDuration(startDate, date);
-                  }}
-                  dateFormat="dd/MM/yyyy"
-                  placeholderText="Sélectionner une date"
-                  className="border rounded-md p-2 text-sm"
-                />
-              </div>
-            </div>
-            <div>
-              <div>{products?.price}€ /jour</div>
-              <div>Durée: {duration} jour(s)</div>
-              <div>Total: {duration * (products?.price || 0)}€</div>
-              <button
-                onClick={() => {
-                  addItem({
-                    id: products!.id.toString(),
-                    name: products!.name,
-                    price: products!.price,
-                    duration: duration,
-                    totalPrice: duration * (products?.price || 0),
-                    size: selectedSize,
-                  });
-                  console.log("Produit ajouté au panier:", {
-                    id: products!.id,
-                    name: products!.name,
-                    price: products!.price,
-                    duration: duration,
-                    totalPrice: duration * (products?.price || 0),
-                    size: selectedSize,
-                  });
-                }}
-                className="bg-[#4F6F64] text-white px-4 py-2 rounded-full shadow-md hover:bg-[#3e5b51] transition"
-              >
-                Ajouter au panier
-              </button>
-            </div>
-          </div>
+      </div>
+
+      {/* Details Section */}
+      <div className="flex-1">
+        <div className="flex flex-row">
           <div>
-            <label>
-              <br />
-              Taille :
-              <br />
+            <h2 className="text-2xl font-semibold mb-2">{products?.name}</h2>
+
+            {/* Taille Selection */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1">Taille :</label>
               <select
-                className="text-field"
+                className="border rounded-md p-2 w-full"
                 value={selectedSize}
                 onChange={(e) => setSelectedSize(e.target.value)}
               >
@@ -113,12 +74,79 @@ const ProductDetails = () => {
                   </option>
                 ))}
               </select>
-            </label>
-            <div>{products?.description}</div>
+            </div>
+
+            {/* Date Picker */}
+            <div className="flex gap-4 mb-4">
+              <div className="flex flex-col w-1/2">
+                <label className="text-sm font-medium mb-1">
+                  Période de location :
+                </label>
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => {
+                    setStartDate(date);
+                    calculateDuration(date, endDate);
+                  }}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="Début"
+                  className="border rounded-md p-2 w-full"
+                />
+              </div>
+              <div className="flex flex-col w-1/2">
+                <label className="text-sm font-medium mb-1 invisible">
+                  End
+                </label>
+                <DatePicker
+                  selected={endDate}
+                  onChange={(date) => {
+                    setEndDate(date);
+                    calculateDuration(startDate, date);
+                  }}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="Fin"
+                  className="border rounded-md p-2 w-full"
+                />
+              </div>
+            </div>
+          </div>
+          <div>
+            {/* Pricing and CTA */}
+            <div className="bg-gray-100 p-4 rounded-lg shadow-sm mb-4">
+              <div className="text-xl font-bold">{products?.price}€ / jour</div>
+              <div className="text-sm text-gray-600">
+                Durée: {duration} jour(s)
+              </div>
+              <div className="text-lg font-semibold">
+                Total: {duration * (products?.price || 0)}€
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                addItem({
+                  id: products!.id.toString(),
+                  name: products!.name,
+                  price: products!.price,
+                  duration: duration,
+                  totalPrice: duration * (products?.price || 0),
+                  size: selectedSize,
+                });
+              }}
+              className="w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
+            >
+              Ajouter au panier
+            </button>
           </div>
         </div>
+
+        {/* Description */}
+        <p className="mt-4 text-gray-700">{products?.description}</p>
+
+        <div className="mt-4 text-sm font-medium">Niveau: Intermédiaire</div>
       </div>
-    );
-  }
+    </div>
+  );
 };
+
 export default ProductDetails;

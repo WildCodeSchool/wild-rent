@@ -27,7 +27,7 @@ const Header = () => {
         <div className="flex items-center gap-x-4">
           <Link
             className="flex flex-col items-center hover:underline text-green"
-            to={"/user"}
+            to={"/login"}
           >
             <img
               src="/assets/images/user-icon.png"

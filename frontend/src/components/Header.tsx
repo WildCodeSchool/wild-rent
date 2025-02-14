@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
-// https://www.30secondsofcode.org/js/s/remove-accents/
+
 const Header = () => {
   return (
     <>

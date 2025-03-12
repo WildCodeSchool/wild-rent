@@ -1,6 +1,12 @@
 {
+  "scripts": {
+    "codegen": "npx playwright codegen",
+    "headed": "npx playwright test --headed"
+  },
   "dependencies": {
-    "@playwright/test": "^1.51.0",
+    "@playwright/test": "^1.51.0"
+  },
+  "devDependencies": {
     "@types/node": "^22.13.10"
   }
 }

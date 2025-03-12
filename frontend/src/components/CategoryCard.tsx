@@ -14,6 +14,7 @@ function CategoryCard({ title, image }: categoryProps) {
           <img
             src={image}
             className="absolute inset-0 object-cover w-full h-full "
+            alt={title}
           />
           <div className="absolute inset-0 bg-black/30"></div>
           <div className="text-white relative z-10 font-light text-2xl ">

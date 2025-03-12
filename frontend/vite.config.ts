@@ -1,8 +1,9 @@
-import { defineConfig } from "vitest/config"; // Utilise Vitest et non Vite
+import { defineConfig } from "vitest/config"; // Utilise Vitest et non Jest
 import react from "@vitejs/plugin-react";
+import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   test: {
     globals: true,
     environment: "jsdom",

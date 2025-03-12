@@ -1,16 +1,14 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config"; // Utilise Vitest et non Vite
 import react from "@vitejs/plugin-react";
-import tailwindcss from '@tailwindcss/vite'
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react()],
+  test: {
+    globals: true,
+    environment: "jsdom",
+  },
   server: {
-    allowedHosts: [
-      "frontend", // Ajoute 'frontend' à la liste des hôtes autorisés
-      "localhost", // Si nécessaire, ajoute aussi d'autres hôtes
-      "0.0.0.0", // Pour permettre les connexions depuis n'importe quelle adresse IP
-    ],
+    allowedHosts: true,
     host: "0.0.0.0",
     hmr: { path: "/hmr" },
     watch: { usePolling: true },

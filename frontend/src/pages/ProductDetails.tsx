@@ -5,6 +5,15 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useCart } from "react-use-cart";
 
+export const calculateDuration = (start: Date | null, end: Date | null) => {
+  if (start && end) {
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  } else {
+    return 0;
+  }
+};
+
 const ProductDetails = () => {
   const { id }: any = useParams();
   const { addItem } = useCart();
@@ -20,14 +29,10 @@ const ProductDetails = () => {
 
   const products = data?.getProductById;
 
-  const calculateDuration = (start: Date | null, end: Date | null) => {
-    if (start && end) {
-      const diffTime = Math.abs(end.getTime() - start.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      setDuration(diffDays);
-    } else {
-      setDuration(0);
-    }
+  const handleDuration = (startDate: Date | null, endDate: Date | null) => {
+    const newDuration = calculateDuration(startDate, endDate);
+    console.log("coucou", newDuration);
+    setDuration(newDuration);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -101,7 +106,7 @@ const ProductDetails = () => {
                   selected={endDate}
                   onChange={(date) => {
                     setEndDate(date);
-                    calculateDuration(startDate, date);
+                    handleDuration(startDate, date);
                   }}
                   dateFormat="dd/MM/yyyy"
                   placeholderText="Fin"

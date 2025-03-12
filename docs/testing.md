@@ -3,7 +3,7 @@
 ## e2e with docker
 
 ```bash
-docker compose -f docker-compose.e2e.yml up --build --exit-code-form e2e
+docker compose -f docker-compose.e2e.yml up --build --exit-code-from e2e
 ``` 
 
 ## Local testing

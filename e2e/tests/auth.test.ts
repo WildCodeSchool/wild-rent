@@ -1,19 +1,17 @@
 import { test, expect } from "@playwright/test";
 
-test("test", async ({ page }) => {
-  await page.goto("http://localhost:7000/");
+test("login", async ({ page }) => {
+  await page.goto("http://localhost:7000/login");
 
-  await page.locator(".embla__slide").first().click();
-
-  await page.getByRole("textbox", { name: "Début" }).click();
   await page
-    .getByRole("option", { name: "Choose Wednesday, March 12th," })
-    .click();
+    .getByRole("textbox", { name: "Email" })
+    .fill("thom.gateau@gmail.com");
 
-  await page.getByRole("textbox", { name: "Fin" }).click();
-  await page
-    .getByRole("option", { name: "Choose Thursday, March 13th," })
-    .click();
+  await page.getByRole("textbox", { name: "Mot de passe" }).fill("Thomas");
 
-  await expect(page.getByText("Total: 50€")).toHaveText("Total: 50€");
+  await page.getByRole("button", { name: "Se connecter" }).click();
+
+  await expect(
+    page.getByRole("link", { name: "user icon Mon compte" })
+  ).toBeVisible();
 });

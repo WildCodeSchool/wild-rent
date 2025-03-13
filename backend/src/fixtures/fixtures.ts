@@ -4,6 +4,7 @@ import * as argon2 from "argon2";
 import { User } from '../entities/User';
 import { Category } from '../entities/Category';
 import { normalizeString } from "../assets/utils";
+import { Address } from '../entities/Address';
 
 async function createFixtures() {
     try {
@@ -19,6 +20,7 @@ async function createFixtures() {
         faker.seed(4);
         await createUsers();
         await createCategories();
+        await createAddress();
 
         console.log("🎉 Fixtures created successfully!");
     } catch (error) {
@@ -36,7 +38,7 @@ async function createUsers() {
         // Génère un nombre aléatoire pour le numéro de téléphone
         function getRandomSixDigit() {
             return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
-          }
+        }
 
         // Création d'un utilisateur par défaut
         users.push({
@@ -59,6 +61,7 @@ async function createUsers() {
             const email = `${normalizeString(full_name)}@wild-rent.com`;
             const hashed_password = await argon2.hash('password');
             const created_at = new Date();
+            const addressId = i;
 
             users.push({
                 first_name,
@@ -66,7 +69,8 @@ async function createUsers() {
                 email,
                 phone_number,
                 hashed_password,
-                created_at
+                created_at,
+                addressId
             });
         }
 
@@ -77,6 +81,29 @@ async function createUsers() {
     }
 }
 
+async function createAddress() {
+    try {
+        const addresses = [];
+
+        for (let i = 0; i < 31; i++) {
+            const street = faker.number.int({ min: 2, max: 50 }) + ' ' + faker.location.street();
+            const city = faker.location.city();
+            const country = 'France';
+            const zipcode = faker.location.zipCode();
+
+            addresses.push({
+                street,
+                city,
+                country,
+                zipcode,
+            });
+        }
+
+        await Address.save(addresses);
+        console.log("✅ Addresses created successfully!");
+    } catch (error) {
+        console.error("❌ Error while creating addresses:", error);
+    }
 async function createCategories() {
     try {
         const categoryTitles = [

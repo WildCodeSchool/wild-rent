@@ -6,7 +6,7 @@ import { Category } from '../entities/Category';
 import { normalizeString } from "../assets/utils";
 import { Product } from '../entities/Product';
 import { Address } from '../entities/Address';
-import { Picture } from '../entities/Picture';
+// import { Picture } from '../entities/Picture';
 
 async function createFixtures() {
     try {
@@ -140,7 +140,8 @@ async function createProducts() {
         const categoriesData = [
             { title: 'Sport d\'hiver', name: 'Ski', count: 20, price: 25 },
             { title: 'Sport d\'hiver', name: 'Snowboard', count: 15, price: 30 },
-            { title: 'Sport d\'hiver', name: 'Mini-ski', count: 5, price: 10 },
+            { title: 'Sport d\'hiver', name: 'Chaussures de ski', count: 30, price: 8 },
+            { title: 'Sport d\'hiver', name: 'Chaussures de snow', count: 30, price: 8 },
             { title: 'Sport d\'hiver', name: 'Gants', count: 50, price: 5 },
             { title: 'Sport nautique', name: 'Planche de surf', count: 30, price: 40 },
             { title: 'Sport nautique', name: 'Bodyboard', count: 25, price: 15 },
@@ -148,7 +149,7 @@ async function createProducts() {
             { title: 'VTT / Vélo', name: 'Vélo de ville', count: 30, price: 20 },
             { title: 'VTT / Vélo', name: 'VTT', count: 10, price: 35 },
             { title: 'VTT / Vélo', name: 'Casque', count: 50, price: 5 },
-            { title: 'Randonnée', name: 'Chaussure', count: 30, price: 12 },
+            { title: 'Randonnée', name: 'Chaussures', count: 30, price: 12 },
             { title: 'Randonnée', name: 'Bâtons', count: 20, price: 6 },
             { title: 'Randonnée', name: 'Sac à dos', count: 20, price: 8 },
             { title: 'Camping', name: 'Tente', count: 25, price: 25 },
@@ -164,18 +165,17 @@ async function createProducts() {
                 const description = faker.lorem.lines();
                 const created_at = new Date();
 
-                products.push({
+                const product = await Product.create({
                     name,
                     description,
                     price,
                     created_at,
                     category
-                });
+                }).save();
+                products.push(product);
             }
         }
 
-        // Sauvegarder les produits
-        await Product.save(products);
         console.log("✅ Products created successfully!");
     } catch (error) {
         console.error("❌ Error while creating products:", error);

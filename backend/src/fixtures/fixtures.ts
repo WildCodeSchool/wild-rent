@@ -10,11 +10,12 @@ async function createFixtures() {
         await dataSource.initialize();
         console.log("📡 Database connected!");
 
-        // Supprime complètement la base de données
+        // Supprime la base de données avant d'importer les fixtures
         await dataSource.dropDatabase();
+        // Il faut resynchro la DB sinon on a une erreur pour créer les données
         await dataSource.synchronize();
 
-        // Génère la même graine pour que tout le monde travaille avec les mêmes données
+        // Génère la même graine pour que le groupe travaille avec les mêmes données
         faker.seed(4);
         await createUsers();
         await createCategories();
@@ -32,6 +33,11 @@ async function createUsers() {
     try {
         const users = [];
 
+        // Génère un nombre aléatoire pour le numéro de téléphone
+        function getRandomSixDigit() {
+            return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+          }
+
         // Création d'un utilisateur par défaut
         users.push({
             first_name: 'Jon',
@@ -43,11 +49,13 @@ async function createUsers() {
             created_at: new Date()
         });
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 30; i++) {
+            let randomSixDigit = getRandomSixDigit();
+
             const first_name = faker.person.firstName();
             const last_name = faker.person.lastName();
             const full_name = first_name + last_name;
-            const phone_number = faker.phone.number();
+            const phone_number = '+336' + randomSixDigit;
             const email = `${normalizeString(full_name)}@wild-rent.com`;
             const hashed_password = await argon2.hash('password');
             const created_at = new Date();

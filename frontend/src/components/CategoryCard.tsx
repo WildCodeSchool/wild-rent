@@ -6,7 +6,7 @@ export interface categoryProps {
   image?: string;
 }
 
-const imageBasePath = "/assets/images/category/"
+const imageBasePath = "/assets/images/categories/"
 
 function CategoryCard({ title, image }: categoryProps) {
   return (

@@ -3,6 +3,9 @@ import {  expect, test, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Register } from "../pages/Register";
 import { toast } from "react-toastify";
+// Attention vi.mock ne fonctionne qu'avec les modules importés avec le mot clé "import" et non "require"
+// vi.fn est équivalent à un spy. Il est utilisé pour créer des fonctions simulées qui peuvent surveiller les appels, les arguments, et les valeurs de retour.
+// Permet de vérifier si une fonction a été appelée, combien de fois elle a été appelée, et avec quels arguments.
 
 const registerMutationMock = vi.fn(({ onCompleted }) => {
     onCompleted();  //onCompleted permet de simuler l'appel de la fonction

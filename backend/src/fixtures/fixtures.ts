@@ -6,6 +6,7 @@ import { Category } from '../entities/Category';
 import { normalizeString } from "../assets/utils";
 import { Product } from '../entities/Product';
 import { Address } from '../entities/Address';
+import { Picture } from '../entities/Picture';
 
 async function createFixtures() {
     try {
@@ -45,9 +46,13 @@ async function createUsers() {
         // Création d'un utilisateur par défaut
         const defaultAddress = await Address.findOne({ where: { id: 1 } });
 
+        // Il faut faire cette vérification, sinon on a une erreur lorsque qu'on veut utiliser User.save(users) 
+        // -> 'Address | null' is not assignable to type 'DeepPartial<Address> | undefined'
+        // Cela est dû au fait qu'on tente (potentiellement) de passer un objet undefined à TypeORM
         if (!defaultAddress) {
-            throw new Error('Adresse par défaut non trouvée');
+            throw new Error('Default address not found');
         }
+
         users.push({
             first_name: 'Jon',
             role: 'ADMIN',
@@ -59,6 +64,8 @@ async function createUsers() {
             address: defaultAddress,
         });
 
+        // On initie la valeur à 1 car on va assigner l'utilisateur Jon Snow à l'adresse qui à l'ID 1,
+        // Chaque adresse est unique pour un utilisateur, donc si on tente d'en assigner une qui est déjà attribué on aura une erreur
         for (let i = 1; i < 31; i++) {
             let randomEightDigit = getRandomEightDigit();
 
@@ -72,7 +79,7 @@ async function createUsers() {
             const userAddress = await Address.findOne({ where: { id: i + 1 } });
 
             if (!userAddress) {
-                throw new Error(`Adresse manquante pour l'utilisateur ${full_name}`);
+                throw new Error(`No address found for ${full_name}`);
             }
 
             users.push({
@@ -117,83 +124,58 @@ async function createAddress() {
     }
 }
 
+async function getCategoryByTitle(title: string) {
+    const category = await Category.findOne({ where: { title } });
+    if (!category) {
+        throw new Error('Category does not exist');
+    }
+    return category;
+}
+
 async function createProducts() {
     try {
         const products = [];
 
-        // Produits lié à la catégorie sport d'hiver
-        for (let i = 0; i < 10; i++) {
-            const name = 'test';
-            const price = faker.number.int({ min: 15, max: 50 });
-            const description = faker.lorem.lines();
-            const created_at = new Date();
+        const categoriesData = [
+            { title: 'Sport d\'hiver', name: 'Ski', count: 20, price: 25 },
+            { title: 'Sport d\'hiver', name: 'Snowboard', count: 15, price: 30 },
+            { title: 'Sport d\'hiver', name: 'Mini-ski', count: 5, price: 10 },
+            { title: 'Sport d\'hiver', name: 'Gants', count: 50, price: 5 },
+            { title: 'Sport nautique', name: 'Planche de surf', count: 30, price: 40 },
+            { title: 'Sport nautique', name: 'Bodyboard', count: 25, price: 15 },
+            { title: 'Sport nautique', name: 'Bouée', count: 40, price: 8 },
+            { title: 'VTT / Vélo', name: 'Vélo de ville', count: 30, price: 20 },
+            { title: 'VTT / Vélo', name: 'VTT', count: 10, price: 35 },
+            { title: 'VTT / Vélo', name: 'Casque', count: 50, price: 5 },
+            { title: 'Randonnée', name: 'Chaussure', count: 30, price: 12 },
+            { title: 'Randonnée', name: 'Bâtons', count: 20, price: 6 },
+            { title: 'Randonnée', name: 'Sac à dos', count: 20, price: 8 },
+            { title: 'Camping', name: 'Tente', count: 25, price: 25 },
+            { title: 'Camping', name: 'Réchaud', count: 15, price: 10 },
+            { title: 'Camping', name: 'Bouteille de gaz', count: 15, price: 4 }
+        ];
 
-            products.push({
-                name,
-                description,
-                price,
-                created_at,
-            })
-        }
-        // Produits lié à la catégorie sport nautique
-        for (let i = 0; i < 10; i++) {
-            const name = 'test';
-            const price = faker.number.int({ min: 10, max: 40 });
-            const description = faker.lorem.lines();
-            const created_at = new Date();
+        // Créer les produits pour chaque catégorie
+        for (const { title, count, name, price } of categoriesData) {
+            const category = await getCategoryByTitle(title);
 
-            products.push({
-                name,
-                description,
-                price,
-                created_at,
-            })
-        }
-        // Produits lié à la catégorie VTT / Vélo
-        for (let i = 0; i < 10; i++) {
-            const name = 'test';
-            const price = faker.number.int({ min: 10, max: 35 });
-            const description = faker.lorem.lines();
-            const created_at = new Date();
+            for (let i = 0; i < count; i++) {
+                const description = faker.lorem.lines();
+                const created_at = new Date();
 
-            products.push({
-                name,
-                description,
-                price,
-                created_at,
-            })
-        }
-        // Produits lié à la catégorie randonnée
-        for (let i = 0; i < 10; i++) {
-            const name = 'test';
-            const price = faker.number.int({ min: 5, max: 30 });
-            const description = faker.lorem.lines();
-            const created_at = new Date();
-
-            products.push({
-                name,
-                description,
-                price,
-                created_at,
-            })
-        }
-        // Produits lié à la catégorie camping
-        for (let i = 0; i < 10; i++) {
-            const name = 'test';
-            const price = faker.number.int({ min: 5, max: 25 });
-            const description = faker.lorem.lines();
-            const created_at = new Date();
-
-            products.push({
-                name,
-                description,
-                price,
-                created_at,
-            })
+                products.push({
+                    name,
+                    description,
+                    price,
+                    created_at,
+                    category
+                });
+            }
         }
 
+        // Sauvegarder les produits
         await Product.save(products);
-        console.log("✅ Categories created successfully!");
+        console.log("✅ Products created successfully!");
     } catch (error) {
         console.error("❌ Error while creating products:", error);
     }

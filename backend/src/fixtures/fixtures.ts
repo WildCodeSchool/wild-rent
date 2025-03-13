@@ -88,10 +88,10 @@ async function createCategories() {
         ];
 
         const categoryImages = [
-            'muntain.jpg',
+            'muntain.jpeg',
             'watersport.webp',
-            'bike.png',
-            'hiking.png',
+            'bike.jpeg',
+            'hiking.jpeg',
             'camping.avif'
         ];
 

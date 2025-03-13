@@ -29,4 +29,14 @@ async function createUsers() {
     await User.save(users);
 }
 
+async function createCategories() {
+    const categories = [];
+
+    for (let i = 0; i < 5; i++) {
+        categories.push({
+            
+        })
+    }
+}
+ 
 createUsers();

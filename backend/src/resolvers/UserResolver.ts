@@ -51,7 +51,7 @@ export class UserResolver {
 
     (async function () {
       const { data, error } = await resend.emails.send({
-        from: "whatever@test.anniec.eu",
+        from: "wild-rent@test.anniec.eu",
         to: [new_user_data.email],
         subject: "Verify Email",
         html: `

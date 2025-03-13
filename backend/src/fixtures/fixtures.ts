@@ -19,9 +19,9 @@ async function createFixtures() {
 
         // Génère la même graine pour que le groupe travaille avec les mêmes données
         faker.seed(4);
+        await createAddress();
         await createUsers();
         await createCategories();
-        await createAddress();
         await createProducts();
 
         console.log("🎉 Fixtures created successfully!");
@@ -38,11 +38,16 @@ async function createUsers() {
         const users = [];
 
         // Génère un nombre aléatoire pour le numéro de téléphone
-        function getRandomSixDigit() {
-            return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+        function getRandomEightDigit() {
+            return Math.floor(Math.random() * (99999999 - 10000000 + 1)) + 10000000;
         }
 
         // Création d'un utilisateur par défaut
+        const defaultAddress = await Address.findOne({ where: { id: 1 } });
+
+        if (!defaultAddress) {
+            throw new Error('Adresse par défaut non trouvée');
+        }
         users.push({
             first_name: 'Jon',
             role: 'ADMIN',
@@ -50,20 +55,25 @@ async function createUsers() {
             email: 'jonsnow@wild-rent.com',
             hashed_password: await argon2.hash('password'),
             phone_number: '+33636656565',
-            created_at: new Date()
+            created_at: new Date(),
+            address: defaultAddress,
         });
 
-        for (let i = 0; i < 30; i++) {
-            let randomSixDigit = getRandomSixDigit();
+        for (let i = 1; i < 31; i++) {
+            let randomEightDigit = getRandomEightDigit();
 
             const first_name = faker.person.firstName();
             const last_name = faker.person.lastName();
             const full_name = first_name + last_name;
-            const phone_number = '+336' + randomSixDigit;
+            const phone_number = '+336' + randomEightDigit;
             const email = `${normalizeString(full_name)}@wild-rent.com`;
             const hashed_password = await argon2.hash('password');
             const created_at = new Date();
-            const addressId = i;
+            const userAddress = await Address.findOne({ where: { id: i + 1 } });
+
+            if (!userAddress) {
+                throw new Error(`Adresse manquante pour l'utilisateur ${full_name}`);
+            }
 
             users.push({
                 first_name,
@@ -72,7 +82,7 @@ async function createUsers() {
                 phone_number,
                 hashed_password,
                 created_at,
-                addressId
+                address: userAddress,
             });
         }
 
@@ -86,7 +96,6 @@ async function createUsers() {
 async function createAddress() {
     try {
         const addresses = [];
-
         for (let i = 0; i < 31; i++) {
             const street = faker.number.int({ min: 2, max: 50 }) + ' ' + faker.location.street();
             const city = faker.location.city();

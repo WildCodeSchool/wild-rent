@@ -24,5 +24,5 @@ test("test click article and select dates", async ({ page }) => {
 
 test("add to basket", async ({ page }) => {
   await page.goto("http://localhost:7000/produit/2");
-  await page.pause();
+  // await page.pause();
 });

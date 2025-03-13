@@ -20,7 +20,7 @@ async function createFixtures() {
 
         // Génère la même graine pour que le groupe travaille avec les mêmes données
         faker.seed(4);
-        await createAddress();
+        await createAddresses();
         await createUsers();
         await createCategories();
         await createProducts();
@@ -100,7 +100,7 @@ async function createUsers() {
     }
 }
 
-async function createAddress() {
+async function createAddresses() {
     try {
         const addresses = [];
         for (let i = 0; i < 31; i++) {
@@ -109,14 +109,15 @@ async function createAddress() {
             const country = 'France';
             const zipcode = faker.location.zipCode();
 
-            addresses.push({
+            addresses.push(Address.create({
                 street,
                 city,
                 country,
                 zipcode,
-            });
+            }));
         }
 
+        // Sauvegarde en une seule requête SQL
         await Address.save(addresses);
         console.log("✅ Addresses created successfully!");
     } catch (error) {

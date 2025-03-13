@@ -19,8 +19,8 @@ function CategoryCarousel({ title, id }: categoryProps) {
       <div className="flex w-full justify-between px-4">
         <div className="font-bold font-title text-xl mb-4">{title}</div>
         <Link
-          to={`produits/categorie/${title}`}
-          className="text-body font-semibold text-green border-1 text-center self-center px-3 py-2 rounded-md border-gray-200 hover:bg-green/20"
+          to={`products/category/${title}`}
+          className="hover:decoration-1 text-body font-semibold text-gray-600"
         >
           Voir tous les articles
         </Link>

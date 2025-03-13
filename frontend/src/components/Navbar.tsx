@@ -13,7 +13,7 @@ const Navbar = () => {
         {data.getAllCategories.map((category) => (
           <Link
             key={category.id}
-            to={`/produits/categorie/${normalizeString(category.title)}`}
+            to={`/products/category/${normalizeString(category.title)}`}
             className="text-white font-bold hover:underline hidden sm:flex gap-x-6"
           >
             {category.title}
@@ -34,7 +34,7 @@ const Navbar = () => {
             />
             <button className="cursor-pointer">
               <img
-                src="/assets/images/loupe.png"
+                src="/assets/images/icons/loupe.png"
                 alt="loupe"
                 className="w-5 h-5 mr-3"
               />

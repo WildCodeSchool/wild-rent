@@ -2,7 +2,7 @@ import { fakerFR as faker } from '@faker-js/faker';
 import { dataSource } from "../config/db";
 import * as argon2 from "argon2";
 import { User } from '../entities/User';
-
+import { Category } from '../entities/Category';
 
 async function createUsers() {
     await dataSource.initialize();
@@ -42,13 +42,26 @@ async function createUsers() {
 }
 
 async function createCategories() {
+    await dataSource.initialize();
+
     const categories = [];
 
-    for (let i = 0; i < 5; i++) {
-        categories.push({
+    const categoryTitle = [
+        'Sport d\'hiver',
+        'Sport nautique',
+        'VTT / Vélo',
+        'Randonnée',
+        'Camping'
+    ];
 
+    categoryTitle.forEach((el) => {
+        categories.push({
+            
         })
-    }
+    })
+
+    await Category.save(categories);
+
 }
 
 createUsers();

@@ -1,0 +1,69 @@
+import { test, expect } from "@playwright/test";
+import axios from "axios";
+import "dotenv/config";
+
+const baseUrl = process.env.LOCAL
+  ? "http://localhost:7000"
+  : "http://api_gateway/";
+
+const API_KEY = process.env.TEST_MAIL_API_KEY
+const namespace = process.env.TEST_MAIL_NAMESPACE
+
+test("register and login", async ({ page }) => {
+
+    //Register user with testmail account adress:
+    await page.goto(baseUrl);
+    await page.getByRole('link', { name: 'user icon Connexion' }).click();
+    await page.getByRole('link', { name: 'Inscrivez-vous ici' }).click();
+    await page.getByRole('textbox', { name: 'Prénom' }).click();
+    await page.getByRole('textbox', { name: 'Prénom' }).fill('Test');
+    await page.getByRole('textbox', { name: 'Nom de famille' }).click();
+    await page.getByRole('textbox', { name: 'Nom de famille' }).fill('Test');
+    await page.getByRole('textbox', { name: 'Email' }).click();
+    await page.getByRole('textbox', { name: 'Email' }).fill(`${namespace}.test@inbox.testmail.app`);
+    await page.getByRole('textbox', { name: 'Numéro de téléphone' }).click();
+    await page.getByRole('textbox', { name: 'Numéro de téléphone' }).fill('066666666');
+    await page.getByRole('textbox', { name: 'Mot de passe' }).click();
+    await page.getByRole('textbox', { name: 'Mot de passe' }).fill('testpassword');
+    await page.getByRole('button', { name: 'S\'inscrire' }).click();
+  
+    await expect(
+        page.getByText('Consultez vos emails afin de')
+      ).toBeVisible();
+
+    // Retrieve the last email sent to the testmail adress:
+    let link = ""
+    const res = await axios.get('https://api.testmail.app/api/json', {
+        params: {
+                apikey: API_KEY,
+                namespace: namespace,
+                livequery: 'true', 
+                timestamp_from: Date.now()
+                }
+        })
+    //Extract the link from the text within the email:
+    if(res.data.emails && res.data.emails.length > 0){
+        const email = res.data.emails[0]
+        link = email.text.split("\n")[2]
+    }
+    //Navigate to link and validate
+    await page.goto(link);
+    await page.getByRole('button', { name: 'Créer votre compte' }).click();
+
+    await expect(
+        page.getByText('Votre compte a été créé avec')
+      ).toBeVisible();
+
+    //Login user with registered details
+    await page.getByRole('link', { name: 'user icon Connexion' }).click();
+    await page.getByRole('textbox', { name: 'Email' }).click();
+    await page.getByRole('textbox', { name: 'Email' }).fill(`${namespace}.test@inbox.testmail.app`);
+    await page.getByRole('textbox', { name: 'Mot de passe' }).click();
+    await page.getByRole('textbox', { name: 'Mot de passe' }).fill('testpassword');
+    await page.getByRole('button', { name: 'Se connecter' }).click();
+
+    await expect(
+        page.getByRole("link", { name: "user icon Mon compte" })
+      ).toBeVisible();
+  
+  });

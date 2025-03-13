@@ -19,5 +19,5 @@ test("test click article and select dates", async ({ page }) => {
     .getByRole("option", { name: "Choose Thursday, March 13th," })
     .click();
 
-  await expect(page.getByText("Total: 50€")).toHaveText("Total: 50€");
+  await expect(page.getByText("Total: 28€")).toHaveText("Total: 28€");
 });

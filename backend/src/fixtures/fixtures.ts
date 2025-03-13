@@ -45,7 +45,7 @@ async function createUsers() {
             last_name: 'Snow',
             email: 'jonsnow@wild-rent.com',
             hashed_password: await argon2.hash('password'),
-            phone_number: '0606060606',
+            phone_number: '+33636656565',
             created_at: new Date()
         });
 

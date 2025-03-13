@@ -5,9 +5,9 @@ test("login", async ({ page }) => {
 
   await page
     .getByRole("textbox", { name: "Email" })
-    .fill("laeptitchat29@gmail.com");
+    .fill("anniecroteauc@gmail.com");
 
-  await page.getByRole("textbox", { name: "Mot de passe" }).fill("test");
+  await page.getByRole("textbox", { name: "Mot de passe" }).fill("password");
 
   await page.getByRole("button", { name: "Se connecter" }).click();
 

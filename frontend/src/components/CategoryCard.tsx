@@ -10,7 +10,7 @@ const imageBasePath = "/assets/images/category/"
 
 function CategoryCard({ title, image }: categoryProps) {
   return (
-    <Link to={`products/categgory/${title}`} className="drop-shadow-sm">
+    <Link to={`products/category/${title}`} className="drop-shadow-sm">
       <div className="drop-shadow-md">
         <div className="relative z-10 w-[280px] overflow-hidden p-2 px-4 py-6 text-center rounded-md font-title font-semibold text-xl">
           <img

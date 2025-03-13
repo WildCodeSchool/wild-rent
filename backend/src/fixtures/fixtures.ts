@@ -4,6 +4,7 @@ import * as argon2 from "argon2";
 import { User } from '../entities/User';
 import { Category } from '../entities/Category';
 import { normalizeString } from "../assets/utils";
+import { Product } from '../entities/Product';
 import { Address } from '../entities/Address';
 
 async function createFixtures() {
@@ -21,6 +22,7 @@ async function createFixtures() {
         await createUsers();
         await createCategories();
         await createAddress();
+        await createProducts();
 
         console.log("🎉 Fixtures created successfully!");
     } catch (error) {
@@ -104,6 +106,90 @@ async function createAddress() {
     } catch (error) {
         console.error("❌ Error while creating addresses:", error);
     }
+}
+
+async function createProducts() {
+    try {
+        const products = [];
+
+        // Produits lié à la catégorie sport d'hiver
+        for (let i = 0; i < 10; i++) {
+            const name = 'test';
+            const price = faker.number.int({ min: 15, max: 50 });
+            const description = faker.lorem.lines();
+            const created_at = new Date();
+
+            products.push({
+                name,
+                description,
+                price,
+                created_at,
+            })
+        }
+        // Produits lié à la catégorie sport nautique
+        for (let i = 0; i < 10; i++) {
+            const name = 'test';
+            const price = faker.number.int({ min: 10, max: 40 });
+            const description = faker.lorem.lines();
+            const created_at = new Date();
+
+            products.push({
+                name,
+                description,
+                price,
+                created_at,
+            })
+        }
+        // Produits lié à la catégorie VTT / Vélo
+        for (let i = 0; i < 10; i++) {
+            const name = 'test';
+            const price = faker.number.int({ min: 10, max: 35 });
+            const description = faker.lorem.lines();
+            const created_at = new Date();
+
+            products.push({
+                name,
+                description,
+                price,
+                created_at,
+            })
+        }
+        // Produits lié à la catégorie randonnée
+        for (let i = 0; i < 10; i++) {
+            const name = 'test';
+            const price = faker.number.int({ min: 5, max: 30 });
+            const description = faker.lorem.lines();
+            const created_at = new Date();
+
+            products.push({
+                name,
+                description,
+                price,
+                created_at,
+            })
+        }
+        // Produits lié à la catégorie camping
+        for (let i = 0; i < 10; i++) {
+            const name = 'test';
+            const price = faker.number.int({ min: 5, max: 25 });
+            const description = faker.lorem.lines();
+            const created_at = new Date();
+
+            products.push({
+                name,
+                description,
+                price,
+                created_at,
+            })
+        }
+
+        await Product.save(products);
+        console.log("✅ Categories created successfully!");
+    } catch (error) {
+        console.error("❌ Error while creating products:", error);
+    }
+}
+
 async function createCategories() {
     try {
         const categoryTitles = [

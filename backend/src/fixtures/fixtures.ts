@@ -6,7 +6,7 @@ import { Category } from '../entities/Category';
 import { normalizeString } from "../assets/utils";
 import { Product } from '../entities/Product';
 import { Address } from '../entities/Address';
-// import { Picture } from '../entities/Picture';
+import { Picture } from '../entities/Picture';
 
 async function createFixtures() {
     try {
@@ -134,52 +134,70 @@ async function getCategoryByTitle(title: string) {
 
 async function createProducts() {
     try {
-        const products = [];
+        const products: Product[] = [];
+        const pictures: Picture[] = [];
 
-        const categoriesData = [
-            { title: 'Sport d\'hiver', name: 'Ski', count: 3, price: 25 },
-            { title: 'Sport d\'hiver', name: 'Snowboard', count: 3, price: 30 },
-            { title: 'Sport d\'hiver', name: 'Chaussures de ski', count: 1, price: 8 },
-            { title: 'Sport d\'hiver', name: 'Chaussures de snow', count: 1, price: 8 },
-            { title: 'Sport d\'hiver', name: 'Gants', count: 3, price: 5 },
-            { title: 'Sport nautique', name: 'Planche de surf', count: 5, price: 40 },
-            { title: 'Sport nautique', name: 'Bodyboard', count: 3, price: 15 },
-            { title: 'Sport nautique', name: 'Bouée', count: 1, price: 8 },
-            { title: 'VTT / Vélo', name: 'Vélo éléctrique', count: 2, price: 20 },
-            { title: 'VTT / Vélo', name: 'VTT', count: 3, price: 35 },
-            { title: 'VTT / Vélo', name: 'Casque', count: 2, price: 5 },
-            { title: 'Randonnée', name: 'Chaussures', count: 3, price: 12 },
-            { title: 'Randonnée', name: 'Bâtons', count: 2, price: 6 },
-            { title: 'Randonnée', name: 'Sac à dos', count: 3, price: 8 },
-            { title: 'Camping', name: 'Tente', count: 3, price: 25 },
-            { title: 'Camping', name: 'Réchaud', count: 1, price: 10 },
-            { title: 'Camping', name: 'Bouteille de gaz', count: 2, price: 4 }
+        const productData = [
+            { title: 'Sport d\'hiver', name: 'Ski enfant', urls: ['ski-enfant1.png', 'ski-enfant2.png', 'ski-enfant3.png'], price: 15 },
+            { title: 'Sport d\'hiver', name: 'Ski junior', urls: ['ski-junior1.png', 'ski-junior2.png', 'ski-junior3.png'], price: 20 },
+            { title: 'Sport d\'hiver', name: 'Ski adulte', urls: ['ski-adulte1.png', 'ski-adulte2.png', 'ski-adulte3.png'], price: 25 },
+            { title: 'Sport d\'hiver', name: 'Snowboard', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 30 },
+            { title: 'Sport d\'hiver', name: 'Chaussures de ski', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 8 },
+            { title: 'Sport d\'hiver', name: 'Chaussures de snow', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 8 },
+            { title: 'Sport d\'hiver', name: 'Gants', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 5 },
+            { title: 'Sport nautique', name: 'Planche de surf', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 40 },
+            { title: 'Sport nautique', name: 'Bodyboard', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 15 },
+            { title: 'Sport nautique', name: 'Bouée', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 8 },
+            { title: 'VTT / Vélo', name: 'Vélo éléctrique', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 20 },
+            { title: 'VTT / Vélo', name: 'VTT', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 35 },
+            { title: 'VTT / Vélo', name: 'Casque', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 5 },
+            { title: 'Randonnée', name: 'Chaussures', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 12 },
+            { title: 'Randonnée', name: 'Bâtons', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 6 },
+            { title: 'Randonnée', name: 'Sac à dos', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 8 },
+            { title: 'Camping', name: 'Tente', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 25 },
+            { title: 'Camping', name: 'Réchaud', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 10 },
+            { title: 'Camping', name: 'Bouteille de gaz', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 4 }
         ];
 
-        // Créer les produits pour chaque catégorie
-        for (const { title, count, name, price } of categoriesData) {
+        for (const { title, name, price, urls } of productData) {
             const category = await getCategoryByTitle(title);
+            const description = faker.lorem.sentence();
+            const created_at = new Date();
 
-            for (let i = 0; i < count; i++) {
-                const description = faker.lorem.lines();
-                const created_at = new Date();
+            // On utilise 'create' car on a besoin de créer une instance de produit AVANT de pouvoir lui associer les images
+            // Précédemment on sauvegardait en DB la fin, mais, de ce cas précis nous avons besoin de créer le produit afin de pouvoir lui associer une image
+            const product = Product.create({
+                name,
+                description,
+                price,
+                created_at,
+                category
+            });
 
-                products.push({
-                    name,
-                    description,
-                    price,
-                    created_at,
-                    category
-                })
+            products.push(product);
+
+            // On est obligé de faire cette vérification sinon on a une erreur
+            // -> error: null value in column "url" of relation "picture" violates not-null constraint
+            // On boucle ici sur le tableau urls de chaque objet de ProductData et on les associe au produit courant
+            if (urls) {
+                urls.forEach(url => {
+                    const picture = Picture.create({
+                        url,
+                        product
+                    });
+                    pictures.push(picture);
+                });
             }
         }
 
         await Product.save(products);
+        await Picture.save(pictures);
         console.log("✅ Products created successfully!");
     } catch (error) {
         console.error("❌ Error while creating products:", error);
     }
 }
+
 
 async function createCategories() {
     try {

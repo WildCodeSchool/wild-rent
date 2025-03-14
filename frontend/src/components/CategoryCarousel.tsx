@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { categoryProps } from "./CategoryCard";
 import { useGetProductByCategoryQuery } from "../generated/graphql-types";
-import Carousel from "./Carousel/Carousel";
+import Carousel from "./Carousel";
 import ItemCard from "./ItemCard";
 
 function CategoryCarousel({ title, id }: categoryProps) {

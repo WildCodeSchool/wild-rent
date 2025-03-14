@@ -5,30 +5,35 @@ import {
   IoIosArrowDropleftCircle,
   IoIosArrowDroprightCircle,
 } from "react-icons/io";
-import { DotButton, useDotButton } from "./DotButtons";
 
 const Carousel = ({ children }: { children: ReactNode }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start" });
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
 
-  const { selectedIndex, scrollSnaps, onDotButtonClick } =
-    useDotButton(emblaApi);
-
-  // Function to check if possible to scroll in each direction and set state of arrow button accordingly. UseCallBack to memoise function and avoid unnecessary re-renders.
+  // La fonction onSelect vérifie s'il est possible de scroller à une vue précédente ou suivante et quel vue du caroussel est visible. On set les states définis plus hauts avec les informations recueillies de l'emblaApi. UseCallBack "memoise" la fonction et évite les re-renders non-nécessaires.
   const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
     setPrevBtnDisabled(!emblaApi.canScrollPrev());
     setNextBtnDisabled(!emblaApi.canScrollNext());
+    setSelectedIndex(emblaApi.selectedScrollSnap());
   }, []);
 
-  // When component mounts check if caroussel is scrollable and set up event listener to re-do the check evey time the user interacts with the carousel
+  // La fonction onInit vérifie quel est le nombre de vues possibles du caroussel. On set le state défini plus hauts avec l'information recueillie de l'emblaApi.
+  const onInit = useCallback((emblaApi: EmblaCarouselType) => {
+    setScrollSnaps(emblaApi.scrollSnapList());
+  }, []);
+
+  // On lance les 2 fonctions précédentes au montage du composant. emblaApi.on créé un "listener" qui lance une fonction à chaque fois qu'un événement survient. Par exemple on("select", onSelect) lance la fonction onSelect à chaque fois qu'un utilisateur sélecte une slide. 
   useEffect(() => {
     if (!emblaApi) return;
+    onInit(emblaApi);
     onSelect(emblaApi);
-    emblaApi.on("reInit", onSelect).on("select", onSelect);
-  }, [emblaApi, onSelect]);
+    emblaApi.on("reInit", onInit).on("reInit", onSelect).on("select", onSelect);
+  }, [emblaApi, onInit, onSelect]);
 
-  // Functions to scroll the carousel left or right using embla API methods
+  // Fonctions pour passer à la vue précédente ou suivante utilisant les méthodes scrollPrev et scrollNext de l'emblaApi.
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
   }, [emblaApi]);
@@ -36,6 +41,15 @@ const Carousel = ({ children }: { children: ReactNode }) => {
   const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
+
+   // Fonctions pour passer à la vue sélectionnée utilisant la méthode scrollTo de l'emblaApi.
+  const onDotButtonClick = useCallback(
+    (index: number) => {
+      if (!emblaApi) return;
+      emblaApi.scrollTo(index);
+    },
+    [emblaApi]
+  );
 
   return (
     <section className="embla w-full flex flex-col">
@@ -53,7 +67,8 @@ const Carousel = ({ children }: { children: ReactNode }) => {
         </button>
         <div className="flex px-2 gap-2">
           {scrollSnaps.map((_, index) => (
-            <DotButton
+            <button
+              type="button"
               key={index}
               onClick={() => onDotButtonClick(index)}
               className={`w-2 lg:w-2.5 lg:h-2.5 h-2 rounded-full transition-all duration-300 ease-out  ${

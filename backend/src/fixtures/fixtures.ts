@@ -138,23 +138,23 @@ async function createProducts() {
         const products = [];
 
         const categoriesData = [
-            { title: 'Sport d\'hiver', name: 'Ski', count: 20, price: 25 },
-            { title: 'Sport d\'hiver', name: 'Snowboard', count: 15, price: 30 },
-            { title: 'Sport d\'hiver', name: 'Chaussures de ski', count: 30, price: 8 },
-            { title: 'Sport d\'hiver', name: 'Chaussures de snow', count: 30, price: 8 },
-            { title: 'Sport d\'hiver', name: 'Gants', count: 50, price: 5 },
-            { title: 'Sport nautique', name: 'Planche de surf', count: 30, price: 40 },
-            { title: 'Sport nautique', name: 'Bodyboard', count: 25, price: 15 },
-            { title: 'Sport nautique', name: 'Bouée', count: 40, price: 8 },
-            { title: 'VTT / Vélo', name: 'Vélo de ville', count: 30, price: 20 },
-            { title: 'VTT / Vélo', name: 'VTT', count: 10, price: 35 },
-            { title: 'VTT / Vélo', name: 'Casque', count: 50, price: 5 },
-            { title: 'Randonnée', name: 'Chaussures', count: 30, price: 12 },
-            { title: 'Randonnée', name: 'Bâtons', count: 20, price: 6 },
-            { title: 'Randonnée', name: 'Sac à dos', count: 20, price: 8 },
-            { title: 'Camping', name: 'Tente', count: 25, price: 25 },
-            { title: 'Camping', name: 'Réchaud', count: 15, price: 10 },
-            { title: 'Camping', name: 'Bouteille de gaz', count: 15, price: 4 }
+            { title: 'Sport d\'hiver', name: 'Ski', count: 3, price: 25 },
+            { title: 'Sport d\'hiver', name: 'Snowboard', count: 3, price: 30 },
+            { title: 'Sport d\'hiver', name: 'Chaussures de ski', count: 1, price: 8 },
+            { title: 'Sport d\'hiver', name: 'Chaussures de snow', count: 1, price: 8 },
+            { title: 'Sport d\'hiver', name: 'Gants', count: 3, price: 5 },
+            { title: 'Sport nautique', name: 'Planche de surf', count: 5, price: 40 },
+            { title: 'Sport nautique', name: 'Bodyboard', count: 3, price: 15 },
+            { title: 'Sport nautique', name: 'Bouée', count: 1, price: 8 },
+            { title: 'VTT / Vélo', name: 'Vélo éléctrique', count: 2, price: 20 },
+            { title: 'VTT / Vélo', name: 'VTT', count: 3, price: 35 },
+            { title: 'VTT / Vélo', name: 'Casque', count: 2, price: 5 },
+            { title: 'Randonnée', name: 'Chaussures', count: 3, price: 12 },
+            { title: 'Randonnée', name: 'Bâtons', count: 2, price: 6 },
+            { title: 'Randonnée', name: 'Sac à dos', count: 3, price: 8 },
+            { title: 'Camping', name: 'Tente', count: 3, price: 25 },
+            { title: 'Camping', name: 'Réchaud', count: 1, price: 10 },
+            { title: 'Camping', name: 'Bouteille de gaz', count: 2, price: 4 }
         ];
 
         // Créer les produits pour chaque catégorie

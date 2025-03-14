@@ -26,6 +26,7 @@ const ProductDetails = () => {
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [duration, setDuration] = useState<number>(0);
   const [selectedSize, setSelectedSize] = useState<string>("");
+  const [activeImage, setActiveImage] = useState<string | null>(null);
 
   const products = data?.getProductById;
 
@@ -37,23 +38,29 @@ const ProductDetails = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading product</p>;
+  const mainImage = activeImage || products?.pictures[0].url;
 
   return (
     <div className="flex flex-col md:flex-row items-start gap-10 p-10 bg-white shadow-md rounded-lg max-w-4xl mx-auto">
       {/* Image Section */}
       <div className="flex flex-col gap-4">
+        {/* Image principale */}
         <img
-          src={products?.pictures[0].url}
+          src={mainImage}
           alt={products?.name}
           className="w-64 h-64 object-cover rounded-lg"
         />
+        {/* Miniatures */}
         <div className="flex gap-2">
           {products?.pictures.slice(0, 4).map((pic: any, index: number) => (
             <img
               key={index}
               src={pic.url}
               alt="Preview"
-              className="w-14 h-14 object-cover rounded-md border"
+              className={`w-20 h-20 rounded-lg cursor-pointer border ${
+                pic.url === mainImage ? "border-blue-500" : "border-transparent"
+              }`}
+              onClick={() => setActiveImage(pic.url)}
             />
           ))}
         </div>

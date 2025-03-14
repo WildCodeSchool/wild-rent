@@ -6,7 +6,13 @@ const Header = () => {
   const { loading, error, data } = useGetUserInfoQuery();
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
+  if (error)
+    return (
+      <>
+        <h2>An error occured</h2>
+        <p>Error : {error.message}</p>
+      </>
+    );
   if (data) {
     return (
       <>

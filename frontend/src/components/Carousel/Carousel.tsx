@@ -5,11 +5,15 @@ import {
   IoIosArrowDropleftCircle,
   IoIosArrowDroprightCircle,
 } from "react-icons/io";
+import { DotButton, useDotButton } from "./DotButtons";
 
 const Carousel = ({ children }: { children: ReactNode }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start" });
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
+
+  const { selectedIndex, scrollSnaps, onDotButtonClick } =
+    useDotButton(emblaApi);
 
   // Function to check if possible to scroll in each direction and set state of arrow button accordingly. UseCallBack to memoise function and avoid unnecessary re-renders.
   const onSelect = useCallback((emblaApi: EmblaCarouselType) => {
@@ -47,6 +51,17 @@ const Carousel = ({ children }: { children: ReactNode }) => {
         >
           <IoIosArrowDropleftCircle />
         </button>
+        <div className="flex px-2 gap-2">
+          {scrollSnaps.map((_, index) => (
+            <DotButton
+              key={index}
+              onClick={() => onDotButtonClick(index)}
+              className={`w-2 lg:w-2.5 lg:h-2.5 h-2 rounded-full transition-all duration-300 ease-out  ${
+                index === selectedIndex ? " bg-green w-4 lg:w-4" : "bg-gray-300"
+              }`}
+            />
+          ))}
+        </div>
         <button
           className="embla__next cursor-pointer disabled:cursor-default text-green pointer disabled:text-green/20 hover:text-green/50 text-3xl lg:text-4xl pointer"
           onClick={scrollNext}

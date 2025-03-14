@@ -9,23 +9,31 @@ const ItemCard = ({ product }: { product: ProductType }) => {
       className="embla__slide flex-none flex basis-1/4 pl-4 p-2"
       key={product.id}
     >
-      <Link to={`/produit/${product.id}`}>
-        <div className=" relative aspect-square rounded-md group shadow-sm overflow-hidden">
-          <div className="w-full h-full flex flex-col items-center ">
+      <div className=" relative rounded-md group shadow-md overflow-hidden hover:-translate-y-2 transition-transform duration-300 ease-out">
+        <div className="w-full flex flex-col items-center ">
+          <div className="w-full aspect-square relative">
             <img
               src={product.pictures[0].url}
-              className=" object-contain w-full h-3/4 py-2 "
+              className=" object-contain p-4 aspect-square"
             />
-            <div className="h-1/4 w-full flex flex-col items-center">
-              <div className="text-green font-bold text-lg">{product.name}</div>
+            <div className="absolute inset-2 bg-black/10"></div>
+          </div>
+          <div className="w-full flex flex-col p-2 pt-0">
+            <div className="text-green font-bold text-lg">{product.name}</div>
+            <div className="w-full flex justify-between items-center mt-1">
               <div className="text-gray-500 font-bold text-lg">
                 {product.price} €
               </div>
+              <Link
+                to={`/produit/${product.id}`}
+                className="bg-green py-1 px-3 text-white rounded-md hover:bg-green/70"
+              >
+                Voir
+              </Link>
             </div>
           </div>
-          <div className="absolute transition-all duration-300 ease-in-out bg-black/0 inset-0 z-10 group-hover:bg-black/20 cursor-pointer"></div>
         </div>
-      </Link>
+      </div>
     </div>
   );
 };

@@ -1,9 +1,18 @@
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useGetUserInfoQuery } from "../generated/graphql-types";
+import { useEffect, useState } from "react";
 
 const Header = () => {
   const { loading, error, data } = useGetUserInfoQuery();
+  const [basketCounter, setBasketCounter] = useState(0);
+
+  useEffect(() => {
+    const basket = JSON.parse(localStorage.getItem("react-use-cart") || "{}");
+    if (basket.items && basket.items.length > 0) {
+      setBasketCounter(basket.totalItems);
+    }
+  }, []);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
@@ -69,8 +78,9 @@ const Header = () => {
                 alt="cart"
                 className="w-6 h-6 md:w-8 md:h-8"
               />
+
               <span className="hidden md:block text-sm text-green">
-                Mon panier
+                Mon panier {basketCounter ? basketCounter : ""}
               </span>
             </Link>
           </div>

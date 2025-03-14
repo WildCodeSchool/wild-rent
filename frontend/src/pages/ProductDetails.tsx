@@ -32,7 +32,6 @@ const ProductDetails = () => {
 
   const handleDuration = (startDate: Date | null, endDate: Date | null) => {
     const newDuration = calculateDuration(startDate, endDate);
-    console.log("coucou", newDuration);
     setDuration(newDuration);
   };
 

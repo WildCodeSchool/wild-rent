@@ -143,7 +143,7 @@ const ProductDetails = () => {
                 }
 
                 const totalPrice = duration * (products?.price || 0);
-                addItemToCart(products, { startDate }, { endDate }, totalPrice);
+                addItemToCart(products, totalPrice, startDate, endDate);
               }}
               className="w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
             >

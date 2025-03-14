@@ -4,9 +4,9 @@ export const cartContext = createContext({
   items: [],
   addItemToCart: (
     product: any,
+    totalPrice: number,
     startDate: any,
-    endDate: any,
-    totalPrice: number
+    endDate: any
   ) => {},
 });
 
@@ -47,15 +47,19 @@ export const CartContextProvider = ({ children }: any) => {
 
   const handleToAddItem = (
     product: any,
+    totalPrice: number,
     startDate: any,
-    endDate: any,
-    totalPrice: number
+    endDate: any
   ) => {
-    cartDispatch({
-      type: "ADD_ITEM",
-      payload: product,
+    const productWithTotalPrice = {
+      ...product,
+      totalPrice,
       startDate,
       endDate,
+    };
+    cartDispatch({
+      type: "ADD_ITEM",
+      payload: productWithTotalPrice,
       totalPrice,
     });
   };

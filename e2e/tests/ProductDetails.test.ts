@@ -21,6 +21,6 @@ test("test click article and select dates", async ({ page }) => {
   await expect(page.getByText("Total: 45€")).toHaveText("Total: 45€");
 });
 
-test("add to basket", async ({ page }) => {
+test("add to cart", async ({ page }) => {
   await page.goto("http://localhost:7000/produit/2");
 });

@@ -3,7 +3,7 @@ import { useGetProductByIdQuery } from "../generated/graphql-types";
 import { useContext, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { basketContext } from "../context/BasketContext";
+import { cartContext } from "../context/CartContext";
 
 export const calculateDuration = (start: Date | null, end: Date | null) => {
   if (start && end) {
@@ -16,7 +16,7 @@ export const calculateDuration = (start: Date | null, end: Date | null) => {
 
 const ProductDetails = () => {
   const { id }: any = useParams();
-  const { addItemToBasket } = useContext(basketContext);
+  const { addItemToCart } = useContext(cartContext);
 
   const { loading, error, data } = useGetProductByIdQuery({
     variables: { getProductByIdId: parseInt(id) },
@@ -134,7 +134,17 @@ const ProductDetails = () => {
             </div>
 
             <button
-              onClick={() => addItemToBasket(products)}
+              onClick={() => {
+                if (!startDate || !endDate || !duration) {
+                  alert(
+                    "Veuillez sélectionner des dates et une durée avant d'ajouter au panier."
+                  );
+                  return;
+                }
+
+                const totalPrice = duration * (products?.price || 0);
+                addItemToCart(products, { startDate }, { endDate }, totalPrice);
+              }}
               className="w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
             >
               Ajouter au panier

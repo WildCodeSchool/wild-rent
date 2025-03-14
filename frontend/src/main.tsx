@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
-import { BasketContextProvider } from "./context/BasketContext.tsx";
+import { CartContextProvider } from "./context/CartContext";
 
 const client = new ApolloClient({
   uri: "/api",
@@ -13,12 +13,12 @@ const client = new ApolloClient({
 
 createRoot(document.getElementById("root")!).render(
   <ApolloProvider client={client}>
-    <BasketContextProvider>
+    <CartContextProvider>
       <StrictMode>
         <BrowserRouter>
           <App />
         </BrowserRouter>
       </StrictMode>
-    </BasketContextProvider>
+    </CartContextProvider>
   </ApolloProvider>
 );

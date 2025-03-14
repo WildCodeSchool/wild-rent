@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useGetUserInfoQuery } from "../generated/graphql-types";
 import { useContext } from "react";
-import { basketContext } from "../context/BasketContext";
+import { cartContext } from "../context/CartContext";
 
 const Header = () => {
   const { loading, error, data } = useGetUserInfoQuery();
-  const { items } = useContext(basketContext);
+  const { items } = useContext(cartContext);
 
   if (loading) return <p>Loading...</p>;
   if (error)

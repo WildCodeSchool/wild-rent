@@ -8,8 +8,18 @@ const cart = () => {
     <div key={index}>
       <p>Produit: {item.name}</p>
       <p>Prix total: {item.totalPrice}€</p>
-      {/*   <p>Début: {item.startDate}</p>
-      <p>Fin: {item.endDate}</p> */}
+      <p>
+        Début:{" "}
+        {item.startDate
+          ? new Date(item.startDate).toLocaleDateString()
+          : "Non défini"}
+      </p>
+      <p>
+        Fin:{" "}
+        {item.endDate
+          ? new Date(item.endDate).toLocaleDateString()
+          : "Non défini"}
+      </p>
     </div>
   ));
 };

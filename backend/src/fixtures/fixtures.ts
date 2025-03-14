@@ -109,15 +109,14 @@ async function createAddresses() {
             const country = 'France';
             const zipcode = faker.location.zipCode();
 
-            addresses.push(Address.create({
+            addresses.push({
                 street,
                 city,
                 country,
                 zipcode,
-            }));
+            });
         }
 
-        // Sauvegarde en une seule requête SQL
         await Address.save(addresses);
         console.log("✅ Addresses created successfully!");
     } catch (error) {
@@ -165,17 +164,17 @@ async function createProducts() {
                 const description = faker.lorem.lines();
                 const created_at = new Date();
 
-                const product = await Product.create({
+                products.push({
                     name,
                     description,
                     price,
                     created_at,
                     category
-                }).save();
-                products.push(product);
+                })
             }
         }
 
+        await Product.save(products);
         console.log("✅ Products created successfully!");
     } catch (error) {
         console.error("❌ Error while creating products:", error);

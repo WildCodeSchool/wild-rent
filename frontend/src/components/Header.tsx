@@ -1,18 +1,12 @@
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useGetUserInfoQuery } from "../generated/graphql-types";
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { basketContext } from "../context/BasketContext";
 
 const Header = () => {
   const { loading, error, data } = useGetUserInfoQuery();
-  const [basketCounter, setBasketCounter] = useState(0);
-
-  useEffect(() => {
-    const basket = JSON.parse(localStorage.getItem("react-use-cart") || "{}");
-    if (basket.items && basket.items.length > 0) {
-      setBasketCounter(basket.totalItems);
-    }
-  }, []);
+  const { items } = useContext(basketContext);
 
   if (loading) return <p>Loading...</p>;
   if (error)
@@ -86,7 +80,7 @@ const Header = () => {
               />
 
               <span className="hidden md:block text-sm text-green">
-                Mon panier {basketCounter ? basketCounter : ""}
+                Mon panier ({items.length})
               </span>
             </Link>
           </div>

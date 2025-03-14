@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useGetProductByIdQuery } from "../generated/graphql-types";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useCart } from "react-use-cart";
+import { basketContext } from "../context/BasketContext";
 
 export const calculateDuration = (start: Date | null, end: Date | null) => {
   if (start && end) {
@@ -16,7 +16,7 @@ export const calculateDuration = (start: Date | null, end: Date | null) => {
 
 const ProductDetails = () => {
   const { id }: any = useParams();
-  const { addItem } = useCart();
+  const { addItemToBasket } = useContext(basketContext);
 
   const { loading, error, data } = useGetProductByIdQuery({
     variables: { getProductByIdId: parseInt(id) },
@@ -134,16 +134,7 @@ const ProductDetails = () => {
             </div>
 
             <button
-              onClick={() => {
-                addItem({
-                  id: products!.id.toString(),
-                  name: products!.name,
-                  price: products!.price,
-                  duration: duration,
-                  totalPrice: duration * (products?.price || 0),
-                  size: selectedSize,
-                });
-              }}
+              onClick={() => addItemToBasket(products)}
               className="w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
             >
               Ajouter au panier

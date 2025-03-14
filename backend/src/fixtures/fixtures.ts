@@ -175,7 +175,7 @@ async function createProducts() {
         category
       });
 
-      // Sauvegarde immédiate du produit pour assurer que les images puissent lui être associées
+      // On sauvegarde les produits pour s'assurer que les images puissent être associés correctement
       await Product.save(product);
 
       // On est obligé de faire cette vérification sinon on a une erreur

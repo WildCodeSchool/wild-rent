@@ -20,3 +20,4 @@ test("test click article and select dates", async ({ page }) => {
     .click();
   await expect(page.getByText("Total: 420€")).toHaveText("Total: 420€");
 });
+

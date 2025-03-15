@@ -20,7 +20,3 @@ test("test click article and select dates", async ({ page }) => {
     .click();
   await expect(page.getByText("Total: 420€")).toHaveText("Total: 420€");
 });
-
-// test("add to cart", async ({ page }) => {
-//   await page.goto("http://localhost:7000/produit/2");
-// });

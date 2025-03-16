@@ -14,6 +14,8 @@ export const calculateDuration = (start: Date | null, end: Date | null) => {
   }
 };
 
+const imageBasePath = "/assets/images/"
+
 const ProductDetails = () => {
   const { id }: any = useParams();
   const { addItem } = useCart();
@@ -38,7 +40,7 @@ const ProductDetails = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading product</p>;
-  const mainImage = activeImage || products?.pictures[0].url;
+  const mainImage = activeImage || imageBasePath + products?.pictures[0].url;
 
   return (
     <div className="flex flex-col md:flex-row items-start gap-10 p-10 bg-white shadow-md rounded-lg max-w-4xl mx-auto">

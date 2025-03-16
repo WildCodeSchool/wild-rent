@@ -138,12 +138,12 @@ async function createProducts() {
     const pictures: Picture[] = [];
 
     const productData = [
-      { title: 'Sport d\'hiver', name: 'Ski enfant', urls: ['ski-enfant1.png', 'ski-enfant2.png', 'ski-enfant3.png'], price: 15 },
-      { title: 'Sport d\'hiver', name: 'Ski junior', urls: ['ski-junior1.png', 'ski-junior2.png', 'ski-junior3.png'], price: 20 },
-      { title: 'Sport d\'hiver', name: 'Ski adulte', urls: ['ski-adulte1.png', 'ski-adulte2.png', 'ski-adulte3.png'], price: 25 },
-      { title: 'Sport d\'hiver', name: 'Snowboard', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 30 },
-      { title: 'Sport d\'hiver', name: 'Chaussures de ski', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 8 },
-      { title: 'Sport d\'hiver', name: 'Chaussures de snow', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 8 },
+      { title: 'Sport d\'hiver', name: 'Ski blue', urls: ['products/winterSports/skiBlue1.webp', 'products/winterSports/skiBlue2.webp', 'products/winterSports/skiBlue3.webp'], price: 15 },
+      { title: 'Sport d\'hiver', name: 'Ski junior', urls: ['products/winterSports/ski-junior1.png', 'sproducts/winterSports/ki-junior2.png', 'products/winterSports/ski-junior3.png'], price: 20 },
+      { title: 'Sport d\'hiver', name: 'Ski adulte', urls: ['products/winterSports/ski-adulte1.png', 'ski-adulte2.png', 'products/winterSports/ski-adulte3.png'], price: 25 },
+      { title: 'Sport d\'hiver', name: 'Snowboard', urls: ['products/winterSports/snowboardBurton1.webp', 'products/winterSports/nowboardBurton2.webp' ,'products/winterSports/snowboardBurton4.webp'], price: 30 },
+      { title: 'Sport d\'hiver', name: 'Chaussures de ski', urls: ['products/winterSports/skiShoesBlack.webp', '', ''], price: 8 },
+      { title: 'Sport d\'hiver', name: 'Chaussures de snow', urls: ['products/winterSports/snowboardBootsNitro1.webp', 'products/winterSports/nowboardBootsNitro2.webp', 'products/winterSports/snowboardBootsNitro3.webp'], price: 8 },
       { title: 'Sport d\'hiver', name: 'Gants', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 5 },
       { title: 'Sport nautique', name: 'Planche de surf', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 40 },
       { title: 'Sport nautique', name: 'Bodyboard', urls: ['snowboard1.png', 'snowboard2.png', 'snowboard3.png'], price: 15 },

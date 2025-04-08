@@ -6,7 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node-dev --poll ./src/index.ts",
     "fixtures": "docker exec -it wild-rent-backend-1 sh -c 'cd src/fixtures && npx ts-node fixtures.ts'"
-    
   },
   "author": "",
   "license": "ISC",

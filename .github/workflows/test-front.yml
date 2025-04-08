@@ -8,5 +8,7 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+      - name: Run docker
+        run: docker compose up --build --exit-code-from=frontend
       - name: Goto frontend and run tests
-        run: cd frontend && npm install && npm run start && npm run test
+        run: cd frontend && npm run test

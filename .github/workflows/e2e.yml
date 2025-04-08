@@ -8,7 +8,9 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-      - name: Create .env
-        run: touch .env && echo 'RESEND_API_KEY = ${{secrets.SECRET_RESEND_API_KEY}}' >> .env && echo 'URL_CONFIRMATION_PAGE = ${{secrets.SECRET_URL_CONFIRMATION_PAGE}}' >> .env && echo 'JWT_TOKEN_KEY = ${{secrets.SECRET_JWT_TOKEN_KEY}}' >> .env  
+      - name: Create .env 
+        run: touch .env && echo 'RESEND_API_KEY = ${{secrets.RESEND_API_KEY}}' >> .env && echo 'URL_CONFIRMATION_PAGE = ${{secrets.URL_CONFIRMATION_PAGE}}' >> .env && echo 'JWT_TOKEN_KEY = ${{secrets.JWT_TOKEN_KEY}}' >> .env
+      - name: Create e2e .env
+        run: cd e2e && touch .env2 && echo 'TEST_MAIL_API_KEY = ${{secrets.TEST_MAIL_API_KEY}}' >> .env2 && echo 'TEST_MAIL_NAMESPACE = ${{secrets.TEST_MAIL_NAMESPACE}}' >> .env2
       - name: Launch e2e tests
         run: docker compose -f docker-compose.e2e.yml up --build --exit-code-from=e2e

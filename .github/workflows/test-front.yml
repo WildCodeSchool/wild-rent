@@ -8,7 +8,9 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+      - name: Create .env
+        run: cp .env.example .env
       - name: Run docker
-        run: docker compose up --build --exit-code-from=frontend
+        run: docker compose up --build --exit-code-from frontend
       - name: Goto frontend and run tests
         run: cd frontend && npm run test

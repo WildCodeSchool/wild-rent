@@ -1,0 +1,12 @@
+name: client-tests-workflow
+
+on: push
+
+jobs:
+  test-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Goto frontend and run tests
+        run: cd frontend && npm install && npm run test

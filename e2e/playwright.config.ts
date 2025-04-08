@@ -1,5 +1,6 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
+import { defineConfig } from '@playwright/test';
 
 /**
  * Read environment variables from file.

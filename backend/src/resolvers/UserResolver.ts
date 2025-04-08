@@ -18,10 +18,7 @@ import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
 
-const baseUrl = process.env.LOCAL
-  ? "http://localhost:7000/confirm"
-  : "http://api_gateway/confirm";
-
+const baseUrl = process.env.LOCAL ? "http://localhost:7000/confirm/" : "http://api_gateway/confirm/";
 
 @ObjectType()
 class UserInfo {

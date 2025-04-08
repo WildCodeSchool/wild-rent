@@ -1,7 +1,12 @@
 import { test, expect } from "@playwright/test";
+import "dotenv/config";
+
+const baseUrl = process.env.LOCAL
+  ? "http://localhost:7000/login"
+  : "http://api_gateway/login";
 
 test("login", async ({ page }) => {
-  await page.goto("http://localhost:7000/login");
+  await page.goto(baseUrl);
 
   await page
     .getByRole("textbox", { name: "Email" })

@@ -54,6 +54,8 @@ services:
       - 7000:80
   e2e:
     build: ./e2e
+    env_file:
+      - ./e2e/.env
     depends_on:
       - api_gateway
 volumes:

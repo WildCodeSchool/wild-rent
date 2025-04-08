@@ -67,5 +67,4 @@ test("register and login", async ({ page }) => {
   await expect(
     page.getByRole("link", { name: "user icon Mon compte" })
   ).toBeVisible();
-
 });

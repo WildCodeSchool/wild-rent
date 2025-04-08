@@ -12,3 +12,8 @@ docker compose -f docker-compose.e2e.yml up --build --exit-code-from e2e
 LOCAL=TRUE npx playwright test --headed
 LOCAL=TRUE npx playwright test --ui
 ``` 
+
+## Playwright inspector
+```bash
+npx playwright codegen
+```

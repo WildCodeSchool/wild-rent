@@ -2,9 +2,7 @@ import { test, expect } from "@playwright/test";
 import axios from "axios";
 import "dotenv/config";
 
-const baseUrl = process.env.LOCAL
-  ? "http://localhost:7000"
-  : "http://api_gateway/";
+const baseUrl = process.env.LOCAL ? "http://localhost:7000/" : "http://api_gateway/";
 
 const API_KEY = process.env.TEST_MAIL_API_KEY
 const namespace = process.env.TEST_MAIL_NAMESPACE
@@ -41,7 +39,7 @@ test("register and login", async ({ page }) => {
       timestamp_from: Date.now()
     }
   })
-
+  
   // Permet de retrouver l'URL de confirmation dans la réponse de l'objet
   if (res.data.emails && res.data.emails.length > 0) {
     const email = res.data.emails[0];

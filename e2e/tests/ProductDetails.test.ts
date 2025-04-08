@@ -1,9 +1,7 @@
 import { test, expect } from "@playwright/test";
 import "dotenv/config";
 
-const baseUrl = process.env.LOCAL
-  ? "http://localhost:7000"
-  : "http://api_gateway/";
+const baseUrl = process.env.LOCAL ? "http://localhost:7000" : "http://api_gateway/";
 
 test("test click article and select dates", async ({ page }) => {
   await page.goto(baseUrl + '/produits/7');

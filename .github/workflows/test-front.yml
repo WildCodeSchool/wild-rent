@@ -1,6 +1,6 @@
 name: client-tests-workflow
 
-on: push
+on: pull_request
 
 jobs:
   test-client:
@@ -11,6 +11,9 @@ jobs:
       - name: Create .env
         run: cp .env.example .env
       - name: Run docker
-        run: docker compose up --build --exit-code-from frontend
+        run: docker compose up --build --exit-code-from frontend && cd frontend && npm run test
       - name: Goto frontend and run tests
         run: cd frontend && npm run test
+
+        - name: Integration tests
+        run: docker-compose up --exit-code-from integrationtest integrationtest

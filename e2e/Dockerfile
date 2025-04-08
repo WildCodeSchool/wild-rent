@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/playwright:v1.51.0-noble
 
 WORKDIR /app
 
-RUN npm init -y
+COPY package.json package.json
 RUN npm install
 
 COPY playwright.config.ts /app/playwright.config.ts

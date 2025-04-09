@@ -8,6 +8,7 @@ import ProductDetails from "./pages/ProductDetails";
 import { Layout } from "./pages/Layout";
 import ConfirmEmailPage from "./pages/ConfirmEmail";
 import { ToastContainer } from "react-toastify";
+import Cart from "./pages/Cart";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           />
           <Route path="produit/:id" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
+          <Route path="panier" element={<Cart />} />
           <Route path="register" element={<Register />} />
           <Route path="confirm/:code?" element={<ConfirmEmailPage />} />
         </Route>

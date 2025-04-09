@@ -32,7 +32,7 @@ test("register and login", async ({ page }) => {
   ).toBeVisible();
 
   // Retrouve le dernier email envoyé à l'adresse testmail
-  let link = ""
+  let link = "";
   const res = await axios.get('https://api.testmail.app/api/json', {
     params: {
       apikey: API_KEY,

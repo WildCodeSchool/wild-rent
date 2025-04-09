@@ -13,7 +13,6 @@ export const AdminNavbar = () => {
         } h-screen bg-light-beige p-4 flex flex-col transition-all duration-400 shadow-md`}
       >
         <div className="flex-grow">
-          {/* Logo + Titre + Toggle */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-x-2">
               <img
@@ -35,7 +34,6 @@ export const AdminNavbar = () => {
             </button>
           </div>
 
-          {/* Liens */}
           <div className="flex flex-col gap-4 text-gray-700">
             {isOpen ? (
               <Link

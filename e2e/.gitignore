@@ -1,1 +1,4 @@
 .env
+
+./tests/Login.test.ts
+./tests/ProductDetails.test.ts

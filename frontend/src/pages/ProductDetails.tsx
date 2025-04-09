@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useGetProductByIdQuery } from "../generated/graphql-types";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useCart } from "react-use-cart";
+import { cartContext } from "../context/CartContext";
 
 export const calculateDuration = (start: Date | null, end: Date | null) => {
   if (start && end) {
@@ -16,7 +16,7 @@ export const calculateDuration = (start: Date | null, end: Date | null) => {
 
 const ProductDetails = () => {
   const { id }: any = useParams();
-  const { addItem } = useCart();
+  const { addItemToCart } = useContext(cartContext);
 
   const { loading, error, data } = useGetProductByIdQuery({
     variables: { getProductByIdId: parseInt(id) },
@@ -32,7 +32,6 @@ const ProductDetails = () => {
 
   const handleDuration = (startDate: Date | null, endDate: Date | null) => {
     const newDuration = calculateDuration(startDate, endDate);
-    console.log("coucou", newDuration);
     setDuration(newDuration);
   };
 
@@ -136,14 +135,15 @@ const ProductDetails = () => {
 
             <button
               onClick={() => {
-                addItem({
-                  id: products!.id.toString(),
-                  name: products!.name,
-                  price: products!.price,
-                  duration: duration,
-                  totalPrice: duration * (products?.price || 0),
-                  size: selectedSize,
-                });
+                if (!startDate || !endDate || !duration) {
+                  alert(
+                    "Veuillez sélectionner des dates et une durée avant d'ajouter au panier."
+                  );
+                  return;
+                }
+
+                const totalPrice = duration * (products?.price || 0);
+                addItemToCart(products, totalPrice, startDate, endDate);
               }}
               className="w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
             >

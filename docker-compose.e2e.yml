@@ -60,5 +60,6 @@ services:
       - ./e2e/.env
     depends_on:
       - api_gateway
+    network_mode: "host"
 volumes:
   db-data:

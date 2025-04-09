@@ -6,7 +6,8 @@ export const cartContext = createContext({
     product: any,
     totalPrice: number,
     startDate: any,
-    endDate: any
+    endDate: any,
+    quantity: number
   ) => {},
 });
 
@@ -49,18 +50,19 @@ export const CartContextProvider = ({ children }: any) => {
     product: any,
     totalPrice: number,
     startDate: any,
-    endDate: any
+    endDate: any,
+    quantity: number = 1
   ) => {
     const productWithTotalPrice = {
       ...product,
       totalPrice,
       startDate,
       endDate,
+      quantity,
     };
     cartDispatch({
       type: "ADD_ITEM",
       payload: productWithTotalPrice,
-      totalPrice,
     });
   };
   const initialValue = {

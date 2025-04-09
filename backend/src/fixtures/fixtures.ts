@@ -7,6 +7,7 @@ import { normalizeString } from "../assets/utils";
 import { Product } from '../entities/Product';
 import { Address } from '../entities/Address';
 import { Picture } from '../entities/Picture';
+import productsDatas from './productsDatas';
 
 async function createFixtures() {
   try {
@@ -137,46 +138,8 @@ async function createProducts() {
   try {
     const pictures: Picture[] = [];
 
-    const productData = [
-      { title: 'Sport d\'hiver', name: 'Ski blue', urls: ['products/winterSports/skiBlue1.webp', 'products/winterSports/skiBlue2.webp', 'products/winterSports/skiBlue3.webp'], price: 15 },
-      { title: 'Sport d\'hiver', name: 'Ski pink', urls: ['products/winterSports/skiPink1.webp', 'products/winterSports/skiPink2.webp', 'products/winterSports/skiPink3.webp'], price: 20 },
-      { title: 'Sport d\'hiver', name: 'Ski orange', urls: ['products/winterSports/skiOrange1.webp', 'products/winterSports/skiOrange1.webp'], price: 25 },
-      { title: 'Sport d\'hiver', name: 'Snowboard Burton', urls: ['products/winterSports/snowboardBurton1.webp', 'products/winterSports/snowboardBurton2.webp' ,'products/winterSports/snowboardBurton4.webp'], price: 30 },
-      { title: 'Sport d\'hiver', name: 'Snowboard Volcom', urls: ['products/winterSports/snowboardVolcom1.webp', 'products/winterSports/snowboardVolcom2.webp' ,'products/winterSports/snowboardVolcom3.webp'], price: 30 },
-      { title: 'Sport d\'hiver', name: 'Chaussures de ski enfant ', urls: ['products/winterSports/skiShoesKid.webp'], price: 8 },
-      { title: 'Sport d\'hiver', name: 'Chaussures de snow', urls: ['products/winterSports/snowShoes-1.webp'], price: 8 },
-      { title: 'Sport d\'hiver', name: 'Gants noir', urls: ['products/winterSports/skiGloves-1.jpg'], price: 5 },
-      { title: 'Sport d\'hiver', name: 'Gants camo', urls: ['products/winterSports/skiGloves-2.webp'], price: 7 },
-      { title: 'Sport nautique', name: 'Planche de surf verte', urls: ['products/waterSports/surfboardGreen1.webp'], price: 25 },
-      { title: 'Sport nautique', name: 'Planche de surf rose', urls: ['products/waterSports/surfboardPink1.webp', 'products/waterSports/surfboardPink2.webp'], price: 25 },
-      { title: 'Sport nautique', name: 'Bodyboard', urls: ['products/waterSports/bodyboard.webp'], price: 15 },
-      { title: 'Sport nautique', name: 'Palme', urls: ['products/waterSports/flippersBlack.webp'], price: 4 },
-      { title: 'Sport nautique', name: 'Bouée', urls: ['products/waterSports/buoy1.jpg', 'products/waterSports/buoy2.jpg'], price: 3 },
-      { title: 'Sport nautique', name: 'Paddle', urls: ['products/waterSports/paddlePink1.jpg', 'products/waterSports/paddlePink2.jpg', 'products/waterSports/paddlePink3.jpg'], price: 20 },
-      { title: 'Sport nautique', name: 'Combinaison surf homme', urls: ['products/waterSports/surfSuitMengreen1.webp', 'products/waterSports/surfSuitMengreen2.webp'], price: 6 },
-      { title: 'Sport nautique', name: 'Combinaison surf femme', urls: ['products/waterSports/surfSuitWomenMulti1.webp', 'products/waterSports/surfSuitWomenMulti2.webp'], price: 6 },
-      { title: 'VTT / Vélo', name: 'Vélo éléctrique', urls: ['products/biking/electricVttWhite.jpg'], price: 40 },
-      { title: 'VTT / Vélo', name: 'Vélo éléctrique', urls: ['products/biking/electricVttBlack.jpg'], price: 40 },
-      { title: 'VTT / Vélo', name: 'VTT', urls: ['products/biking/menVttGrey1.jpg', 'products/biking/menVttGrey2.jpg'], price: 30 },
-      { title: 'VTT / Vélo', name: 'Casque', urls: ['products/biking/helmet.avif'], price: 10 },
-      { title: 'Randonnée', name: 'Chaussures randonnée Homme', urls: ['products/hiking/hikingBootsMenBrown1.webp', 'products/hiking/hikingBootsMenBrown2.webp', 'products/hiking/hikingBootsMenBrown3.webp'], price: 15 },
-      { title: 'Randonnée', name: 'Chaussures randonnée Homme', urls: ['products/hiking/hikingBootsMenGreen1.jpg', 'products/hiking/hikingBootsMenGreen2.jpg', 'products/hiking/hikingBootsMenGreen3.jpg'], price: 12 },
-      { title: 'Randonnée', name: 'Chaussures randonnée Femme', urls: ['products/hiking/hikingShoesWomen1.webp', 'products/hiking/hikingShoesWomen2.webp', 'products/hiking/hikingShoesWomen3.webp'], price: 12 },
-      { title: 'Randonnée', name: 'Chaussures randonnée Femme', urls: ['products/hiking/hikingBootsWomenBeige1.webp', 'products/hiking/hikingBootsWomenBeige1.webp', 'products/hiking/hikingBootsWomenBeige1.webp'], price: 13 },
-      { title: 'Randonnée', name: 'Bâtons noir', urls: ['products/hiking/hikingSticksBlack.webp'], price: 7 },
-      { title: 'Randonnée', name: 'Bâtons bleu', urls: ['products/hiking/hikingSticksBlue.jpg'], price: 5 },
-      { title: 'Randonnée', name: 'Bâtons multi', urls: ['products/hiking/hikingSticksMulti.jpg'], price: 6 },
-      { title: 'Camping', name: 'Grand tente', urls: ['products/camping/tentBig.jpg'], price: 18 },
-      { title: 'Camping', name: 'Tente 6 places', urls: ['products/camping/tent6p.avif'], price: 13 },
-      { title: 'Camping', name: 'Tente', urls: ['products/camping/tentgreen.webp'], price: 12 },
-      { title: 'Camping', name: 'Sac de couchage', urls: ['products/camping/simpleSleepingBag1.jpg'], price: 6 },
-      { title: 'Camping', name: 'Sac de couchage', urls: ['products/camping/simpleSleepingBag2.jpg'], price: 6 },
-      { title: 'Camping', name: 'Sac de couchage 2 places', urls: ['products/camping/sleepingBag2p1.jpg', 'products/camping/sleepingBag2p2.jpg'], price: 10 },
-      { title: 'Camping', name: 'Chaise camping', urls: ['products/camping/campingChairBlue.jpg'], price: 3 },
-      { title: 'Camping', name: 'Chaise camping', urls: ['products/camping/campingChairGreen1.jpg'], price: 2 },
-    ];
-
-    for (const { title, name, price, urls } of productData) {
+    // La variable productsDatas viens de l'import productsDatas.ts
+    for (const { title, name, price, urls } of productsDatas) {
       const category = await getCategoryByTitle(title);
       const description = faker.lorem.sentence();
       const created_at = new Date();

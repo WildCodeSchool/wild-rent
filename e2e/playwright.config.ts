@@ -1,6 +1,6 @@
 import type { PlaywrightTestConfig } from "@playwright/test";
 import { devices } from "@playwright/test";
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 /**
  * Read environment variables from file.
@@ -49,6 +49,7 @@ const config: PlaywrightTestConfig = {
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
+        channel: "chromium",
       },
     },
 

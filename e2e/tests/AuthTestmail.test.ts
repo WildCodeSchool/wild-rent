@@ -7,8 +7,6 @@ const baseUrl = "http://localhost:7000/";
 const API_KEY = process.env.TEST_MAIL_API_KEY;
 const namespace = process.env.TEST_MAIL_NAMESPACE;
 
-console.log("api_key", API_KEY);
-console.log("namespace", namespace);
 
 test("register and login", async ({ page }) => {
   // Enregistre l'utilisateur avec l'adresse du compte testmail
@@ -52,8 +50,6 @@ test("register and login", async ({ page }) => {
     link = email.text.split("\n")[2];
   }
 
-  console.log("link in email", link);
-
   // Navigue jusqu'à l'URL et clique sur le bouton de création de compte
   await page.goto(link);
   await page.getByRole("button", { name: "Créer votre compte" }).click();
@@ -73,7 +69,6 @@ test("register and login", async ({ page }) => {
   await page.getByRole("button", { name: "Se connecter" }).click();
 
   const cookies = await page.context().cookies();
-  console.log("Cookies after login:", cookies);
 
   await expect(
     page.getByRole("link", { name: "user icon Mon compte" })

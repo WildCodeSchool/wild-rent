@@ -62,6 +62,9 @@ test("register and login", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Mot de passe' }).fill('testpassword');
   await page.getByRole('button', { name: 'Se connecter' }).click();
 
+  const cookies = await page.context().cookies();
+  console.log('Cookies after login:', cookies);
+
   await expect(
     page.getByRole("link", { name: "user icon Mon compte" })
   ).toBeVisible();

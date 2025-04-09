@@ -50,7 +50,7 @@ const Header = () => {
                   alt="user icon"
                   className="w-6 h-6 md:w-8 md:h-8"
                 />
-                <span className="hidden md:block text-sm text-green">
+                <span className="text-sm text-green">
                   Mon compte
                 </span>
               </Link>
@@ -64,7 +64,7 @@ const Header = () => {
                   alt="user icon"
                   className="w-6 h-6 md:w-8 md:h-8"
                 />
-                <span className="hidden md:block text-sm text-green">
+                <span className="text-sm text-green">
                   Connexion
                 </span>
               </Link>

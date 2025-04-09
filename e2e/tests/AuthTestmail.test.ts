@@ -49,6 +49,8 @@ test("register and login", async ({ page }) => {
     link = email.text.split("\n")[2];
   }
 
+  console.log("link in email", link);
+
   // Navigue jusqu'à l'URL et clique sur le bouton de création de compte
   await page.goto(link);
   await page.getByRole("button", { name: "Créer votre compte" }).click();
@@ -66,7 +68,6 @@ test("register and login", async ({ page }) => {
     .getByRole("textbox", { name: "Mot de passe" })
     .fill("testpassword");
   await page.getByRole("button", { name: "Se connecter" }).click();
-  await new Promise((resolve) => setTimeout(resolve, 3000));
 
   const cookies = await page.context().cookies();
   console.log("Cookies after login:", cookies);

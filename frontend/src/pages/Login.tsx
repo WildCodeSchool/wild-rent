@@ -24,8 +24,8 @@ export const Login = () => {
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log("data", data);
     login({
-      variables: { data: { email: data.email, password: data.password } }, 
-      onCompleted: () => navigate("/"), 
+      variables: { data: { email: data.email, password: data.password } },
+      onCompleted: () => navigate("/"),
     });
   };
 
@@ -61,9 +61,7 @@ export const Login = () => {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
             {errors.password && (
-              <span className="text-red-500 text-sm">
-                Mot de passe requis
-              </span>
+              <span className="text-red-500 text-sm">Mot de passe requis</span>
             )}
           </div>
 

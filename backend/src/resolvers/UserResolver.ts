@@ -82,6 +82,7 @@ export class UserResolver {
       );
     }
     if (is_password_correct === true && user !== null) {
+      console.log("login ok");
       const token = jwt.sign(
         { email: user.email, user_role: user.role },
         process.env.JWT_SECRET_KEY as jwt.Secret

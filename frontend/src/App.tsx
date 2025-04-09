@@ -8,6 +8,7 @@ import ProductDetails from "./pages/ProductDetails";
 import { Layout } from "./pages/Layout";
 import ConfirmEmailPage from "./pages/ConfirmEmail";
 import { ToastContainer } from "react-toastify";
+import { Admin } from "./pages/Admin";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="confirm/:code?" element={<ConfirmEmailPage />} />
         </Route>
+        <Route path="/admin" element={<Admin />}></Route>
       </Routes>
       <ToastContainer theme="colored" />
     </>

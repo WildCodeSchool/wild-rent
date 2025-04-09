@@ -18,7 +18,7 @@ import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
 
-const baseUrl = process.env.LOCAL ? "http://localhost:7000/confirm/" : "http://api_gateway/confirm/";
+const baseUrl = "http://localhost:7000/confirm/";
 
 @ObjectType()
 class UserInfo {
@@ -124,7 +124,7 @@ export class UserResolver {
       email: tempUser.email,
       phone_number: tempUser.phone_number,
       hashed_password: tempUser.hashed_password,
-      created_at: new Date
+      created_at: new Date(),
     });
     tempUser.remove();
     return "ok";

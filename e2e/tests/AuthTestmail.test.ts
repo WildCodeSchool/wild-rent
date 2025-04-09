@@ -7,6 +7,9 @@ const baseUrl = "http://localhost:7000/";
 const API_KEY = process.env.TEST_MAIL_API_KEY;
 const namespace = process.env.TEST_MAIL_NAMESPACE;
 
+console.log("api_key", API_KEY);
+console.log("namespace", namespace);
+
 test("register and login", async ({ page }) => {
   // Enregistre l'utilisateur avec l'adresse du compte testmail
   await page.goto(baseUrl);

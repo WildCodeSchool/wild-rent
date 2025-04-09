@@ -2,11 +2,17 @@ import { useContext } from "react";
 import { cartContext } from "../context/CartContext";
 
 const cart = () => {
-  const { items } = useContext(cartContext);
+  const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
   const total = items
-    .map((item: any) => item.totalPrice) // Extraction des prix
-    .reduce((acc, price) => acc + price, 0); // Totalisation
+    .map((item: any) => item.totalPrice * item.quantity)
+    .reduce((acc, price) => acc + price, 0);
 
+  const handleRemoveClick = (index: number) => {
+    removeItemFromCart(index);
+  };
+  const handleUpdateQuantity = (product: any) => {
+    updateQuantity(product.quantity++);
+  };
   return (
     <>
       {items.length === 0 && (
@@ -44,7 +50,7 @@ const cart = () => {
                   <div className="flex items-center">
                     <button
                       className="bg-[#D9D9D9] w-14 rounded-tl-lg rounded-bl-lg flex justify-center"
-                      onClick={() => {}}
+                      onClick={() => handleRemoveClick(index)}
                     >
                       <img
                         src="/assets/images/corbeille.png"
@@ -57,11 +63,7 @@ const cart = () => {
                     </div>
                     <button
                       className="bg-[#D9D9D9] w-14 rounded-tr-lg rounded-br-lg text-center"
-                      onClick={() => {
-                        {
-                          item.quantity;
-                        }
-                      }}
+                      onClick={() => handleUpdateQuantity(item)}
                     >
                       +
                     </button>

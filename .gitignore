@@ -1,8 +1,0 @@
-.env
-
-node_modules
-
-# Testing
-
-playwright-report
-test-results

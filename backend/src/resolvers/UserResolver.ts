@@ -86,8 +86,7 @@ export class UserResolver {
         { email: user.email, user_role: user.role },
         process.env.JWT_SECRET_KEY as jwt.Secret
       );
-      // Add Secure for production environment
-      context.res.setHeader("Set-Cookie", `token=${token}; HttpOnly`);
+      context.res.setHeader("Set-Cookie", `token=${token}; Secure; HttpOnly`);
 
       return "ok";
     } else {

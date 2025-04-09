@@ -67,8 +67,6 @@ test("register and login", async ({ page }) => {
     .fill("testpassword");
   await page.getByRole("button", { name: "Se connecter" }).click();
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
   const cookies = await page.context().cookies();
   console.log("Cookies after login:", cookies);
 

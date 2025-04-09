@@ -3,6 +3,8 @@ import { GetProductByCategoryQuery } from "../generated/graphql-types";
 
 type ProductType = GetProductByCategoryQuery["getProductByCategory"][0];
 
+const imageBasePath = "/assets/images/"
+
 const ItemCard = ({ product }: { product: ProductType }) => {
   return (
     <div
@@ -13,7 +15,7 @@ const ItemCard = ({ product }: { product: ProductType }) => {
         <div className="w-full flex flex-col items-center ">
           <div className="w-full aspect-square relative">
             <img
-              src={product.pictures[0].url}
+              src={imageBasePath + product.pictures[0].url}
               className="object-contain p-4 aspect-square group-hover:scale-105 transition-transform duration-300 ease-out"
             />
             <div className="absolute inset-2 bg-black/10"></div>

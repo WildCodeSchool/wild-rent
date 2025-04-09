@@ -6,18 +6,20 @@ export interface categoryProps {
   image?: string;
 }
 
+const imageBasePath = "/assets/images/categories/"
+
 function CategoryCard({ title, image }: categoryProps) {
   return (
-    <Link to={`produits/categorie/${title}`} className="drop-shadow-sm">
+    <Link to={`products/category/${title}`} className="drop-shadow-sm">
       <div className="drop-shadow-md">
-        <div className="relative z-10 w-[280px] overflow-hidden p-2 px-4 py-6 text-center rounded-md font-title font-semibold text-xl ">
+        <div className="relative z-10 w-[280px] overflow-hidden p-2 px-4 py-6 text-center rounded-md font-title font-semibold text-xl">
           <img
-            src={image}
-            className="absolute inset-0 object-cover w-full h-full "
+            src={imageBasePath + image}
+            className="absolute inset-0 object-cover w-full h-full"
             alt={title}
           />
           <div className="absolute inset-0 bg-black/30"></div>
-          <div className="text-white relative z-10 font-light text-2xl ">
+          <div className="text-white relative z-10 font-light text-2xl">
             {title}
           </div>
         </div>

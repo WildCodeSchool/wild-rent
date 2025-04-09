@@ -1,12 +1,13 @@
 import { defineConfig } from "vitest/config"; // Utilise Vitest et non Jest
 import react from "@vitejs/plugin-react";
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   test: {
     globals: true,
     environment: "jsdom",
+    setupFiles: ["./vitest.setup.ts"],
   },
   server: {
     allowedHosts: true,

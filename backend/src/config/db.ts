@@ -15,7 +15,7 @@ export const dataSource = new DataSource({
   host: "db",
   username: "admin",
   database: "db_wild_rent",
-  password: "locationsauvage",
+  password: "password",
   entities: [
     User,
     ProductInOrder,

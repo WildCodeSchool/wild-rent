@@ -2,9 +2,7 @@ import { test, expect } from "@playwright/test";
 import axios from "axios";
 import "dotenv/config";
 
-const baseUrl = process.env.LOCAL
-  ? "http://localhost:7000"
-  : "http://api_gateway/";
+const baseUrl = "http://localhost:7000/";
 
 const API_KEY = process.env.TEST_MAIL_API_KEY
 const namespace = process.env.TEST_MAIL_NAMESPACE
@@ -24,7 +22,7 @@ test("register and login", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Numéro de téléphone' }).click();
   await page.getByRole('textbox', { name: 'Numéro de téléphone' }).fill('066666666');
   await page.getByRole('textbox', { name: 'Mot de passe' }).click();
-  await page.getByRole('textbox', { name: 'Mot de passe' }).fill('testpassword');
+  await page.getByRole('textbox', { name: 'Mot de passe' }).fill('password');
   await page.getByRole('button', { name: 'S\'inscrire' }).click();
 
   await expect(
@@ -40,7 +38,7 @@ test("register and login", async ({ page }) => {
       livequery: 'true',
       timestamp_from: Date.now()
     }
-  })
+  });
 
   // Permet de retrouver l'URL de confirmation dans la réponse de l'objet
   if (res.data.emails && res.data.emails.length > 0) {
@@ -61,7 +59,7 @@ test("register and login", async ({ page }) => {
   await page.getByRole('textbox', { name: 'Email' }).click();
   await page.getByRole('textbox', { name: 'Email' }).fill(`${namespace}.test@inbox.testmail.app`);
   await page.getByRole('textbox', { name: 'Mot de passe' }).click();
-  await page.getByRole('textbox', { name: 'Mot de passe' }).fill('testpassword');
+  await page.getByRole('textbox', { name: 'Mot de passe' }).fill('password');
   await page.getByRole('button', { name: 'Se connecter' }).click();
 
   await expect(

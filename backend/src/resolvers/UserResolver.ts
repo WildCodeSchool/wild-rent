@@ -18,6 +18,8 @@ import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
 
+const baseUrl = "http://localhost:7000/confirm/";
+
 @ObjectType()
 class UserInfo {
   @Field()
@@ -56,8 +58,8 @@ export class UserResolver {
         subject: "Verify Email",
         html: `
                 <p>Please click the link below to confirm your email adress</p>
-                <a href=${process.env.URL_CONFIRMATION_PAGE}${random_code}>
-                ${process.env.URL_CONFIRMATION_PAGE}${random_code}</a>
+                <a href=${baseUrl}${random_code}>
+                ${baseUrl}${random_code}</a>
                 `,
       });
       if (error) {

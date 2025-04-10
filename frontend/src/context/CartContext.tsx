@@ -6,8 +6,11 @@ export const cartContext = createContext({
     product: any,
     totalPrice: number,
     startDate: any,
-    endDate: any
+    endDate: any,
+    quantity: number
   ) => {},
+  removeItemFromCart: (product: any) => {},
+  updateQuantity: (product: any) => {},
 });
 
 const getInitialCart = () => {
@@ -30,6 +33,22 @@ const cartReducer = (state: any, action: any) => {
         ...state,
         items: [...state.items, action.payload],
       };
+    case "REMOVE_ITEM":
+      return {
+        ...state,
+        items: state.items.filter(
+          (_: any, i: number) => i !== action.payload.index
+        ),
+      };
+    case "UPDATE_QUANTITY":
+      return {
+        ...state,
+        items: state.items.map((item: any) =>
+          item.id === action.payload.id
+            ? { ...item, quantity: action.payload.quantity }
+            : item
+        ),
+      };
     default:
       return state;
   }
@@ -49,25 +68,41 @@ export const CartContextProvider = ({ children }: any) => {
     product: any,
     totalPrice: number,
     startDate: any,
-    endDate: any
+    endDate: any,
+    quantity: number = 1
   ) => {
     const productWithTotalPrice = {
       ...product,
       totalPrice,
       startDate,
       endDate,
+      quantity,
     };
     cartDispatch({
       type: "ADD_ITEM",
       payload: productWithTotalPrice,
-      totalPrice,
     });
   };
+
+  const handleRemoveItem = (index: number) => {
+    cartDispatch({
+      type: "REMOVE_ITEM",
+      payload: { index },
+    });
+  };
+  const handleChangeQuantity = (product: any) => {
+    cartDispatch({
+      type: "UPDATE_QUANTITY",
+      payload: product,
+    });
+  };
+
   const initialValue = {
     items: cartState.items,
     addItemToCart: handleToAddItem,
+    removeItemFromCart: handleRemoveItem,
+    updateQuantity: handleChangeQuantity,
   };
-  console.log(cartState.items);
   return (
     <cartContext.Provider value={initialValue}>{children}</cartContext.Provider>
   );

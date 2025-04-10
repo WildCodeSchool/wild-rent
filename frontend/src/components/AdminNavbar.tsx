@@ -28,7 +28,7 @@ export const AdminNavbar = () => {
             </div>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-light-beige hover:text-green hover:bg-light-beige rounded-full bg-green cursor-pointer"
+              className="text-light-beige hover:text-green hover:bg-light-beige rounded-full bg-green cursor-pointer hover:border-1 border-1 border-green"
             >
               {isOpen ? <ChevronLeft size={24} /> : <ChevronRight size={24} />}
             </button>

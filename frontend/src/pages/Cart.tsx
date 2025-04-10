@@ -3,6 +3,7 @@ import { cartContext } from "../context/CartContext";
 
 const cart = () => {
   const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
+  const imageBasePath = "/assets/images/";
   const total = items
     .map((item: any) => item.totalPrice * item.quantity)
     .reduce((acc, price) => acc + price, 0);
@@ -34,7 +35,7 @@ const cart = () => {
                 <div className="w-1/4 flex justify-center mt-2 mb-2">
                   <img
                     className="max-w-full max-h-24"
-                    src={item.pictures[0].url}
+                    src={imageBasePath + item.pictures[0].url}
                     alt={item.name}
                   />
                 </div>

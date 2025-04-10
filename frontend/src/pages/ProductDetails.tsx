@@ -14,7 +14,7 @@ export const calculateDuration = (start: Date | null, end: Date | null) => {
   }
 };
 
-const imageBasePath = "/assets/images/"
+const imageBasePath = "/assets/images/";
 
 const ProductDetails = () => {
   const { id }: any = useParams();
@@ -53,17 +53,22 @@ const ProductDetails = () => {
         />
         {/* Miniatures */}
         <div className="flex gap-2">
-          {products?.pictures.slice(0, 4).map((pic: any, index: number) => (
-            <img
-              key={index}
-              src={pic.url}
-              alt="Preview"
-              className={`w-20 h-20 rounded-lg cursor-pointer border ${
-                pic.url === mainImage ? "border-blue-500" : "border-transparent"
-              }`}
-              onClick={() => setActiveImage(pic.url)}
-            />
-          ))}
+          {products?.pictures.slice(0, 4).map((pic: any, index: number) => {
+            const fullUrl = imageBasePath + pic.url;
+            return (
+              <img
+                key={index}
+                src={fullUrl}
+                alt="Preview"
+                className={`w-20 h-20 rounded-lg cursor-pointer border ${
+                  fullUrl === mainImage
+                    ? "border-blue-500"
+                    : "border-transparent"
+                }`}
+                onClick={() => setActiveImage(fullUrl)}
+              />
+            );
+          })}
         </div>
       </div>
 

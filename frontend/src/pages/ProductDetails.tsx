@@ -44,7 +44,7 @@ const ProductDetails = () => {
   return (
     <div className="flex flex-col md:flex-row items-start gap-10 p-10 bg-white shadow-md rounded-lg max-w-4xl mx-auto">
       {/* Image Section */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-row md:flex-col gap-4 m-auto">
         {/* Image principale */}
         <img
           src={mainImage}
@@ -52,7 +52,7 @@ const ProductDetails = () => {
           className="w-64 h-64 object-cover rounded-lg"
         />
         {/* Miniatures */}
-        <div className="flex gap-2">
+        <div className="flex flex-col md:flex-row gap-2 justify-around">
           {products?.pictures.slice(0, 4).map((pic: any, index: number) => {
             const fullUrl = imageBasePath + pic.url;
             return (
@@ -73,14 +73,18 @@ const ProductDetails = () => {
       </div>
 
       {/* Details Section */}
-      <div className="flex-1">
-        <div className="flex flex-row">
-          <div>
-            <h2 className="text-2xl font-semibold mb-2">{products?.name}</h2>
+      <div className="flex-1 m-auto">
+        <div className="flex flex-col md:flex-row justify-around">
+          <div className="w-full md:w-1/2">
+            <h2 className="text-2xl font-semibold mb-2 text-center ">
+              {products?.name}
+            </h2>
 
             {/* Taille Selection */}
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Taille :</label>
+              <label className="block text-sm font-medium mb-4 mt-5">
+                Taille :
+              </label>
               <select
                 className="border rounded-md p-2 w-full"
                 value={selectedSize}
@@ -95,40 +99,39 @@ const ProductDetails = () => {
             </div>
 
             {/* Date Picker */}
-            <div className="flex gap-4 mb-4">
-              <div className="flex flex-col w-1/2">
-                <label className="text-sm font-medium mb-1">
-                  Période de location :
-                </label>
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date) => {
-                    setStartDate(date);
-                    calculateDuration(date, endDate);
-                  }}
-                  dateFormat="dd/MM/yyyy"
-                  placeholderText="Début"
-                  className="border rounded-md p-2 w-full"
-                />
-              </div>
-              <div className="flex flex-col w-1/2">
-                <label className="text-sm font-medium mb-1 invisible">
-                  End
-                </label>
-                <DatePicker
-                  selected={endDate}
-                  onChange={(date) => {
-                    setEndDate(date);
-                    handleDuration(startDate, date);
-                  }}
-                  dateFormat="dd/MM/yyyy"
-                  placeholderText="Fin"
-                  className="border rounded-md p-2 w-full"
-                />
+            <div className="flex flex-col gap-4 mb-4">
+              <label className="block text-sm font-medium">
+                Dates de réservation :
+              </label>
+              <div className="flex flex-row justify-between">
+                <div className="flex flex-col w-[45%]">
+                  <DatePicker
+                    selected={startDate}
+                    onChange={(date) => {
+                      setStartDate(date);
+                      calculateDuration(date, endDate);
+                    }}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="Début"
+                    className="border rounded-md p-2 w-full"
+                  />
+                </div>
+                <div className="flex flex-col w-[45%]">
+                  <DatePicker
+                    selected={endDate}
+                    onChange={(date) => {
+                      setEndDate(date);
+                      handleDuration(startDate, date);
+                    }}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="Fin"
+                    className="border rounded-md p-2 w-full"
+                  />
+                </div>
               </div>
             </div>
           </div>
-          <div>
+          <div className="flex  md:flex-col justify-evenly">
             {/* Pricing and CTA */}
             <div className="bg-gray-100 p-4 rounded-lg shadow-sm mb-4">
               <div className="text-xl font-bold">{products?.price}€ / jour</div>
@@ -152,7 +155,7 @@ const ProductDetails = () => {
                 const totalPrice = duration * (products?.price || 0);
                 addItemToCart(products, totalPrice, startDate, endDate);
               }}
-              className="w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
+              className="h-15 mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
             >
               Ajouter au panier
             </button>

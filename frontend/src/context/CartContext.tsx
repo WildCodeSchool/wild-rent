@@ -6,8 +6,7 @@ export const cartContext = createContext({
     product: any,
     totalPrice: number,
     startDate: any,
-    endDate: any,
-    quantity: number
+    endDate: any
   ) => {},
   removeItemFromCart: (product: any) => {},
   updateQuantity: (product: any) => {},

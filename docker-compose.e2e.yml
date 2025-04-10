@@ -2,7 +2,7 @@ services:
   db:
     image: postgres
     environment:
-      POSTGRES_PASSWORD: locationsauvage
+      POSTGRES_PASSWORD: password
       POSTGRES_USER: admin
       POSTGRES_DB: db_wild_rent
     healthcheck:
@@ -53,8 +53,13 @@ services:
     ports:
       - 7000:80
   e2e:
+    volumes:
+      - ./test-results:/app/test-results
     build: ./e2e
+    env_file:
+      - ./e2e/.env
     depends_on:
       - api_gateway
+    network_mode: "host"
 volumes:
   db-data:

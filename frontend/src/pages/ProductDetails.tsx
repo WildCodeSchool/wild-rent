@@ -74,12 +74,11 @@ const ProductDetails = () => {
 
       {/* Details Section */}
       <div className="flex-1 m-auto">
+        <h2 className="text-2xl font-semibold mb-2 ">{products?.name}</h2>
+        {/* Description */}
+        <p className="mt-4 mb-4 text-gray-700">{products?.description}</p>
         <div className="flex flex-col md:flex-row justify-around">
           <div className="w-full md:w-1/2">
-            <h2 className="text-2xl font-semibold mb-2 text-center ">
-              {products?.name}
-            </h2>
-
             {/* Taille Selection */}
             <div className="mb-4">
               <label className="block text-sm font-medium mb-4 mt-5">
@@ -130,10 +129,13 @@ const ProductDetails = () => {
                 </div>
               </div>
             </div>
+            <div className="mt-7 text-sm font-medium">
+              Niveau: Intermédiaire
+            </div>
           </div>
-          <div className="flex  md:flex-col justify-evenly">
+          <div className="flex mt-3 md:flex-col md:mt-0 justify-evenly">
             {/* Pricing and CTA */}
-            <div className="bg-gray-100 p-4 rounded-lg shadow-sm mb-4">
+            <div className="mb-0 bg-gray-100 p-3 rounded-lg shadow-sm md:mb-4">
               <div className="text-xl font-bold">{products?.price}€ / jour</div>
               <div className="text-sm text-gray-600">
                 Durée: {duration} jour(s)
@@ -161,11 +163,6 @@ const ProductDetails = () => {
             </button>
           </div>
         </div>
-
-        {/* Description */}
-        <p className="mt-4 text-gray-700">{products?.description}</p>
-
-        <div className="mt-4 text-sm font-medium">Niveau: Intermédiaire</div>
       </div>
     </div>
   );

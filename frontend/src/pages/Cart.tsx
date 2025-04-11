@@ -24,7 +24,9 @@ const cart = () => {
       {items.length !== 0 && (
         <div>
           <div className="w-[90%] m-auto">
-            <h3 className="text-2xl pt-6">Contenu de mon panier:</h3>
+            <h3 className="text-xl sm:text-2xl pt-6 font-semibold">
+              Contenu de mon panier:
+            </h3>
           </div>
           <div className="bg-white flex justify-center flex-col md:p-4">
             {items.map((item: any, index: number) => (
@@ -40,7 +42,7 @@ const cart = () => {
                   />
                 </div>
                 <div className="bg-[#D9D9D9] w-2/4 p-2">
-                  <p> {item.name}</p>
+                  <p className="text-base sm:text-xl"> {item.name}</p>
                   <p>{item.product_options}</p>
                   <p>
                     du {new Date(item.startDate).toLocaleDateString()} au{" "}
@@ -50,20 +52,20 @@ const cart = () => {
                 <div className="w-1/4 flex flex-col pt-8 items-center">
                   <div className="flex items-center">
                     <button
-                      className="bg-[#D9D9D9] w-8 md:w-14 rounded-tl-lg rounded-bl-lg flex justify-center"
+                      className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-14 rounded-tl-lg rounded-bl-lg flex justify-center"
                       onClick={() => handleRemoveClick(index)}
                     >
                       <img
                         src="/assets/images/corbeille.png"
                         alt="corbeille"
-                        className="w-6 h-6 md:w-6 md:h-6"
+                        className="w-4 h-4  lg:w-6 lg:h-6  m-auto"
                       />{" "}
                     </button>
-                    <div className="bg-[#D9D9D966] w-8 md:w-14 text-center">
+                    <div className="bg-[#D9D9D966] w-6 md:w-8 lg:w-14 text-center">
                       {item.quantity}
                     </div>
                     <button
-                      className="bg-[#D9D9D9] w-8 md:w-14 rounded-tr-lg rounded-br-lg text-center"
+                      className="bg-[#D9D9D9] w-6 md:w-8 lg:w-14 rounded-tr-lg rounded-br-lg text-center"
                       onClick={() => handleUpdateQuantity(item)}
                     >
                       +
@@ -82,7 +84,7 @@ const cart = () => {
             <p className="text-2xl">{total}€</p>
           </div>
           <div className="flex justify-center pb-8 pt-8">
-            <button className="md:w-1/4 m-auto bg-[#52796F] text-white p-2 rounded-full text-xl">
+            <button className="md:w-1/4 m-auto bg-[#52796F] text-white p-2 rounded-full sm:text-xl">
               Passer ma commande
             </button>
           </div>

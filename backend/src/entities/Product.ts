@@ -27,7 +27,7 @@ export class Product extends BaseEntity {
   description: string;
 
   @Field()
-  @Column()
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   price: number;
 
   @Field(() => [Picture])

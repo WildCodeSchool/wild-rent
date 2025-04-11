@@ -1,7 +1,18 @@
 import { useRef, useState } from "react";
-import { FieldError, useForm } from "react-hook-form";
-import { useGetAllCategoriesQuery } from "../generated/graphql-types";
+import { FieldError, useForm, useFieldArray } from "react-hook-form";
+import {
+  useCreateProductMutation,
+  useGetAllCategoriesQuery,
+} from "../generated/graphql-types";
 import { toast } from "react-toastify";
+
+type ProductFormValues = {
+  title: string;
+  description: string;
+  price: number;
+  category: string;
+  product_options: { size: string; total_quantity: number }[];
+};
 
 export const ArticleForm = ({
   createOrUpdate,
@@ -9,22 +20,66 @@ export const ArticleForm = ({
   createOrUpdate: "create" | "update";
 }) => {
   const { error, loading, data } = useGetAllCategoriesQuery();
-  const tailles = ["Taille unique", "S", "M", "L", "XL"];
+  const [createProductMutation] = useCreateProductMutation();
+  const [size, setSize] = useState(["Taille unique", "S", "M", "L", "XL"]);
+  const [optionSize, setOptionSize] = useState(size);
+
   const {
+    control,
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm<ProductFormValues>({
+    defaultValues: {
+      product_options: [{ size: "", total_quantity: 1 }],
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "product_options",
+  });
+
   //   const [images, setImages] = useState<File[]>([]);
 
-  const onSubmit = async (data: any) => {
-    console.log(data);
+  const onSubmit = async (formData: ProductFormValues) => {
+    const formattedOptions = formData.product_options.map(
+      (opt: { size: string; total_quantity: any }) => ({
+        size: opt.size,
+        total_quantity: parseInt(opt.total_quantity),
+        available_quantity: parseInt(opt.total_quantity),
+      })
+    );
+
+    const input = {
+      name: formData.title,
+      description: formData.description,
+      price: parseFloat(formData.price.toString()),
+      pictures: [{ id: 1 }],
+      category: {
+        id: parseInt(formData.category),
+      },
+      product_options: formattedOptions,
+    };
+    console.log(input);
+
+    if (createOrUpdate === "create") {
+      try {
+        const result = await createProductMutation({
+          variables: { data: input },
+        });
+        console.log(result);
+        toast.success("Article publié! 💪");
+        reset();
+      } catch (error) {
+        console.log(error);
+        toast.error("Erreur lors de la publication");
+      }
+    }
     // if (images) {
     //   console.log("Images à envoyer :", images);
     // }
-    toast.success("Article publié! 💪");
-    reset();
     // setImages([]);
   };
 
@@ -52,7 +107,7 @@ export const ArticleForm = ({
     <form onSubmit={handleSubmit(onSubmit)}>
       {/* Title */}
       <div>
-        <label htmlFor="title" className="block">
+        <label htmlFor="title" className="block font-semibold mb-1">
           Titre
         </label>
         <input
@@ -68,7 +123,7 @@ export const ArticleForm = ({
 
       {/* Image */}
       {/* <div>
-        <label htmlFor="image" className="block">
+        <label htmlFor="image" className="block font-semibold">
           Images
         </label>
         <input
@@ -89,7 +144,7 @@ export const ArticleForm = ({
 
       {/* Catégorie */}
       <div>
-        <label htmlFor="category" className="block">
+        <label htmlFor="category" className="block font-semibold mb-1 mt-3">
           Catégorie
         </label>
         <select
@@ -101,7 +156,7 @@ export const ArticleForm = ({
         >
           <option value="">-- Sélectionnez une catégorie --</option>
           {data?.getAllCategories.map((category) => (
-            <option key={category.id} value={category.title}>
+            <option key={category.id} value={category.id}>
               {category.title}
             </option>
           ))}
@@ -113,55 +168,90 @@ export const ArticleForm = ({
         )}
       </div>
 
-      {/* Taille */}
-      <div>
-        <label htmlFor="size" className="block">
-          Taille
-        </label>
-        <select
-          id="size"
-          {...register("size", {
-            required: "Veuillez sélectionner une taille",
-          })}
-          className="border p-2 rounded w-full"
-        >
-          <option value="">-- Sélectionnez une taille --</option>
-          {tailles.map((taille, index) => (
-            <option key={index} value={taille}>
-              {taille}
-            </option>
-          ))}
-        </select>
-        {errors.size && (
-          <p className="text-red-500">{(errors.size as FieldError).message}</p>
-        )}
-      </div>
+      {/* Product Options */}
+      <div className="space-y-4 mt-4">
+        <label className="block font-semibold mb-1">Taille & Quantités</label>
 
-      {/* Quantité */}
-      <div>
-        <label htmlFor="quantity" className="block">
-          Quantité
-        </label>
-        <input
-          id="quantity"
-          type="number"
-          min={1}
-          {...register("quantity", {
-            required: "La quantité est requise",
-            min: { value: 1, message: "La quantité doit être d'au moins 1" },
-          })}
-          className="border p-2 rounded w-full"
-        />
-        {errors.quantity && (
-          <p className="text-red-500">
-            {(errors.quantity as FieldError).message}
-          </p>
-        )}
+        {fields.map((field, index) => (
+          <div
+            key={field.id}
+            className="border rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 items-start md:items-center"
+          >
+            {/* Taille */}
+            <div className="flex-1 w-full">
+              <label className="block">Taille</label>
+              <select
+                {...register(`product_options.${index}.size`, {
+                  required: "Veuillez sélectionner une taille",
+                })}
+                className="border rounded p-2 w-full"
+                onChange={(e) => {
+                  const newArray = size.filter((s) => s !== e.target.value);
+                  setOptionSize(newArray);
+                }}
+              >
+                <option value="">-- Sélectionnez une taille --</option>
+                {size.map((taille, i) => (
+                  <option key={i} value={taille}>
+                    {taille}
+                  </option>
+                ))}
+              </select>
+              {errors.product_options?.[index]?.size && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.product_options?.[index]?.size?.message}
+                </p>
+              )}
+            </div>
+
+            {/* Quantité */}
+            <div className="flex-1 w-full">
+              <label className="block">Quantité</label>
+              <input
+                type="number"
+                min={1}
+                {...register(`product_options.${index}.total_quantity`, {
+                  required: "Quantité requise",
+                  min: { value: 1, message: "Minimum 1" },
+                })}
+                className="border rounded p-2 w-full"
+              />
+              {errors.product_options?.[index]?.total_quantity && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.product_options[index].total_quantity?.message}
+                </p>
+              )}
+            </div>
+
+            {/* Supprimer */}
+            {fields.length > 1 && (
+              <button
+                type="button"
+                onClick={() => remove(index)}
+                className="text-red-500 font-bold text-xl cursor-pointer border-2 h-6 w-6 rounded-full transition mt-6 flex items-center justify-center pb-1.5 hover:animate-bounce"
+                title="Supprimer"
+              >
+                ×
+              </button>
+            )}
+          </div>
+        ))}
+
+        {/* Bouton Ajouter */}
+        <button
+          type="button"
+          onClick={() => {
+            append({ size: "", total_quantity: 1 });
+          }}
+          className="bg-green border-green border-1 text-white px-4 py-2 rounded hover:bg-light-beige hover:text-green transition mb-3 cursor-pointer"
+        >
+          Ajouter une taille
+        </button>
       </div>
 
       {/* Prix */}
       <div>
-        <label htmlFor="price" className="block">
+        <label htmlFor="price" className="block font-semibold mb-1 mt-3">
           Prix (€)
         </label>
         <input
@@ -182,7 +272,7 @@ export const ArticleForm = ({
 
       {/* Description */}
       <div>
-        <label htmlFor="description" className="block">
+        <label htmlFor="description" className="block font-semibold mb-1 mt-3">
           Description (max 450 caractères)
         </label>
         <textarea
@@ -209,7 +299,10 @@ export const ArticleForm = ({
         )}
       </div>
 
-      <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-4">
+      <button
+        type="submit"
+        className="bg-green border-green border-1 text-white px-4 py-2 rounded hover:bg-light-beige hover:text-green transition mt-4 cursor-pointer"
+      >
         Envoyer
       </button>
     </form>

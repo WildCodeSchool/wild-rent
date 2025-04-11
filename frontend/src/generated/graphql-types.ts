@@ -34,8 +34,9 @@ export type Category = {
 };
 
 export type CategoryInput = {
-  id: Scalars['Float']['input'];
-  title: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['Float']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type LoginInput = {
@@ -47,6 +48,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   confirmEmail: Scalars['String']['output'];
   createNewCategory: Category;
+  createProduct: Product;
   deleteCategory: Scalars['String']['output'];
   login: Scalars['String']['output'];
   logout: Scalars['String']['output'];
@@ -62,6 +64,11 @@ export type MutationConfirmEmailArgs = {
 
 export type MutationCreateNewCategoryArgs = {
   title: Scalars['String']['input'];
+};
+
+
+export type MutationCreateProductArgs = {
+  data: ProductInput;
 };
 
 
@@ -101,6 +108,11 @@ export type Picture = {
   url: Scalars['String']['output'];
 };
 
+export type PictureInput = {
+  id?: InputMaybe<Scalars['Float']['input']>;
+  url?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Product = {
   __typename?: 'Product';
   category: Category;
@@ -121,6 +133,16 @@ export type ProductInOrder = {
   total_price: Scalars['Float']['output'];
 };
 
+export type ProductInput = {
+  category?: InputMaybe<CategoryInput>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['Float']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  pictures?: InputMaybe<Array<PictureInput>>;
+  price?: InputMaybe<Scalars['Float']['input']>;
+  product_options?: InputMaybe<Array<ProductOptionInput>>;
+};
+
 export type ProductOption = {
   __typename?: 'ProductOption';
   available_quantity: Scalars['Float']['output'];
@@ -128,6 +150,13 @@ export type ProductOption = {
   product: Product;
   size: Scalars['String']['output'];
   total_quantity: Scalars['Float']['output'];
+};
+
+export type ProductOptionInput = {
+  available_quantity?: InputMaybe<Scalars['Float']['input']>;
+  id?: InputMaybe<Scalars['Float']['input']>;
+  size?: InputMaybe<Scalars['String']['input']>;
+  total_quantity?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type Query = {

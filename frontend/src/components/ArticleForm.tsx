@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
 import { useGetAllCategoriesQuery } from "../generated/graphql-types";
+import { toast } from "react-toastify";
 
 export const ArticleForm = ({
   createOrUpdate,
@@ -12,21 +13,28 @@ export const ArticleForm = ({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
-  const [image, setImage] = useState<File | null>(null);
+  //   const [images, setImages] = useState<File[]>([]);
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    if (image) {
-      console.log("Image à envoyer :", image);
-    }
+    // if (images) {
+    //   console.log("Images à envoyer :", images);
+    // }
+    toast.success("Article publié! 💪");
+    reset();
+    // setImages([]);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ? e.target.files[0] : null;
-    if (file) setImage(file);
-  };
+  //   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //     const files = e.target.files;
+  //     if (files) {
+  //       const fileArray = Array.from(files);
+  //       setImages(fileArray);
+  //     }
+  //   };
 
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const handleResizeTextarea = () => {
@@ -59,7 +67,7 @@ export const ArticleForm = ({
       </div>
 
       {/* Image */}
-      <div>
+      {/* <div>
         <label htmlFor="image" className="block">
           Images
         </label>
@@ -67,14 +75,17 @@ export const ArticleForm = ({
           id="image"
           type="file"
           onChange={handleImageChange}
+          multiple
           className="border p-2 rounded w-full"
         />
-        {image && (
-          <p className="mt-2 text-green-500">
-            Images sélectionnées: {image.name}
-          </p>
+        {images.length > 0 && (
+          <ul className="mt-2 text-green-500 list-disc list-inside">
+            {images.map((file, index) => (
+              <li key={index}>{file.name}</li>
+            ))}
+          </ul>
         )}
-      </div>
+      </div> */}
 
       {/* Catégorie */}
       <div>

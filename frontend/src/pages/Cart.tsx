@@ -23,7 +23,7 @@ const cart = () => {
       )}
       {items.length !== 0 && (
         <div>
-          <div className="w-[90%] m-auto">
+          <div className="w-[90%] lg:w-[70%] m-auto">
             <h3 className="text-xl sm:text-2xl pt-6 font-semibold">
               Contenu de mon panier:
             </h3>
@@ -31,7 +31,7 @@ const cart = () => {
           <div className="bg-white flex justify-center flex-col md:p-4">
             {items.map((item: any, index: number) => (
               <div
-                className="w-[90%] bg-[#52796F] m-auto mt-4 flex justify-between items-center"
+                className="w-[90%] lg:w-[70%] bg-[#52796F] m-auto mt-4 flex justify-between items-center"
                 key={index}
               >
                 <div className="w-1/4 flex justify-center mt-2 mb-2">

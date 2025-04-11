@@ -50,9 +50,7 @@ const Header = () => {
                   alt="user icon"
                   className="w-6 h-6 md:w-8 md:h-8"
                 />
-                <span className="hidden md:block text-sm text-green">
-                  Mon compte
-                </span>
+                <span className="text-sm text-green">Mon compte</span>
               </Link>
             ) : (
               <Link
@@ -64,9 +62,7 @@ const Header = () => {
                   alt="user icon"
                   className="w-6 h-6 md:w-8 md:h-8"
                 />
-                <span className="hidden md:block text-sm text-green">
-                  Connexion
-                </span>
+                <span className=" text-sm text-green">Connexion</span>
               </Link>
             )}
             <Link
@@ -78,10 +74,12 @@ const Header = () => {
                 alt="cart"
                 className="w-6 h-6 md:w-8 md:h-8"
               />
-
-              <span className="hidden md:block text-sm text-green">
-                Mon panier ({items.length})
-              </span>
+              <div className="flex items-center gap-x-1">
+                <span className="hidden md:block text-sm text-green">
+                  Mon panier
+                </span>
+                <span> ({items.length})</span>
+              </div>
             </Link>
           </div>
         </div>

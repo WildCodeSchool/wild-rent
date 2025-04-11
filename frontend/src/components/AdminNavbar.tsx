@@ -16,7 +16,7 @@ export const AdminNavbar = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-x-2">
               <img
-                src="/assets/images/logo.png"
+                src="/assets/images/icons/logo.png"
                 alt="Wild Rent logo"
                 className="w-10 h-10"
               />

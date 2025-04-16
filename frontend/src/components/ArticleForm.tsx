@@ -22,7 +22,7 @@ export const ArticleForm = ({
   const { error, loading, data } = useGetAllCategoriesQuery();
   const [createProductMutation] = useCreateProductMutation();
   const [size, setSize] = useState(["Taille unique", "S", "M", "L", "XL"]);
-  const [optionSize, setOptionSize] = useState(size);
+  const [selectedSize, setSelectedSize] = useState([""]);
 
   const {
     control,
@@ -185,10 +185,7 @@ export const ArticleForm = ({
                   required: "Veuillez sélectionner une taille",
                 })}
                 className="border rounded p-2 w-full"
-                onChange={(e) => {
-                  const newArray = size.filter((s) => s !== e.target.value);
-                  setOptionSize(newArray);
-                }}
+                onChange={(e) => {}}
               >
                 <option value="">-- Sélectionnez une taille --</option>
                 {size.map((taille, i) => (

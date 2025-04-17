@@ -25,6 +25,10 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Debug tag value
+      run: |
+        echo "Resolved tag 1: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest"
+        echo "Resolved tag 2: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ env.COMMIT_SHORT_SHA }}"
     - name: Build and push
       uses: docker/build-push-action@v4
       with:

@@ -1,10 +1,13 @@
 name: build and push docker images
 
-on: 
+on:
+  workflow_run:
+    workflows: ['e2e-tests-workflow', 'client-tests-workflow']
+    types: [completed]
   push:
     branches:
       - staging
- 
+      
 jobs:
   docker:
     runs-on: ubuntu-latest

@@ -25,10 +25,19 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build and push
+    - name: Build and push frontend
       uses: docker/build-push-action@v4
       with:
         push: true
         context: "{{defaultContext}}:frontend"
         file: Dockerfile.prod
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest, ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ env.COMMIT_SHORT_SHA }}
+    - name: Build and push backend 
+      uses: docker/build-push-action@v4
+      with:
+        push: true
+        context: "{{defaultContext}}:backend"
+        file: Dockerfile.prod
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest, ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ env.COMMIT_SHORT_SHA }}
+
+        

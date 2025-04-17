@@ -1,10 +1,6 @@
 name: build and push docker images
 
 on:
-  workflow_run:
-    workflows: ['client-tests-workflow']
-    types: [completed]
-    conclusions: [success]
   push:
     branches:
       - staging

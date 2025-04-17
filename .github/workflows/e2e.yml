@@ -1,6 +1,6 @@
 name: e2e-tests-workflow
 
-on: push
+on: pull_request
 
 jobs:
   e2e-test:
@@ -13,6 +13,7 @@ jobs:
           touch .env
           echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> .env
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+          echo "FIXTURES=TRUE" >> .env
       - name: Create e2e .env
         run: |
           cd e2e

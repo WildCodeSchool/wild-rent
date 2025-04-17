@@ -9,11 +9,8 @@ import { Address } from '../entities/Address';
 import { Picture } from '../entities/Picture';
 import productsDatas from './productsDatas';
 
-async function createFixtures() {
+export async function createFixtures() {
   try {
-    await dataSource.initialize();
-    console.log("📡 Database connected!");
-
     // Supprime la base de données avant d'importer les fixtures
     await dataSource.dropDatabase();
     // Il faut resynchro la DB sinon on a une erreur pour créer les données
@@ -29,10 +26,7 @@ async function createFixtures() {
     console.log("🎉 Fixtures created successfully!");
   } catch (error) {
     console.error("❌ Error while creating fixtures:", error);
-  } finally {
-    await dataSource.destroy();
-    console.log("🔌 Database connection closed.");
-  }
+  } 
 }
 
 async function createUsers() {
@@ -212,4 +206,4 @@ async function createCategories() {
   }
 }
 
-createFixtures();
+

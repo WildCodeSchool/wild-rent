@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FieldError, useForm, useFieldArray } from "react-hook-form";
 import {
   useCreateProductMutation,
@@ -21,8 +21,10 @@ export const ArticleForm = ({
 }) => {
   const { error, loading, data } = useGetAllCategoriesQuery();
   const [createProductMutation] = useCreateProductMutation();
-  const [size, setSize] = useState(["Taille unique", "S", "M", "L", "XL"]);
-  const [selectedSize, setSelectedSize] = useState([""]);
+  const [selectedSize, setSelectedSize] = useState<
+    { index: number; value: string }[]
+  >([{ index: 0, value: "" }]);
+  const [isEnable, setIsEnable] = useState(true);
 
   const {
     control,
@@ -41,7 +43,25 @@ export const ArticleForm = ({
     name: "product_options",
   });
 
-  //   const [images, setImages] = useState<File[]>([]);
+  const getAvailableSizes = (index: number): string[] => {
+    const baseSizes = ["S", "M", "L", "XL"];
+    const includeUnique = fields.length === 1;
+    const sizes = includeUnique ? [...baseSizes, "Taille unique"] : baseSizes;
+
+    return sizes.filter((sizeOption) => {
+      for (const sel of selectedSize) {
+        if (sel.value === sizeOption && sel.index !== index) {
+          return false;
+        }
+      }
+      return true;
+    });
+  };
+
+  useEffect(() => {
+    const foundUnique = selectedSize.find((s) => s.value === "Taille unique");
+    setIsEnable(!foundUnique);
+  }, [selectedSize]);
 
   const onSubmit = async (formData: ProductFormValues) => {
     const formattedOptions = formData.product_options.map(
@@ -62,7 +82,6 @@ export const ArticleForm = ({
       },
       product_options: formattedOptions,
     };
-    console.log(input);
 
     if (createOrUpdate === "create") {
       try {
@@ -77,19 +96,7 @@ export const ArticleForm = ({
         toast.error("Erreur lors de la publication");
       }
     }
-    // if (images) {
-    //   console.log("Images à envoyer :", images);
-    // }
-    // setImages([]);
   };
-
-  //   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     const files = e.target.files;
-  //     if (files) {
-  //       const fileArray = Array.from(files);
-  //       setImages(fileArray);
-  //     }
-  //   };
 
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const handleResizeTextarea = () => {
@@ -120,27 +127,6 @@ export const ArticleForm = ({
           <p className="text-red-500">{(errors.title as FieldError).message}</p>
         )}
       </div>
-
-      {/* Image */}
-      {/* <div>
-        <label htmlFor="image" className="block font-semibold">
-          Images
-        </label>
-        <input
-          id="image"
-          type="file"
-          onChange={handleImageChange}
-          multiple
-          className="border p-2 rounded w-full"
-        />
-        {images.length > 0 && (
-          <ul className="mt-2 text-green-500 list-disc list-inside">
-            {images.map((file, index) => (
-              <li key={index}>{file.name}</li>
-            ))}
-          </ul>
-        )}
-      </div> */}
 
       {/* Catégorie */}
       <div>
@@ -185,10 +171,27 @@ export const ArticleForm = ({
                   required: "Veuillez sélectionner une taille",
                 })}
                 className="border rounded p-2 w-full"
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  const newValue = e.target.value;
+                  const oldSize = selectedSize.find(
+                    (size) => size.index === index
+                  );
+
+                  if (oldSize) {
+                    const newSelectedSize = selectedSize.map((el) =>
+                      el.index === index ? { ...el, value: newValue } : el
+                    );
+                    setSelectedSize(newSelectedSize);
+                  } else {
+                    setSelectedSize([
+                      ...selectedSize,
+                      { index, value: newValue },
+                    ]);
+                  }
+                }}
               >
                 <option value="">-- Sélectionnez une taille --</option>
-                {size.map((taille, i) => (
+                {getAvailableSizes(index).map((taille, i) => (
                   <option key={i} value={taille}>
                     {taille}
                   </option>
@@ -224,7 +227,12 @@ export const ArticleForm = ({
             {fields.length > 1 && (
               <button
                 type="button"
-                onClick={() => remove(index)}
+                onClick={() => {
+                  remove(index);
+                  setSelectedSize((prev) =>
+                    prev.filter((el) => el.index !== index)
+                  );
+                }}
                 className="text-red-500 font-bold text-xl cursor-pointer border-2 h-6 w-6 rounded-full transition mt-6 flex items-center justify-center pb-1.5 hover:animate-bounce"
                 title="Supprimer"
               >
@@ -234,13 +242,19 @@ export const ArticleForm = ({
           </div>
         ))}
 
-        {/* Bouton Ajouter */}
+        {/* Ajouter une taille */}
         <button
           type="button"
           onClick={() => {
-            append({ size: "", total_quantity: 1 });
+            if (isEnable) {
+              append({ size: "", total_quantity: 1 });
+            }
           }}
-          className="bg-green border-green border-1 text-white px-4 py-2 rounded hover:bg-light-beige hover:text-green transition mb-3 cursor-pointer"
+          className={
+            isEnable
+              ? "bg-green border-green border-1 text-white px-4 py-2 rounded hover:bg-light-beige hover:text-green transition mb-3 cursor-pointer"
+              : "bg-gray-300 border-gray-300 text-red-600 cursor-not-allowed px-4 py-2 rounded transition mb-3 border-1"
+          }
         >
           Ajouter une taille
         </button>

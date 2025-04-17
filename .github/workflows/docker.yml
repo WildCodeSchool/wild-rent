@@ -1,10 +1,12 @@
 name: build and push docker images
 
- on: push
+ on: 
+  push:
+    branches:
+      - staging
  
  jobs:
  docker:
-   if: github.ref == 'refs/heads/staging'
    runs-on: ubuntu-latest
    steps:
    - name: Set short git commit SHA

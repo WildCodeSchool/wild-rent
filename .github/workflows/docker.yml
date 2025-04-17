@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows: ['client-tests-workflow']
     types: [completed]
+    conclusions: [success]
   push:
     branches:
       - staging
@@ -11,7 +12,6 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
     - name: Check out code
       uses: actions/checkout@v2

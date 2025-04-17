@@ -12,23 +12,8 @@ import { ProductResolver } from "./resolvers/ProductResolver";
 import { ProductOptionResolver } from "./resolvers/ProductOptionResolver";
 import { createFixtures } from "./fixtures/fixtures";
 
-const waitForDB = async (retries = 10, delay = 2000) => {
-  while (retries) {
-    try {
-      await dataSource.initialize();
-      console.log("Database connected");
-      return;
-    } catch (err) {
-      console.log("Waiting for DB...", retries);
-      retries--;
-      await new Promise(res => setTimeout(res, delay));
-    }
-  }
-  throw new Error("Failed to connect to DB");
-};
-
 const start = async () => {
-  await waitForDB()
+  await dataSource.initialize();
 
   if (process.env.FIXTURES) {
     console.log("in fixture if")

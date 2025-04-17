@@ -31,4 +31,4 @@ jobs:
         push: true
         context: "{{defaultContext}}:frontend"
         file: Dockerfile.prod
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/frontend:${{ env.COMMIT_SHORT_SHA }}
+        tags: annieccarignan/frontend:${{ env.COMMIT_SHORT_SHA }}

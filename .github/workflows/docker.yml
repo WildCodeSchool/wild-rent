@@ -12,14 +12,14 @@ docker:
   - name: Set short git commit SHA
     id: vars
     run: |
-       calculatedSha=$(git rev-parse --short ${{ github.sha }})
-       echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
+      calculatedSha=$(git rev-parse --short ${{ github.sha }})
+      echo "COMMIT_SHORT_SHA=$calculatedSha" >> $GITHUB_ENV
   - name: Set up QEMU
-       uses: docker/setup-qemu-action@v2
+    uses: docker/setup-qemu-action@v2
   - name: Set up Docker Buildx
-       uses: docker/setup-buildx-action@v2
+    uses: docker/setup-buildx-action@v2
   - name: Login to Docker Hub
-       uses: docker/login-action@v2
+    uses: docker/login-action@v2
     with:
       username: ${{ secrets.DOCKERHUB_USERNAME }}
       password: ${{ secrets.DOCKERHUB_TOKEN }}

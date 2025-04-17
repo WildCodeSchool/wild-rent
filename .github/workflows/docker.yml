@@ -2,7 +2,7 @@ name: build and push docker images
 
 on:
   workflow_run:
-    workflows: ['e2e-tests-workflow', 'client-tests-workflow']
+    workflows: ['client-tests-workflow']
     types: [completed]
   push:
     branches:

@@ -29,10 +29,11 @@ export async function createFixtures() {
     console.log("🎉 Fixtures created successfully!");
   } catch (error) {
     console.error("❌ Error while creating fixtures:", error);
-  } finally {
-    await dataSource.destroy();
-    console.log("🔌 Database connection closed.");
-  }
+  } 
+  // finally {
+  //   await dataSource.destroy();
+  //   console.log("🔌 Database connection closed.");
+  // }
 }
 
 async function createUsers() {

@@ -42,4 +42,4 @@ name: build and push docker images
       # file: Dockerfile.prod → Utilise un Dockerfile.prod spécifique
       # tags: → L’image est poussée avec 2 tags :
       # latest → pour toujours avoir la dernière version accessible facilement
-      # SHA court (ex: frontend:2f1a9d3) → pour un tag unique correspondant à ce commit
+      #   SHA court (ex: frontend:2f1a9d3) → pour un tag unique correspondant  à ce commit

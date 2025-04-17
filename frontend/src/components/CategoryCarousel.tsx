@@ -13,7 +13,8 @@ function CategoryCarousel({ title, id }: categoryProps) {
   const products = data?.getProductByCategory;
 
   console.log(products);
-
+  if (error) <p>error</p>;
+  if (loading) <p>loading</p>;
   return (
     <div className="w-full px-20 max-w-[1280px] mb-4">
       <div className="flex w-full justify-between px-4">

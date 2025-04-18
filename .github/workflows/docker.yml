@@ -39,5 +39,5 @@ jobs:
         context: "{{defaultContext}}:backend"
         file: Dockerfile.prod
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest, ${{ secrets.DOCKERHUB_USERNAME }}/backend:${{ env.COMMIT_SHORT_SHA }}
-
-        
+    - name: Send webhook to vps
+      run: curl https://webhook.092024-bleu-1.wns.wilders.dev/hooks/update

@@ -47,6 +47,6 @@ services:
       frontend:
         condition: service_healthy
     ports:
-      - 7000:80
+      - 7001:80
 volumes:
   db-data:

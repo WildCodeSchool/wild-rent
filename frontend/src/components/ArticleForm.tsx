@@ -5,12 +5,14 @@ import {
   useGetAllCategoriesQuery,
 } from "../generated/graphql-types";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 type ProductFormValues = {
   title: string;
   description: string;
   price: number;
   category: string;
+  pictures: { url: string }[];
   product_options: { size: string; total_quantity: number }[];
 };
 
@@ -25,6 +27,7 @@ export const ArticleForm = ({
     { index: number; value: string }[]
   >([{ index: 0, value: "" }]);
   const [isEnable, setIsEnable] = useState(true);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
 
   const {
     control,
@@ -32,6 +35,8 @@ export const ArticleForm = ({
     handleSubmit,
     reset,
     formState: { errors },
+    setValue,
+    getValues,
   } = useForm<ProductFormValues>({
     defaultValues: {
       product_options: [{ size: "", total_quantity: 1 }],
@@ -41,6 +46,15 @@ export const ArticleForm = ({
   const { fields, append, remove } = useFieldArray({
     control,
     name: "product_options",
+  });
+
+  const {
+    fields: pictureFields,
+    append: appendPicture,
+    remove: removePicture,
+  } = useFieldArray({
+    control,
+    name: "pictures",
   });
 
   const getAvailableSizes = (index: number): string[] => {
@@ -63,6 +77,12 @@ export const ArticleForm = ({
     setIsEnable(!foundUnique);
   }, [selectedSize]);
 
+  useEffect(() => {
+    if (pictureFields.length === 0) {
+      appendPicture({ url: "" });
+    }
+  }, []);
+
   const onSubmit = async (formData: ProductFormValues) => {
     const formattedOptions = formData.product_options.map(
       (opt: { size: string; total_quantity: any }) => ({
@@ -76,12 +96,14 @@ export const ArticleForm = ({
       name: formData.title,
       description: formData.description,
       price: parseFloat(formData.price.toString()),
-      pictures: [{ id: 1 }],
+      pictures: formData.pictures,
       category: {
         id: parseInt(formData.category),
       },
       product_options: formattedOptions,
     };
+
+    console.log(input);
 
     if (createOrUpdate === "create") {
       try {
@@ -91,6 +113,7 @@ export const ArticleForm = ({
         console.log(result);
         toast.success("Article publié! 💪");
         reset();
+        setPreviewImages([]);
       } catch (error) {
         console.log(error);
         toast.error("Erreur lors de la publication");
@@ -152,6 +175,114 @@ export const ArticleForm = ({
             {(errors.category as FieldError).message}
           </p>
         )}
+      </div>
+
+      {/* Images */}
+      <div className="mt-4">
+        <label className="block font-semibold mb-1">Images</label>
+
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+          {pictureFields.map((field, index) => (
+            <div
+              key={field.id}
+              className="flex flex-col items-start gap-2 border p-3 rounded"
+            >
+              {getValues(`pictures.${index}.url`) ? (
+                <img
+                  src={
+                    previewImages[index]
+                      ? previewImages[index]
+                      : getValues(`pictures.${index}.url`)
+                  }
+                  alt={`Preview ${index}`}
+                  className="w-32 h-32 object-cover rounded shadow"
+                />
+              ) : (
+                <div className="flex flex-col items-start gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      document.getElementById(`file-upload-${index}`)?.click()
+                    }
+                    className="hover:bg-green border-green border-1 hover:text-white px-4 py-2 rounded bg-light-beige text-green transition mt-4 cursor-pointer"
+                  >
+                    Parcourir une image
+                  </button>
+
+                  <input
+                    id={`file-upload-${index}`}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={async (
+                      e: React.ChangeEvent<HTMLInputElement>
+                    ) => {
+                      if (e.target.files) {
+                        const file = e.target.files[0];
+
+                        if (file.size > 5 * 1024 * 1024) {
+                          toast.error("L'image est trop grande (max. 5MB).");
+                          return;
+                        }
+                        if (!file.type.startsWith("image/")) {
+                          toast.error("Le fichier doit être une image.");
+                          return;
+                        }
+
+                        // 1. Créer une preview locale
+                        const previewUrl = URL.createObjectURL(file);
+
+                        // 2. Stocker localement dans previewImages
+                        setPreviewImages((prev) => {
+                          const updated = [...prev];
+                          updated[index] = previewUrl;
+                          return updated;
+                        });
+
+                        // 3. Mettre la valeur RHF en parallèle (pour GraphQL)
+                        setValue(`pictures.${index}.url`, previewUrl);
+
+                        // 4. Upload réel du fichier
+                        const formData = new FormData();
+                        formData.append("file", file);
+
+                        try {
+                          const res = await axios.post("/img", formData);
+                          setValue(`pictures.${index}.url`, res.data.filename);
+                        } catch (err) {
+                          console.error("Erreur upload image:", err);
+                          toast.error("Erreur lors de l'upload de l'image.");
+                        }
+                      }
+                    }}
+                  />
+                </div>
+              )}
+
+              <input
+                type="hidden"
+                {...register(`pictures.${index}.url` as const)}
+              />
+
+              <button
+                type="button"
+                onClick={() => removePicture(index)}
+                className="text-red-500 mt-1 border-1 rounded px-2 py-1 cursor-pointer"
+              >
+                Supprimer
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Bouton d'ajout */}
+        <button
+          type="button"
+          onClick={() => appendPicture({ url: "" })}
+          className="bg-green border-green border-1 text-white px-4 py-2 rounded hover:bg-light-beige hover:text-green transition mt-4 cursor-pointer"
+        >
+          Ajouter une image
+        </button>
       </div>
 
       {/* Product Options */}

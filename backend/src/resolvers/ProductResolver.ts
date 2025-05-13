@@ -1,6 +1,9 @@
 import { ProductInput } from "../inputs/ProductInput";
 import { Product } from "../entities/Product";
 import { Resolver, Query, Arg, Mutation } from "type-graphql";
+import { Picture } from "../entities/Picture";
+import { ProductOption } from "../entities/ProductOption";
+import { Category } from "../entities/Category";
 
 @Resolver(Product)
 export class ProductResolver {
@@ -29,14 +32,30 @@ export class ProductResolver {
 
   @Mutation(() => Product)
   async createProduct(@Arg("data") data: ProductInput) {
-    const newProduct = await Product.save({
+    const pictures = data.pictures?.map((pic) => {
+      return Picture.create({ url: pic.url });
+    });
+
+    const productOptions = data.product_options?.map((opt) =>
+      ProductOption.create({
+        size: opt.size,
+        total_quantity: opt.total_quantity,
+        available_quantity: opt.total_quantity,
+      })
+    );
+
+    const category = await Category.findOneByOrFail({ id: data.category?.id });
+
+    const newProduct = await Product.create({
       name: data.name,
       description: data.description,
       price: data.price,
-      pictures: data.pictures,
-      product_options: data.product_options,
-      category: data.category,
+      pictures: pictures,
+      product_options: productOptions,
+      category: category,
     });
+
+    return await newProduct.save();
 
     return await Product.findOne({
       where: { id: newProduct.id },

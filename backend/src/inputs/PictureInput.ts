@@ -5,6 +5,6 @@ export class PictureInput {
   @Field({ nullable: true })
   id?: number;
 
-  @Field({ nullable: true })
-  url?: string;
+  @Field()
+  url: string;
 }

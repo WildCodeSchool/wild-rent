@@ -110,7 +110,7 @@ export type Picture = {
 
 export type PictureInput = {
   id?: InputMaybe<Scalars['Float']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
+  url: Scalars['String']['input'];
 };
 
 export type Product = {

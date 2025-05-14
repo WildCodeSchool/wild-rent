@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Order } from "./Order";
+import { Product } from "./Product";
 
 @ObjectType()
 @Entity()
@@ -17,6 +18,10 @@ export class ProductInOrder extends BaseEntity {
   @Column()
   @Field()
   total_price: number;
+
+  @ManyToOne(() => Product, { eager: true })
+  @Field(() => Product)
+  product: Product;
 
   @Column()
   @Field()

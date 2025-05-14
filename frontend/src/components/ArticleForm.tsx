@@ -185,7 +185,7 @@ export const ArticleForm = ({
           {pictureFields.map((field, index) => (
             <div
               key={field.id}
-              className="flex flex-col items-start gap-2 border p-3 rounded"
+              className="flex flex-col items-center gap-2 border p-3 rounded"
             >
               {getValues(`pictures.${index}.url`) ? (
                 <img
@@ -195,7 +195,7 @@ export const ArticleForm = ({
                       : getValues(`pictures.${index}.url`)
                   }
                   alt={`Preview ${index}`}
-                  className="w-32 h-32 object-cover rounded shadow"
+                  className="w-45 h-45 object-cover rounded shadow"
                 />
               ) : (
                 <div className="flex flex-col items-start gap-2">

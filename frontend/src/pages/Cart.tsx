@@ -1,19 +1,60 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { cartContext } from "../context/CartContext";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const cart = () => {
   const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+  const [duration, setDuration] = useState<number>(0);
+  const [datesValidated, setDatesValidated] = useState(false);
+
   const imageBasePath = "/assets/images/";
   const total = items
-    .map((item: any) => item.totalPrice * item.quantity)
+    .map((item: any) => item.price * item.quantity * duration)
     .reduce((acc, price) => acc + price, 0);
 
   const handleRemoveClick = (index: number) => {
     removeItemFromCart(index);
   };
-  const handleUpdateQuantity = (product: any) => {
+  const handleAddQuantity = (product: any) => {
     updateQuantity(product.quantity++);
   };
+  const handleRemoveQuantity = (product: any) => {
+    updateQuantity(product.quantity--);
+  };
+  const calculateDuration = (start: Date | null, end: Date | null) => {
+    if (start && end) {
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+  };
+  const handleDuration = (startDate: Date | null, endDate: Date | null) => {
+    const newDuration: any = calculateDuration(startDate, endDate);
+    setDuration(newDuration);
+    setDatesValidated(true);
+
+    if (startDate && endDate && newDuration !== undefined) {
+      localStorage.setItem("rentalStartDate", startDate.toISOString());
+      localStorage.setItem("rentalEndDate", endDate.toISOString());
+      localStorage.setItem("rentalDuration", String(newDuration));
+    }
+  };
+
+  useEffect(() => {
+    const savedStart = localStorage.getItem("rentalStartDate");
+    const savedEnd = localStorage.getItem("rentalEndDate");
+    const savedDuration = localStorage.getItem("rentalDuration");
+
+    if (savedStart && savedEnd && savedDuration) {
+      setStartDate(new Date(savedStart));
+      setEndDate(new Date(savedEnd));
+      setDuration(parseInt(savedDuration));
+      setDatesValidated(true);
+    }
+  }, []);
+
   return (
     <>
       {items.length === 0 && (
@@ -24,6 +65,61 @@ const cart = () => {
       {items.length !== 0 && (
         <div>
           <div className="w-[90%] lg:w-[70%] m-auto">
+            <div>
+              <h3 className="text-xl sm:text-1xl pt-6 font-semibold">
+                Selectionnez vos dates de location :
+              </h3>
+              <div className="flex flex-col justify-evenly gap-4 mb-4">
+                <div className="flex flex-row justify-between items-center">
+                  <div className="flex flex-col w-[35%]">
+                    <DatePicker
+                      selected={startDate}
+                      onChange={(date) => {
+                        setStartDate(date);
+                      }}
+                      dateFormat="dd/MM/yyyy"
+                      placeholderText="Début"
+                      className="border rounded-md p-2 w-full"
+                    />
+                  </div>
+                  <div className="flex flex-col w-[35%]">
+                    <DatePicker
+                      selected={endDate}
+                      onChange={(date) => {
+                        setEndDate(date);
+                      }}
+                      dateFormat="dd/MM/yyyy"
+                      placeholderText="Fin"
+                      className="border rounded-md p-2 w-full"
+                    />
+                  </div>
+                  <div>
+                    <button
+                      className="bg-[#52796F] text-white p-2 rounded-full mt-4"
+                      onClick={() => handleDuration(startDate, endDate)}
+                    >
+                      Valider les dates
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {datesValidated ? (
+                <p className="italic">
+                  Vous souhaitez louer du {""}
+                  <span className="font-bold">
+                    {startDate ? startDate.toLocaleDateString() : "?"}
+                  </span>{" "}
+                  au {""}
+                  <span className="font-bold">
+                    {endDate ? endDate.toLocaleDateString() : "?"}
+                  </span>{" "}
+                  soit un total de <span className="font-bold">{duration}</span>{" "}
+                  jour(s)
+                </p>
+              ) : (
+                <></>
+              )}
+            </div>
             <h3 className="text-xl sm:text-2xl pt-6 font-semibold">
               Contenu de mon panier:
             </h3>
@@ -44,15 +140,28 @@ const cart = () => {
                 <div className="bg-[#D9D9D9] w-2/4 p-2">
                   <p className="text-base sm:text-xl"> {item.name}</p>
                   <p>{item.product_options}</p>
-                  <p>
-                    du {new Date(item.startDate).toLocaleDateString()} au{" "}
-                    {new Date(item.endDate).toLocaleDateString()}
-                  </p>
+                  <p className="text-sm sm:text-base">{item.price}€ / jour</p>
                 </div>
                 <div className="w-1/4 flex flex-col pt-8 items-center">
                   <div className="flex items-center">
                     <button
                       className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-14 rounded-tl-lg rounded-bl-lg flex justify-center"
+                      onClick={() => handleRemoveQuantity(item)}
+                    >
+                      -
+                    </button>
+                    <div className="bg-[#D9D9D966] w-6 md:w-8 lg:w-14 text-center">
+                      {item.quantity}
+                    </div>
+                    <button
+                      className="bg-[#D9D9D9] w-6 md:w-8 lg:w-14 rounded-tr-lg rounded-br-lg text-center"
+                      onClick={() => handleAddQuantity(item)}
+                    >
+                      +
+                    </button>
+
+                    <button
+                      className="ml-3"
                       onClick={() => handleRemoveClick(index)}
                     >
                       <img
@@ -61,19 +170,14 @@ const cart = () => {
                         className="w-4 h-4  lg:w-6 lg:h-6  m-auto"
                       />{" "}
                     </button>
-                    <div className="bg-[#D9D9D966] w-6 md:w-8 lg:w-14 text-center">
-                      {item.quantity}
-                    </div>
-                    <button
-                      className="bg-[#D9D9D9] w-6 md:w-8 lg:w-14 rounded-tr-lg rounded-br-lg text-center"
-                      onClick={() => handleUpdateQuantity(item)}
-                    >
-                      +
-                    </button>
                   </div>
                   <div className="text-center mt-2 text-white">
-                    {" "}
-                    <p>{item.totalPrice * item.quantity}€</p>
+                    {duration === 0 ? (
+                      <p>{item.price * item.quantity}€</p>
+                    ) : (
+                      <p>{item.price * item.quantity * duration}€</p>
+                    )}
+                    {/* //<p>{item.price * item.quantity * duration}€</p> */}
                   </div>
                 </div>
               </div>

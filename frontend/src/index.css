@@ -5,7 +5,14 @@
   --color-blue: #3a506b;
   --color-light-beige: #f8f6ef;
 
-  --font-body: "Inter", serif;
-  --font-title: "Acme", serif;
+  --font-body: "Hind", serif;
+  --font-title: "Montserrat", serif;
+}
 
+h1 {
+  font-family: var(--font-title);
+}
+
+body {
+  font-family: var(--font-body);
 }

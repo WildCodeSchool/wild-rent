@@ -116,13 +116,12 @@ export type Product = {
 export type ProductInOrder = {
   __typename?: 'ProductInOrder';
   order: Order;
+  productOption: ProductOption;
   quantity: Scalars['Float']['output'];
-  total_price: Scalars['Float']['output'];
 };
 
 export type ProductOption = {
   __typename?: 'ProductOption';
-  available_quantity: Scalars['Float']['output'];
   id: Scalars['Float']['output'];
   product: Product;
   size: Scalars['String']['output'];
@@ -220,14 +219,14 @@ export type GetProductOptionsQueryVariables = Exact<{
 }>;
 
 
-export type GetProductOptionsQuery = { __typename?: 'Query', getProductOptions: Array<{ __typename?: 'ProductOption', id: number, size: string, total_quantity: number, available_quantity: number }> };
+export type GetProductOptionsQuery = { __typename?: 'Query', getProductOptions: Array<{ __typename?: 'ProductOption', id: number, size: string, total_quantity: number }> };
 
 export type GetProductByIdQueryVariables = Exact<{
   getProductByIdId: Scalars['Float']['input'];
 }>;
 
 
-export type GetProductByIdQuery = { __typename?: 'Query', getProductById: { __typename?: 'Product', id: number, name: string, description: string, price: number, created_at: any, pictures: Array<{ __typename?: 'Picture', id: number, url: string }>, product_options: Array<{ __typename?: 'ProductOption', size: string, id: number, available_quantity: number }> } };
+export type GetProductByIdQuery = { __typename?: 'Query', getProductById: { __typename?: 'Product', id: number, name: string, description: string, price: number, created_at: any, pictures: Array<{ __typename?: 'Picture', id: number, url: string }>, product_options: Array<{ __typename?: 'ProductOption', size: string, id: number }> } };
 
 export type GetUserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -424,7 +423,6 @@ export const GetProductOptionsDocument = gql`
     id
     size
     total_quantity
-    available_quantity
   }
 }
     `;
@@ -476,7 +474,6 @@ export const GetProductByIdDocument = gql`
     product_options {
       size
       id
-      available_quantity
     }
   }
 }

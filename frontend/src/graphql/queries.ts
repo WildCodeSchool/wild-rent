@@ -33,7 +33,6 @@ export const GET_PRODUCT_OPTIONS_BY_ID_PRODUCT = gql`
       id
       size
       total_quantity
-      available_quantity
     }
   }
 `;
@@ -57,7 +56,6 @@ export const GET_PRODUCT_BY_ID = gql`
       product_options {
         size
         id
-        available_quantity
       }
     }
   }

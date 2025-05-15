@@ -2,6 +2,8 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -10,6 +12,7 @@ import { Category } from "./Category";
 import { Picture } from "./Picture";
 import { ProductOption } from "./ProductOption";
 import { Field, ObjectType } from "type-graphql";
+import { Tag } from "./Tag";
 
 @ObjectType()
 @Entity()
@@ -53,4 +56,9 @@ export class Product extends BaseEntity {
   @Field(() => Category)
   @ManyToOne(() => Category, (category) => category.products, { eager: true })
   category: Category;
+
+  @Field(() => [Tag])
+  @ManyToMany(() => Tag, (tag) => tag.products, { eager: true })
+  @JoinTable()
+  tags: Tag[];
 }

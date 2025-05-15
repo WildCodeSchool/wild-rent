@@ -30,6 +30,7 @@ export type Category = {
   __typename?: 'Category';
   id: Scalars['Float']['output'];
   image: Scalars['String']['output'];
+  tags: Array<Tag>;
   title: Scalars['String']['output'];
 };
 
@@ -111,6 +112,7 @@ export type Product = {
   pictures: Array<Picture>;
   price: Scalars['Float']['output'];
   product_options: Array<ProductOption>;
+  tags: Array<Tag>;
 };
 
 export type ProductInOrder = {
@@ -151,6 +153,13 @@ export type QueryGetProductByIdArgs = {
 
 export type QueryGetProductOptionsArgs = {
   productId: Scalars['Float']['input'];
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  category: Category;
+  id: Scalars['Float']['output'];
+  label: Scalars['String']['output'];
 };
 
 export type User = {

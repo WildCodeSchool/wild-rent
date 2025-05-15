@@ -54,7 +54,11 @@ const cart = () => {
       setDatesValidated(true);
     }
   }, []);
-
+  const onChange = (dates: any) => {
+    const [start, end] = dates;
+    setStartDate(start);
+    setEndDate(end);
+  };
   return (
     <>
       {items.length === 0 && (
@@ -69,38 +73,23 @@ const cart = () => {
               <h3 className="text-xl sm:text-1xl pt-6 font-semibold">
                 Selectionnez vos dates de location :
               </h3>
-              <div className="flex flex-col justify-evenly gap-4 mb-4">
-                <div className="flex flex-row justify-between items-center">
-                  <div className="flex flex-col w-[35%]">
-                    <DatePicker
-                      selected={startDate}
-                      onChange={(date) => {
-                        setStartDate(date);
-                      }}
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText="Début"
-                      className="border rounded-md p-2 w-full"
-                    />
-                  </div>
-                  <div className="flex flex-col w-[35%]">
-                    <DatePicker
-                      selected={endDate}
-                      onChange={(date) => {
-                        setEndDate(date);
-                      }}
-                      dateFormat="dd/MM/yyyy"
-                      placeholderText="Fin"
-                      className="border rounded-md p-2 w-full"
-                    />
-                  </div>
-                  <div>
-                    <button
-                      className="bg-[#52796F] text-white p-2 rounded-full mt-4"
-                      onClick={() => handleDuration(startDate, endDate)}
-                    >
-                      Valider les dates
-                    </button>
-                  </div>
+              <div className="flex flex-col mt-4 mb-4">
+                <div className="flex flex-row items-center">
+                  <DatePicker
+                    selected={startDate}
+                    onChange={onChange}
+                    startDate={startDate}
+                    endDate={endDate}
+                    dateFormat="dd/MM/yyyy"
+                    selectsRange
+                    className="border rounded-md p-2 w-full"
+                  />
+                  <button
+                    className="bg-[#52796F] text-white p-2 pr-5 pl-5 ml-15 rounded-full"
+                    onClick={() => handleDuration(startDate, endDate)}
+                  >
+                    Valider les dates
+                  </button>
                 </div>
               </div>
               {datesValidated ? (
@@ -143,23 +132,33 @@ const cart = () => {
                   <p className="text-sm sm:text-base">{item.price}€ / jour</p>
                 </div>
                 <div className="w-1/4 flex flex-col pt-8 items-center">
-                  <div className="flex items-center">
-                    <button
-                      className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-14 rounded-tl-lg rounded-bl-lg flex justify-center"
-                      onClick={() => handleRemoveQuantity(item)}
-                    >
-                      -
-                    </button>
-                    <div className="bg-[#D9D9D966] w-6 md:w-8 lg:w-14 text-center">
-                      {item.quantity}
+                  <div className="flex flex-row items-center">
+                    <div>
+                      <div className="flex flex-row">
+                        <button
+                          className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-14 rounded-tl-lg rounded-bl-lg flex justify-center"
+                          onClick={() => handleRemoveQuantity(item)}
+                        >
+                          -
+                        </button>
+                        <div className="bg-[#D9D9D966] w-6 md:w-8 lg:w-14 text-center">
+                          {item.quantity}
+                        </div>
+                        <button
+                          className="bg-[#D9D9D9] w-6 md:w-8 lg:w-14 rounded-tr-lg rounded-br-lg text-center"
+                          onClick={() => handleAddQuantity(item)}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div className="text-center mt-2 text-white">
+                        {duration === 0 ? (
+                          <p>{item.price * item.quantity}€</p>
+                        ) : (
+                          <p>{item.price * item.quantity * duration}€</p>
+                        )}
+                      </div>
                     </div>
-                    <button
-                      className="bg-[#D9D9D9] w-6 md:w-8 lg:w-14 rounded-tr-lg rounded-br-lg text-center"
-                      onClick={() => handleAddQuantity(item)}
-                    >
-                      +
-                    </button>
-
                     <button
                       className="ml-3"
                       onClick={() => handleRemoveClick(index)}
@@ -170,14 +169,6 @@ const cart = () => {
                         className="w-4 h-4  lg:w-6 lg:h-6  m-auto"
                       />{" "}
                     </button>
-                  </div>
-                  <div className="text-center mt-2 text-white">
-                    {duration === 0 ? (
-                      <p>{item.price * item.quantity}€</p>
-                    ) : (
-                      <p>{item.price * item.quantity * duration}€</p>
-                    )}
-                    {/* //<p>{item.price * item.quantity * duration}€</p> */}
                   </div>
                 </div>
               </div>

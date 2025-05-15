@@ -24,8 +24,8 @@ export const Login = () => {
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log("data", data);
     login({
-      variables: { data: { email: data.email, password: data.password } }, 
-      onCompleted: () => navigate("/"), 
+      variables: { data: { email: data.email, password: data.password } },
+      onCompleted: () => navigate("/"),
     });
   };
 
@@ -66,11 +66,12 @@ export const Login = () => {
               </span>
             )}
           </div>
-
+          <div className="text-green underline font-semibold text-center">
+            <a href=""> Mot de passe oublié ?</a>
+          </div>
           <button
             type="submit"
-            className="w-full bg-green text-white py-2 rounded-2xl hover:bg-blue transition duration-300 cursor-pointer
-"
+            className="w-full bg-green text-white py-2 rounded-2xl hover:bg-blue transition duration-300 cursor-pointer"
           >
             Se connecter
           </button>

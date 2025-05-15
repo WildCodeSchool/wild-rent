@@ -82,10 +82,10 @@ const cart = () => {
                     endDate={endDate}
                     dateFormat="dd/MM/yyyy"
                     selectsRange
-                    className="border rounded-md p-2 w-full"
+                    className="border rounded-xl p-2 w-full"
                   />
                   <button
-                    className="bg-[#52796F] text-white p-2 pr-5 pl-5 ml-15 rounded-full"
+                    className="bg-[#52796F] text-white p-2 pr-5 pl-5 ml-15 rounded-xl"
                     onClick={() => handleDuration(startDate, endDate)}
                   >
                     Valider les dates
@@ -131,21 +131,21 @@ const cart = () => {
                   <p>{item.product_options}</p>
                   <p className="text-sm sm:text-base">{item.price}€ / jour</p>
                 </div>
-                <div className="w-1/4 flex flex-col pt-8 items-center">
-                  <div className="flex flex-row items-center">
+                <div className="w-1/4 flex flex-col items-center">
+                  <div className="flex flex-row mt-4">
                     <div>
                       <div className="flex flex-row">
                         <button
-                          className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-14 rounded-tl-lg rounded-bl-lg flex justify-center"
+                          className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-10 xl:w-14 rounded-tl-lg rounded-bl-lg flex justify-center"
                           onClick={() => handleRemoveQuantity(item)}
                         >
                           -
                         </button>
-                        <div className="bg-[#D9D9D966] w-6 md:w-8 lg:w-14 text-center">
+                        <div className="bg-[#D9D9D966] w-6 md:w-8 lg:w-10 xl:w-14 text-center">
                           {item.quantity}
                         </div>
                         <button
-                          className="bg-[#D9D9D9] w-6 md:w-8 lg:w-14 rounded-tr-lg rounded-br-lg text-center"
+                          className="bg-[#D9D9D9] w-6 md:w-8 lg:w-10 xl:w-14 rounded-tr-lg rounded-br-lg text-center"
                           onClick={() => handleAddQuantity(item)}
                         >
                           +
@@ -159,16 +159,18 @@ const cart = () => {
                         )}
                       </div>
                     </div>
-                    <button
-                      className="ml-3"
-                      onClick={() => handleRemoveClick(index)}
-                    >
-                      <img
-                        src="/assets/images/corbeille.png"
-                        alt="corbeille"
-                        className="w-4 h-4  lg:w-6 lg:h-6  m-auto"
-                      />{" "}
-                    </button>
+                    <div>
+                      <button
+                        className="mt-1 ml-2 md:ml-3 lg:ml-5"
+                        onClick={() => handleRemoveClick(index)}
+                      >
+                        <img
+                          src="/assets/images/corbeille.png"
+                          alt="corbeille"
+                          className="w-4 h-4  lg:w-6 lg:h-6  m-auto"
+                        />{" "}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -179,7 +181,7 @@ const cart = () => {
             <p className="text-2xl">{total}€</p>
           </div>
           <div className="flex justify-center pb-8 pt-8">
-            <button className="md:w-1/4 m-auto bg-[#52796F] text-white p-2 rounded-full sm:text-xl">
+            <button className="md:w-1/4 m-auto bg-[#52796F] text-white p-2 rounded-xl sm:text-xl">
               Passer ma commande
             </button>
           </div>

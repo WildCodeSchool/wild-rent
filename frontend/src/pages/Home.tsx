@@ -3,7 +3,7 @@ import SectionCategories from "../components/SectionCategories";
 function Home() {
   return (
     <div>
-      <div>Slider Homepage</div>
+      <div>Webhook final test, easy pz</div>
       <SectionCategories />
     </div>
   );

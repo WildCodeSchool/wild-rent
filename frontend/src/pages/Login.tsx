@@ -42,7 +42,7 @@ export const Login = () => {
             <input
               type="email"
               placeholder="Email"
-              defaultValue="romanbeldent@gmail.com"
+              defaultValue="jonsnow@wild-rent.com"
               {...register("email", { required: true })}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 "
             />
@@ -56,7 +56,7 @@ export const Login = () => {
             <input
               type="password"
               placeholder="Mot de passe"
-              defaultValue="test"
+              defaultValue="password"
               {...register("password", { required: true })}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             />

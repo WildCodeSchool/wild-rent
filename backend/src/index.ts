@@ -10,9 +10,15 @@ import { dataSource } from "./config/db";
 import { CategoryResolver } from "./resolvers/CategoryResolver";
 import { ProductResolver } from "./resolvers/ProductResolver";
 import { ProductOptionResolver } from "./resolvers/ProductOptionResolver";
+import { createFixtures } from "./fixtures/fixtures";
 
 const start = async () => {
   await dataSource.initialize();
+
+  if (process.env.FIXTURES) {
+    console.log("in fixture if")
+    await createFixtures();
+  }
 
   const schema = await buildSchema({
     resolvers: [
@@ -40,7 +46,7 @@ const start = async () => {
             }
         }
         return { res: res };
-    }
+    },
 });
 
   console.log(`🚀 Server listening at: ${url}`);

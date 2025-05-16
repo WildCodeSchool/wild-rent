@@ -1,0 +1,14 @@
+name: client-tests-workflow
+
+on: pull_request
+
+jobs:
+  test-client:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Create .env
+        run: cp .env.example .env
+      - name: Goto frontend and run tests
+        run: cd frontend && npm install && npm run test

@@ -5,7 +5,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node-dev --poll ./src/index.ts",
-    "fixtures": "docker exec -it wild-rent-backend-1 sh -c \"cd src/fixtures && npx ts-node fixtures.ts\""
+    "build": "tsc",
+    "startprod": "node ./dist/index.js",
+    "fixtures": "docker exec -it wild-rent-backend-1 sh -c \"cd src/fixtures && npx ts-node launchFixtures.ts\""
   },
   "author": "",
   "license": "ISC",
@@ -14,7 +16,6 @@
     "@apollo/server": "^4.11.3",
     "argon2": "^0.41.1",
     "cookie": "^1.0.2",
-    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "graphql": "^16.10.0",
     "graphql-scalars": "^1.24.1",

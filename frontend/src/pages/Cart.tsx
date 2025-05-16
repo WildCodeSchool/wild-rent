@@ -10,7 +10,6 @@ const cart = () => {
   const [duration, setDuration] = useState<number>(0);
   const [datesValidated, setDatesValidated] = useState(false);
 
-  const imageBasePath = "/assets/images/";
   const total = items
     .map((item: any) => item.price * item.quantity * duration)
     .reduce((acc, price) => acc + price, 0);
@@ -122,7 +121,7 @@ const cart = () => {
                 <div className="w-[20%] md:w-[25%] flex justify-center mt-2 mb-2">
                   <img
                     className="max-w-full max-h-14 md:max-h-16 lg:max-h-24 rounded-lg ml-1"
-                    src={imageBasePath + item.pictures[0].url}
+                    src={item.pictures[0].url}
                     alt={item.name}
                   />
                 </div>

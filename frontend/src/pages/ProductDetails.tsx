@@ -24,22 +24,14 @@ const ProductDetails = () => {
     variables: { getProductByIdId: parseInt(id) },
   });
 
-  // const [startDate, setStartDate] = useState<Date | null>(null);
-  // const [endDate, setEndDate] = useState<Date | null>(null);
-  //const [duration, setDuration] = useState<number>(0);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
   const products = data?.getProductById;
 
-  /* const handleDuration = (startDate: Date | null, endDate: Date | null) => {
-    const newDuration = calculateDuration(startDate, endDate);
-    setDuration(newDuration);
-  }; */
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading product</p>;
-  const mainImage = activeImage || imageBasePath + products?.pictures[0].url;
+  const mainImage = activeImage || products?.pictures[0].url;
 
   return (
     <div className="flex flex-col md:flex-row items-start gap-10 p-10 bg-white shadow-md rounded-lg max-w-4xl mx-auto">
@@ -54,7 +46,7 @@ const ProductDetails = () => {
         {/* Miniatures */}
         <div className="flex flex-col md:flex-row gap-2 justify-around">
           {products?.pictures.slice(0, 4).map((pic: any, index: number) => {
-            const fullUrl = imageBasePath + pic.url;
+            const fullUrl = pic.url;
             return (
               <img
                 key={index}

@@ -27,7 +27,7 @@ export class Product extends BaseEntity {
   description: string;
 
   @Field()
-  @Column()
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   price: number;
 
   @Field(() => [Picture])
@@ -44,10 +44,13 @@ export class Product extends BaseEntity {
     eager: true,
     onDelete: "CASCADE",
   })
-    product_options: ProductOption[];
+  product_options: ProductOption[];
 
   @Field()
-  @Column()
+  @Column({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   created_at: Date;
 
   @Field(() => Category)

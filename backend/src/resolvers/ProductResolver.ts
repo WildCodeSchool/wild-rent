@@ -1,3 +1,4 @@
+
 import { Product } from "../entities/Product";
 import { Resolver, Query, Arg } from "type-graphql";
 
@@ -25,6 +26,30 @@ export class ProductResolver {
           },
         }
       })
+    return products;
+  }
+
+  @Query(() => [Product])
+  async getProductWithFilters( @Arg("categoryId") categoryId: number,
+  @Arg("minPrice") minPrice: number,
+  @Arg("maxPrice") maxPrice: number,
+  @Arg("tags", () => [String]) tags: string[]
+)
+  {
+    const queryBuilder = Product.createQueryBuilder("product")
+    .leftJoinAndSelect("product.category", "category")
+    .leftJoinAndSelect("product.tags", "tag")
+    .leftJoinAndSelect("product.pictures", "pictures")
+    .where("product.categoryId = :categoryId", {categoryId: categoryId})
+    .andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
+    .andWhere("product.price >= :minPrice", { minPrice: minPrice })
+
+    if(tags && tags.length >0){
+      queryBuilder.andWhere("tag.label IN (:...tags)", {tags})
+    }
+
+    const products= await queryBuilder.getMany()
+    
     return products;
   }
 }

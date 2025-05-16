@@ -47,7 +47,7 @@ export class Product extends BaseEntity {
     eager: true,
     onDelete: "CASCADE",
   })
-    product_options: ProductOption[];
+  product_options: ProductOption[];
 
   @Field()
   @Column()

@@ -37,7 +37,7 @@ export function ProductFilters({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       tags: [],
-      priceRange: [0, 1000],
+      priceRange: [0, 100],
     },
   });
 
@@ -53,7 +53,7 @@ export function ProductFilters({
   function reset() {
     const defaultValues = {
       tags: [],
-      priceRange: [0, 500] as [number, number],
+      priceRange: [0, 100] as [number, number],
     };
 
     form.reset(defaultValues);
@@ -129,21 +129,25 @@ export function ProductFilters({
             </FormItem>
           )}
         />
-        <div className="flex justify-between">
-          <Button
-            type="submit"
-            className="bg-green hover:bg-green/60 text-base cursor-pointer"
-          >
-            Appliquer
-          </Button>
-          <Button
-            type="button"
-            variant={"outline"}
-            className="text-base cursor-pointer"
-            onClick={() => reset()}
-          >
-            Réinitialiser
-          </Button>
+        <div className="flex justify-between w-full gap-5 mt-10">
+          <div className="w-1/2">
+            <Button
+              type="button"
+              variant={"outline"}
+              className="text-base cursor-pointer w-full"
+              onClick={() => reset()}
+            >
+              Réinitialiser
+            </Button>
+          </div>
+          <div className="w-1/2">
+            <Button
+              type="submit"
+              className="bg-green hover:bg-green/60 text-base cursor-pointer w-full"
+            >
+              Appliquer
+            </Button>
+          </div>
         </div>
       </form>
     </Form>

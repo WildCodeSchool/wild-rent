@@ -64,7 +64,6 @@ export class ProductResolver {
       ProductOption.create({
         size: opt.size,
         total_quantity: opt.total_quantity,
-        available_quantity: opt.total_quantity,
       })
     );
 
@@ -80,10 +79,5 @@ export class ProductResolver {
     });
 
     return await newProduct.save();
-
-    return await Product.findOne({
-      where: { id: newProduct.id },
-      relations: ["category"],
-    });
   }
 }

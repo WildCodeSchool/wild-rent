@@ -7,6 +7,12 @@ import Loader from "../components/Loader";
 import ItemCard from "../components/ItemCard";
 
 import { ProductFilters } from "@/components/ProductFilters";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 function ProductsByCategories() {
   const location = useLocation();
@@ -42,14 +48,34 @@ function ProductsByCategories() {
           {title}
         </h1>
       </div>
-      <div className="flex flex-col sm:flex-row w-full px-5 lg:px-10 xl:px-20 mt-10 gap-5">
+      <div className="flex flex-col sm:flex-row w-full px-5 lg:px-10 xl:px-20 mt-10 gap-10">
         <div className="w-full sm:w-1/4">
-          <h2 className="text-2xl lg:text-3xl text-title font-bold text-black mb-5">
-            Filtres
-          </h2>
-          {tags && (
-            <ProductFilters tags={tags} refetch={refetch} categoryId={id} />
-          )}
+          <div className="sm:hidden flex flex-col">
+            <Accordion type="single" collapsible>
+              <AccordionItem value="item-1">
+                <AccordionTrigger className="text-2xl lg:text-3xl text-title font-bold text-black mb-5">
+                  Filtres
+                </AccordionTrigger>
+                <AccordionContent>
+                  {tags && (
+                    <ProductFilters
+                      tags={tags}
+                      refetch={refetch}
+                      categoryId={id}
+                    />
+                  )}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+          <div className="hidden sm:flex flex-col">
+            <h2 className="text-2xl lg:text-3xl text-title font-bold text-black mb-5">
+              Filtres
+            </h2>
+            {tags && (
+              <ProductFilters tags={tags} refetch={refetch} categoryId={id} />
+            )}
+          </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 sm:w-3/4 w-full">
           {products &&

@@ -130,10 +130,8 @@ export type Product = {
 export type ProductInOrder = {
   __typename?: 'ProductInOrder';
   order: Order;
-  product: Product;
   productOption: ProductOption;
   quantity: Scalars['Float']['output'];
-  total_price: Scalars['Float']['output'];
 };
 
 export type ProductInput = {
@@ -155,7 +153,6 @@ export type ProductOption = {
 };
 
 export type ProductOptionInput = {
-  available_quantity?: InputMaybe<Scalars['Float']['input']>;
   id?: InputMaybe<Scalars['Float']['input']>;
   size?: InputMaybe<Scalars['String']['input']>;
   total_quantity?: InputMaybe<Scalars['Float']['input']>;
@@ -264,7 +261,7 @@ export type CreateProductMutationVariables = Exact<{
 }>;
 
 
-export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', created_at: any, description: string, id: number, name: string, price: number, category: { __typename?: 'Category', title: string, id: number, image: string }, product_options: Array<{ __typename?: 'ProductOption', id: number, available_quantity: number, size: string, total_quantity: number }>, pictures: Array<{ __typename?: 'Picture', id: number, url: string }> } };
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', created_at: any, description: string, id: number, name: string, price: number, category: { __typename?: 'Category', title: string, id: number, image: string }, product_options: Array<{ __typename?: 'ProductOption', id: number, size: string, total_quantity: number }>, pictures: Array<{ __typename?: 'Picture', id: number, url: string }> } };
 
 export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -423,7 +420,6 @@ export const CreateProductDocument = gql`
     price
     product_options {
       id
-      available_quantity
       size
       total_quantity
     }

@@ -121,7 +121,7 @@ const cart = () => {
               >
                 <div className="w-[20%] md:w-[25%] flex justify-center mt-2 mb-2">
                   <img
-                    className="max-w-full max-h-14 md:max-h-16 lg:max-h-24 rounded-lg"
+                    className="max-w-full max-h-14 md:max-h-16 lg:max-h-24 rounded-lg ml-1"
                     src={imageBasePath + item.pictures[0].url}
                     alt={item.name}
                   />
@@ -131,7 +131,7 @@ const cart = () => {
                   <p>{item.product_options}</p>
                   <p className="text-xs sm:text-base">{item.price}€ / jour</p>
                 </div>
-                <div className="w-[35%] flex flex-col items-center">
+                <div className="w-[30%] flex flex-col items-center">
                   <div className="flex flex-row mt-4">
                     <div>
                       <div className="flex flex-row">
@@ -160,10 +160,7 @@ const cart = () => {
                       </div>
                     </div>
                     <div className="mt-1 ml-2 md:ml-3  lg:mb-4 lg:ml-5">
-                      <button
-                        //className="mt-1 ml-2 md:ml-3  lg:mb-4 lg:ml-5"
-                        onClick={() => handleRemoveClick(index)}
-                      >
+                      <button onClick={() => handleRemoveClick(index)}>
                         <img
                           src="/assets/images/corbeille.png"
                           alt="corbeille"

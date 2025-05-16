@@ -48,7 +48,7 @@ const start = async () => {
             }
         }
         return { res: res };
-    }
+    },
 });
 
   console.log(`🚀 Server listening at: ${url}`);

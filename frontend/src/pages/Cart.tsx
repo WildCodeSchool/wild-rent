@@ -70,7 +70,7 @@ const cart = () => {
         <div>
           <div className="w-[90%] lg:w-[70%] m-auto">
             <div>
-              <h3 className="text-xl sm:text-1xl pt-6 font-semibold">
+              <h3 className="text-l sm:text-1xl pt-6 font-semibold">
                 Selectionnez vos dates de location :
               </h3>
               <div className="flex flex-col mt-4 mb-4">
@@ -85,7 +85,7 @@ const cart = () => {
                     className="border rounded-xl p-2 w-full"
                   />
                   <button
-                    className="bg-[#52796F] text-white p-2 pr-5 pl-5 ml-15 rounded-xl"
+                    className="text-sm lg:text-base bg-[#52796F] text-white p-2 lg:pr-5 lg:pl-5 ml-5 lg:ml-15 rounded-xl"
                     onClick={() => handleDuration(startDate, endDate)}
                   >
                     Valider les dates
@@ -113,25 +113,25 @@ const cart = () => {
               Contenu de mon panier:
             </h3>
           </div>
-          <div className="bg-white flex justify-center flex-col md:p-4">
+          <div className="bg-white flex justify-center flex-col md:p-4 ">
             {items.map((item: any, index: number) => (
               <div
-                className="w-[90%] lg:w-[70%] bg-[#52796F] m-auto mt-4 flex justify-between items-center"
+                className="w-[95%] lg:w-[80%] bg-[#52796F] rounded-lg m-auto mt-4 flex justify-between items-center"
                 key={index}
               >
-                <div className="w-1/4 flex justify-center mt-2 mb-2">
+                <div className="w-[20%] md:w-[25%] flex justify-center mt-2 mb-2">
                   <img
-                    className="max-w-full max-h-24"
+                    className="max-w-full max-h-14 md:max-h-16 lg:max-h-24 rounded-lg"
                     src={imageBasePath + item.pictures[0].url}
                     alt={item.name}
                   />
                 </div>
-                <div className="bg-[#D9D9D9] w-2/4 p-2">
+                <div className="bg-[#D9D9D9] w-[40%] lg:w-[50%] p-2 rounded-lg">
                   <p className="text-base sm:text-xl"> {item.name}</p>
                   <p>{item.product_options}</p>
-                  <p className="text-sm sm:text-base">{item.price}€ / jour</p>
+                  <p className="text-xs sm:text-base">{item.price}€ / jour</p>
                 </div>
-                <div className="w-1/4 flex flex-col items-center">
+                <div className="w-[35%] flex flex-col items-center">
                   <div className="flex flex-row mt-4">
                     <div>
                       <div className="flex flex-row">
@@ -159,9 +159,9 @@ const cart = () => {
                         )}
                       </div>
                     </div>
-                    <div>
+                    <div className="mt-1 ml-2 md:ml-3  lg:mb-4 lg:ml-5">
                       <button
-                        className="mt-1 ml-2 md:ml-3 lg:ml-5"
+                        //className="mt-1 ml-2 md:ml-3  lg:mb-4 lg:ml-5"
                         onClick={() => handleRemoveClick(index)}
                       >
                         <img

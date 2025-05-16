@@ -116,6 +116,7 @@ export type Product = {
 export type ProductInOrder = {
   __typename?: 'ProductInOrder';
   order: Order;
+  product: Product;
   quantity: Scalars['Float']['output'];
   total_price: Scalars['Float']['output'];
 };

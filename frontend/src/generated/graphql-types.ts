@@ -34,8 +34,9 @@ export type Category = {
 };
 
 export type CategoryInput = {
-  id: Scalars['Float']['input'];
-  title: Scalars['String']['input'];
+  id?: InputMaybe<Scalars['Float']['input']>;
+  image?: InputMaybe<Scalars['String']['input']>;
+  title?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type LoginInput = {
@@ -47,6 +48,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   confirmEmail: Scalars['String']['output'];
   createNewCategory: Category;
+  createProduct: Product;
   deleteCategory: Scalars['String']['output'];
   login: Scalars['String']['output'];
   logout: Scalars['String']['output'];
@@ -62,6 +64,11 @@ export type MutationConfirmEmailArgs = {
 
 export type MutationCreateNewCategoryArgs = {
   title: Scalars['String']['input'];
+};
+
+
+export type MutationCreateProductArgs = {
+  data: ProductInput;
 };
 
 
@@ -101,6 +108,11 @@ export type Picture = {
   url: Scalars['String']['output'];
 };
 
+export type PictureInput = {
+  id?: InputMaybe<Scalars['Float']['input']>;
+  url: Scalars['String']['input'];
+};
+
 export type Product = {
   __typename?: 'Product';
   category: Category;
@@ -121,6 +133,16 @@ export type ProductInOrder = {
   total_price: Scalars['Float']['output'];
 };
 
+export type ProductInput = {
+  category?: InputMaybe<CategoryInput>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars['Float']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  pictures?: InputMaybe<Array<PictureInput>>;
+  price?: InputMaybe<Scalars['Float']['input']>;
+  product_options?: InputMaybe<Array<ProductOptionInput>>;
+};
+
 export type ProductOption = {
   __typename?: 'ProductOption';
   available_quantity: Scalars['Float']['output'];
@@ -128,6 +150,13 @@ export type ProductOption = {
   product: Product;
   size: Scalars['String']['output'];
   total_quantity: Scalars['Float']['output'];
+};
+
+export type ProductOptionInput = {
+  available_quantity?: InputMaybe<Scalars['Float']['input']>;
+  id?: InputMaybe<Scalars['Float']['input']>;
+  size?: InputMaybe<Scalars['String']['input']>;
+  total_quantity?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type Query = {
@@ -203,6 +232,13 @@ export type ConfirmEmailMutationVariables = Exact<{
 
 
 export type ConfirmEmailMutation = { __typename?: 'Mutation', confirmEmail: string };
+
+export type CreateProductMutationVariables = Exact<{
+  data: ProductInput;
+}>;
+
+
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', created_at: any, description: string, id: number, name: string, price: number, category: { __typename?: 'Category', title: string, id: number, image: string }, product_options: Array<{ __typename?: 'ProductOption', id: number, available_quantity: number, size: string, total_quantity: number }>, pictures: Array<{ __typename?: 'Picture', id: number, url: string }> } };
 
 export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -329,6 +365,58 @@ export function useConfirmEmailMutation(baseOptions?: Apollo.MutationHookOptions
 export type ConfirmEmailMutationHookResult = ReturnType<typeof useConfirmEmailMutation>;
 export type ConfirmEmailMutationResult = Apollo.MutationResult<ConfirmEmailMutation>;
 export type ConfirmEmailMutationOptions = Apollo.BaseMutationOptions<ConfirmEmailMutation, ConfirmEmailMutationVariables>;
+export const CreateProductDocument = gql`
+    mutation CreateProduct($data: ProductInput!) {
+  createProduct(data: $data) {
+    category {
+      title
+      id
+      image
+    }
+    created_at
+    description
+    id
+    name
+    price
+    product_options {
+      id
+      available_quantity
+      size
+      total_quantity
+    }
+    pictures {
+      id
+      url
+    }
+  }
+}
+    `;
+export type CreateProductMutationFn = Apollo.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, options);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
 export const GetAllCategoriesDocument = gql`
     query GetAllCategories {
   getAllCategories {

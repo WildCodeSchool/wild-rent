@@ -14,8 +14,6 @@ export const calculateDuration = (start: Date | null, end: Date | null) => {
   }
 };
 
-const imageBasePath = "/assets/images/";
-
 const ProductDetails = () => {
   const { id }: any = useParams();
   const { addItemToCart } = useContext(cartContext);
@@ -24,22 +22,14 @@ const ProductDetails = () => {
     variables: { getProductByIdId: parseInt(id) },
   });
 
-  // const [startDate, setStartDate] = useState<Date | null>(null);
-  // const [endDate, setEndDate] = useState<Date | null>(null);
-  //const [duration, setDuration] = useState<number>(0);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
   const products = data?.getProductById;
 
-  /* const handleDuration = (startDate: Date | null, endDate: Date | null) => {
-    const newDuration = calculateDuration(startDate, endDate);
-    setDuration(newDuration);
-  }; */
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading product</p>;
-  const mainImage = activeImage || imageBasePath + products?.pictures[0].url;
+  const mainImage = activeImage || products?.pictures[0].url;
 
   return (
     <div className="flex flex-col md:flex-row items-start gap-10 p-10 bg-white shadow-md rounded-lg max-w-4xl mx-auto">
@@ -54,7 +44,7 @@ const ProductDetails = () => {
         {/* Miniatures */}
         <div className="flex flex-col md:flex-row gap-2 justify-around">
           {products?.pictures.slice(0, 4).map((pic: any, index: number) => {
-            const fullUrl = imageBasePath + pic.url;
+            const fullUrl = pic.url;
             return (
               <img
                 key={index}
@@ -96,39 +86,6 @@ const ProductDetails = () => {
                 ))}
               </select>
             </div>
-
-            {/* Date Picker
-            <div className="flex flex-col gap-4 mb-4">
-              <label className="block text-sm font-medium">
-                Dates de réservation :
-              </label>
-              <div className="flex flex-row justify-between">
-                <div className="flex flex-col w-[45%]">
-                  <DatePicker
-                    selected={startDate}
-                    onChange={(date) => {
-                      setStartDate(date);
-                      calculateDuration(date, endDate);
-                    }}
-                    dateFormat="dd/MM/yyyy"
-                    placeholderText="Début"
-                    className="border rounded-md p-2 w-full"
-                  />
-                </div>
-                <div className="flex flex-col w-[45%]">
-                  <DatePicker
-                    selected={endDate}
-                    onChange={(date) => {
-                      setEndDate(date);
-                      handleDuration(startDate, date);
-                    }}
-                    dateFormat="dd/MM/yyyy"
-                    placeholderText="Fin"
-                    className="border rounded-md p-2 w-full"
-                  />
-                </div>
-              </div>
-            </div> */}
             <div className="mt-7 text-sm font-medium">
               Niveau: Intermédiaire
             </div>
@@ -137,24 +94,10 @@ const ProductDetails = () => {
             {/* Pricing and CTA */}
             <div className="mb-0 bg-gray-100 p-3 rounded-lg shadow-sm md:mb-4">
               <div className="text-xl font-bold">{products?.price}€ / jour</div>
-              {/* <div className="text-sm text-gray-600">
-                Durée: {duration} jour(s)
-              </div>
-              <div className="text-lg font-semibold">
-                Total: {duration * (products?.price || 0)}€
-              </div> */}
             </div>
 
             <button
               onClick={() => {
-                // if (!startDate || !endDate || !duration) {
-                //   alert(
-                //     "Veuillez sélectionner des dates et une durée avant d'ajouter au panier."
-                //   );
-                //   return;
-                // }
-
-                //const totalPrice = duration * (products?.price || 0);
                 addItemToCart(products);
               }}
               className="h-15 mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"

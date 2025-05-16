@@ -70,8 +70,8 @@ const cart = () => {
         <div>
           <div className="w-[90%] lg:w-[70%] m-auto">
             <div>
-              <h3 className="text-l sm:text-1xl pt-6 font-semibold">
-                Selectionnez vos dates de location :
+              <h3 className="text-xl sm:text-1xl pt-6 font-semibold">
+                Vos dates de location :
               </h3>
               <div className="flex flex-col mt-4 mb-4">
                 <div className="flex flex-row items-center">

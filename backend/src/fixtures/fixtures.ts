@@ -8,6 +8,8 @@ import { Product } from '../entities/Product';
 import { Address } from '../entities/Address';
 import { Picture } from '../entities/Picture';
 import productsDatas from './productsDatas';
+import { Tag } from "src/entities/Tag";
+import { ProductOption } from "src/entities/ProductOption";
 
 export async function createFixtures() {
   try {
@@ -131,9 +133,12 @@ async function getCategoryByTitle(title: string) {
 async function createProducts() {
   try {
     const pictures: Picture[] = [];
+    const productOptions: ProductOption[] = [];
+    const tags: Tag[] = [];
+
 
     // La variable productsDatas viens de l'import productsDatas.ts
-    for (const { title, name, price, urls } of productsDatas) {
+    for (const { title, name, price, urls, tagLabels, options } of productsDatas) {
       const category = await getCategoryByTitle(title);
       const description = faker.lorem.sentence();
       const created_at = new Date();
@@ -141,12 +146,33 @@ async function createProducts() {
       // On utilise 'create' car on a besoin de créer une instance de produit AVANT de pouvoir lui associer les images
       // Précédemment on sauvegardait en DB la fin, mais, de ce cas précis nous avons besoin de créer le produit afin de pouvoir lui associer une image
       // Création d'une instance du produit sans le sauvegarder immédiatement
+      
+       // Get or create Tag entities from tag names
+      if (tagLabels && tagLabels.length > 0) {
+        for (const label of tagLabels) {
+          let tag = await Tag.findOne({
+            where: {
+              label,
+              category: { id: category.id }
+            },
+            relations: ['category']
+          });
+
+          if (!tag) {
+            tag = Tag.create({ label, category });
+            await tag.save();
+          }
+
+          tags.push(tag);
+        }
+      }
+      
       const product = Product.create({
         name,
         description,
         price,
         created_at,
-        category
+        category, 
       });
 
       // On sauvegarde les produits pour s'assurer que les images puissent être associés correctement
@@ -164,10 +190,22 @@ async function createProducts() {
           pictures.push(picture);
         });
       }
-    }
 
+        // Product Options (size + total_quantity)
+      if (options && options.length > 0) {
+        for (const { size, total_quantity } of options) {
+          const productOption = ProductOption.create({
+            size,
+            total_quantity,
+            product
+          });
+          productOptions.push(productOption);
+        }
+      }
+    }
     // Sauvegarde en base de données de toutes les images après la boucle
     await Picture.save(pictures);
+    await ProductOption.save(productOptions);
     console.log("✅ Products created successfully!");
   } catch (error) {
     console.error("❌ Error while creating products:", error);

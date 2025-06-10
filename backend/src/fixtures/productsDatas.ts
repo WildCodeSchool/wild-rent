@@ -1,6 +1,6 @@
 const productsDatas = [
   {
-    title: "Sport d'hiver",
+    title: "Sports d'hiver",
     name: "Ski blue",
     urls: [
       "/assets/images/products/winterSports/skiBlue1.webp",
@@ -10,7 +10,7 @@ const productsDatas = [
     price: 15,
   },
   {
-    title: "Sport d'hiver",
+    title: "Sports d'hiver",
     name: "Ski pink",
     urls: [
       "/assets/images/products/winterSports/skiPink1.webp",
@@ -20,7 +20,7 @@ const productsDatas = [
     price: 20,
   },
   {
-    title: "Sport d'hiver",
+    title: "Sports d'hiver",
     name: "Ski orange",
     urls: [
       "/assets/images/products/winterSports/skiOrange1.webp",
@@ -29,7 +29,7 @@ const productsDatas = [
     price: 25,
   },
   {
-    title: "Sport d'hiver",
+    title: "Sports d'hiver",
     name: "Snowboard Burton",
     urls: [
       "/assets/images/products/winterSports/snowboardBurton1.webp",
@@ -39,7 +39,7 @@ const productsDatas = [
     price: 30,
   },
   {
-    title: "Sport d'hiver",
+    title: "Sports d'hiver",
     name: "Snowboard Volcom",
     urls: [
       "/assets/images/products/winterSports/snowboardVolcom1.webp",
@@ -49,37 +49,37 @@ const productsDatas = [
     price: 30,
   },
   {
-    title: "Sport d'hiver",
+    title: "Sports d'hiver",
     name: "Chaussures de ski enfant ",
     urls: ["/assets/images/products/winterSports/skiShoesKid.webp"],
     price: 8,
   },
   {
-    title: "Sport d'hiver",
+    title: "Sports d'hiver",
     name: "Chaussures de snow",
     urls: ["/assets/images/products/winterSports/snowShoes-1.webp"],
     price: 8,
   },
   {
-    title: "Sport d'hiver",
+    title: "Sports d'hiver",
     name: "Gants noir",
     urls: ["/assets/images/products/winterSports/skiGloves-1.jpg"],
     price: 5,
   },
   {
-    title: "Sport d'hiver",
+    title: "Sports d'hiver",
     name: "Gants camo",
     urls: ["/assets/images/products/winterSports/skiGloves-2.webp"],
     price: 7,
   },
   {
-    title: "Sport nautique",
+    title: "Sports nautiques",
     name: "Planche de surf verte",
     urls: ["/assets/images/products/waterSports/surfboardGreen1.webp"],
     price: 25,
   },
   {
-    title: "Sport nautique",
+    title: "Sports nautiques",
     name: "Planche de surf rose",
     urls: [
       "/assets/images/products/waterSports/surfboardPink1.webp",
@@ -88,19 +88,19 @@ const productsDatas = [
     price: 25,
   },
   {
-    title: "Sport nautique",
+    title: "Sports nautiques",
     name: "Bodyboard",
     urls: ["/assets/images/products/waterSports/bodyboard.webp"],
     price: 15,
   },
   {
-    title: "Sport nautique",
+    title: "Sports nautiques",
     name: "Palme",
     urls: ["/assets/images/products/waterSports/flippersBlack.webp"],
     price: 4,
   },
   {
-    title: "Sport nautique",
+    title: "Sports nautiques",
     name: "Bouée",
     urls: [
       "/assets/images/products/waterSports/buoy1.jpg",
@@ -109,7 +109,7 @@ const productsDatas = [
     price: 3,
   },
   {
-    title: "Sport nautique",
+    title: "Sports nautiques",
     name: "Paddle",
     urls: [
       "/assets/images/products/waterSports/paddlePink1.jpg",
@@ -119,7 +119,7 @@ const productsDatas = [
     price: 20,
   },
   {
-    title: "Sport nautique",
+    title: "Sports nautiques",
     name: "Combinaison surf homme",
     urls: [
       "/assets/images/products/waterSports/surfSuitMengreen1.webp",
@@ -128,7 +128,7 @@ const productsDatas = [
     price: 6,
   },
   {
-    title: "Sport nautique",
+    title: "Sports nautiques",
     name: "Combinaison surf femme",
     urls: [
       "/assets/images/products/waterSports/surfSuitWomenMulti1.webp",

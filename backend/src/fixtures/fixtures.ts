@@ -177,8 +177,8 @@ async function createProducts() {
 async function createCategories() {
   try {
     const categoryTitles = [
-      "Sport d'hiver",
-      "Sport nautique",
+      "Sports d'hiver",
+      "Sports nautiques",
       "VTT / Vélo",
       "Randonnée",
       "Camping",

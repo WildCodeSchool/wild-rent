@@ -11,6 +11,4 @@ export class ProductOptionInput {
   @Field({ nullable: true })
   total_quantity?: number;
 
-  @Field({ nullable: true })
-  available_quantity?: number;
 }

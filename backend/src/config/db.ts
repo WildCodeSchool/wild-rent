@@ -9,6 +9,7 @@ import { Order } from "../entities/Order";
 import { Picture } from "../entities/Picture";
 import { Product } from "../entities/Product";
 import { User } from "../entities/User";
+import { Tag } from "../entities/Tag";
 
 export const dataSource = new DataSource({
   type: "postgres",
@@ -27,6 +28,7 @@ export const dataSource = new DataSource({
     Category,
     Picture,
     Product,
+    Tag
   ],
   synchronize: true,
   logging: ["error", "query"],

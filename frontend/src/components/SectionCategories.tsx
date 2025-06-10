@@ -20,7 +20,11 @@ function SectionCategories() {
         </div>
         <div className="lg:flex flex-col w-full items-center gap-6 hidden py-4">
           {categories.map((category) => (
-            <CategoryCarousel id={category.id} title={category.title} />
+            <CategoryCarousel
+              id={category.id}
+              title={category.title}
+              image={category.image}
+            />
           ))}
         </div>
       </>

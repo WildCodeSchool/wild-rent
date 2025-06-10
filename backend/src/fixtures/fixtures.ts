@@ -147,7 +147,7 @@ async function createProducts() {
       // Précédemment on sauvegardait en DB la fin, mais, de ce cas précis nous avons besoin de créer le produit afin de pouvoir lui associer une image
       // Création d'une instance du produit sans le sauvegarder immédiatement
       
-       // Get or create Tag entities from tag names
+       // On créé ou récupère les entitées Tags à partir des labels
       if (tagLabels && tagLabels.length > 0) {
         for (const label of tagLabels) {
           let tag = await Tag.findOne({
@@ -192,7 +192,7 @@ async function createProducts() {
         });
       }
 
-        // Product Options (size + total_quantity)
+        // On boucle sur les options et on créé une ligne dans la table product_options pour chaque option de chaque produit.
       if (options && options.length > 0) {
         for (const { size, total_quantity } of options) {
           const productOption = ProductOption.create({
@@ -206,6 +206,7 @@ async function createProducts() {
     }
     // Sauvegarde en base de données de toutes les images après la boucle
     await Picture.save(pictures);
+    // Sauvegarde en base de données de toutes les product_options après la boucle
     await ProductOption.save(productOptions);
     console.log("✅ Products created successfully!");
   } catch (error) {

@@ -12,6 +12,7 @@ import Cart from "./pages/Cart";
 import { AdminLayout } from "./pages/AdminLayout";
 import { AdminArticle } from "./pages/AdminArticle";
 import { AdminHomepage } from "./pages/AdminHomepage";
+import { AccountDetails } from "./pages/AccountDetails";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           />
           <Route path="produit/:id" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
+          <Route path="moncompte" element={<AccountDetails />} />
           <Route path="panier" element={<Cart />} />
           <Route path="register" element={<Register />} />
           <Route path="confirm/:code?" element={<ConfirmEmailPage />} />

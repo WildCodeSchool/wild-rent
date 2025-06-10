@@ -8,8 +8,8 @@ import { Product } from '../entities/Product';
 import { Address } from '../entities/Address';
 import { Picture } from '../entities/Picture';
 import productsDatas from './productsDatas';
-import { Tag } from "src/entities/Tag";
-import { ProductOption } from "src/entities/ProductOption";
+import { Tag } from "../entities/Tag";
+import { ProductOption } from "../entities/ProductOption";
 
 export async function createFixtures() {
   try {
@@ -172,7 +172,8 @@ async function createProducts() {
         description,
         price,
         created_at,
-        category, 
+        category,
+        tags 
       });
 
       // On sauvegarde les produits pour s'assurer que les images puissent être associés correctement

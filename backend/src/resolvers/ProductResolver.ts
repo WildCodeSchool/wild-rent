@@ -1,9 +1,10 @@
-import { ProductInput } from "../inputs/ProductInput";
+import { ProductInput, ProductSearchOptions } from "../inputs/ProductInput";
 import { Product } from "../entities/Product";
 import { Resolver, Query, Arg, Mutation } from "type-graphql";
 import { Picture } from "../entities/Picture";
 import { ProductOption } from "../entities/ProductOption";
 import { Category } from "../entities/Category";
+import { FindManyOptions, Raw } from "typeorm";
 
 @Resolver(Product)
 export class ProductResolver {
@@ -13,6 +14,33 @@ export class ProductResolver {
       where: { id: id },
     });
     return product;
+  }
+
+  @Query(() => [Product])
+  async searchProductsByOptions(
+    @Arg("options")
+    options: ProductSearchOptions
+  ) {
+    let findOptions: FindManyOptions = {
+      where: {
+        name: Raw(
+          (alias) => `unaccent(${alias}) ILIKE unaccent('%${options.name}%')`
+        ),
+      },
+    };
+    if (options.categoryId) {
+      findOptions.where = {
+        ...findOptions.where,
+        category: { id: options.categoryId },
+      };
+    }
+    if (options.productOption) {
+      findOptions.where = {
+        ...findOptions.where,
+        product_options: { size: options.productOption },
+      };
+    }
+    return await Product.find(findOptions);
   }
 
   @Query(() => [Product])
@@ -56,10 +84,5 @@ export class ProductResolver {
     });
 
     return await newProduct.save();
-
-    return await Product.findOne({
-      where: { id: newProduct.id },
-      relations: ["category"],
-    });
   }
 }

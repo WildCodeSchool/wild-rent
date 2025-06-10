@@ -26,3 +26,15 @@ export class ProductInput {
   @Field(() => CategoryInput, { nullable: true })
   category?: CategoryInput;
 }
+
+@InputType()
+export class ProductSearchOptions {
+  @Field()
+  name: string;
+
+  @Field({ nullable: true })
+  categoryId?: string;
+
+  @Field({ nullable: true })
+  productOption?: string;
+}

@@ -158,6 +158,12 @@ export type ProductOptionInput = {
   total_quantity?: InputMaybe<Scalars['Float']['input']>;
 };
 
+export type ProductSearchOptions = {
+  categoryId?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  productOption?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   getAllCategories: Array<Category>;
@@ -166,6 +172,7 @@ export type Query = {
   getProductById: Product;
   getProductOptions: Array<ProductOption>;
   getUserInfo: UserInfo;
+  searchProductsByOptions: Array<Product>;
 };
 
 
@@ -181,6 +188,11 @@ export type QueryGetProductByIdArgs = {
 
 export type QueryGetProductOptionsArgs = {
   productId: Scalars['Float']['input'];
+};
+
+
+export type QuerySearchProductsByOptionsArgs = {
+  options: ProductSearchOptions;
 };
 
 export type User = {
@@ -269,6 +281,13 @@ export type GetUserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserInfoQuery = { __typename?: 'Query', getUserInfo: { __typename?: 'UserInfo', email?: string | null, isLoggedIn: boolean } };
+
+export type SearchProductsByOptionsQueryVariables = Exact<{
+  options: ProductSearchOptions;
+}>;
+
+
+export type SearchProductsByOptionsQuery = { __typename?: 'Query', searchProductsByOptions: Array<{ __typename?: 'Product', name: string, description: string, id: number, price: number, category: { __typename?: 'Category', title: string, id: number }, pictures: Array<{ __typename?: 'Picture', url: string }>, product_options: Array<{ __typename?: 'ProductOption', size: string, id: number, total_quantity: number }> }> };
 
 
 export const RegisterDocument = gql`
@@ -642,3 +661,58 @@ export type GetUserInfoQueryHookResult = ReturnType<typeof useGetUserInfoQuery>;
 export type GetUserInfoLazyQueryHookResult = ReturnType<typeof useGetUserInfoLazyQuery>;
 export type GetUserInfoSuspenseQueryHookResult = ReturnType<typeof useGetUserInfoSuspenseQuery>;
 export type GetUserInfoQueryResult = Apollo.QueryResult<GetUserInfoQuery, GetUserInfoQueryVariables>;
+export const SearchProductsByOptionsDocument = gql`
+    query SearchProductsByOptions($options: ProductSearchOptions!) {
+  searchProductsByOptions(options: $options) {
+    name
+    category {
+      title
+      id
+    }
+    description
+    id
+    pictures {
+      url
+    }
+    price
+    product_options {
+      size
+      id
+      total_quantity
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchProductsByOptionsQuery__
+ *
+ * To run a query within a React component, call `useSearchProductsByOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchProductsByOptionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchProductsByOptionsQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useSearchProductsByOptionsQuery(baseOptions: Apollo.QueryHookOptions<SearchProductsByOptionsQuery, SearchProductsByOptionsQueryVariables> & ({ variables: SearchProductsByOptionsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchProductsByOptionsQuery, SearchProductsByOptionsQueryVariables>(SearchProductsByOptionsDocument, options);
+      }
+export function useSearchProductsByOptionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchProductsByOptionsQuery, SearchProductsByOptionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchProductsByOptionsQuery, SearchProductsByOptionsQueryVariables>(SearchProductsByOptionsDocument, options);
+        }
+export function useSearchProductsByOptionsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<SearchProductsByOptionsQuery, SearchProductsByOptionsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchProductsByOptionsQuery, SearchProductsByOptionsQueryVariables>(SearchProductsByOptionsDocument, options);
+        }
+export type SearchProductsByOptionsQueryHookResult = ReturnType<typeof useSearchProductsByOptionsQuery>;
+export type SearchProductsByOptionsLazyQueryHookResult = ReturnType<typeof useSearchProductsByOptionsLazyQuery>;
+export type SearchProductsByOptionsSuspenseQueryHookResult = ReturnType<typeof useSearchProductsByOptionsSuspenseQuery>;
+export type SearchProductsByOptionsQueryResult = Apollo.QueryResult<SearchProductsByOptionsQuery, SearchProductsByOptionsQueryVariables>;

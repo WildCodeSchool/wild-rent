@@ -117,7 +117,6 @@ export const ArticleForm = ({
       (opt: { size: string; total_quantity: any }) => ({
         size: opt.size,
         total_quantity: parseInt(opt.total_quantity),
-        available_quantity: parseInt(opt.total_quantity),
       })
     );
 

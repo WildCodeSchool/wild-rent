@@ -21,8 +21,8 @@ const ItemCard = ({ product }: { product: ProductType }) => {
           <div className="w-full flex flex-col p-2 pt-0">
             <div className="text-green font-bold text-lg">{product.name}</div>
             <div className="w-full flex justify-between items-center mt-1">
-              <div className="text-gray-500 font-bold text-lg">
-                {product.price} €
+              <div className="text-gray-500 font-semibold text-lg">
+                {product.price} € / jour
               </div>
               <Link
                 to={`/produit/${product.id}`}

@@ -33,7 +33,6 @@ export const CREATE_PRODUCT = gql`
       price
       product_options {
         id
-        available_quantity
         size
         total_quantity
       }

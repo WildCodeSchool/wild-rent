@@ -10,19 +10,37 @@ function formatDate(day: number): string {
   const label = `Choose ${weekday}, ${month} ${day}th,`;
   return label;
 }
-const date13 = formatDate(13);
-const date14 = formatDate(14);
+const date16 = formatDate(16);
+const date19 = formatDate(19);
 const date28 = formatDate(28);
 
 test("test", async ({ page }) => {
-  await page.goto(baseUrl + "/produit/2");
-
-  await page.getByRole("textbox", { name: "Début" }).click();
-  await page.getByRole("option", { name: date13 }).click();
-  await page.getByRole("textbox", { name: "Fin" }).click();
-  await page.getByRole("option", { name: date14 }).click();
+  await page.goto(baseUrl + "/produit/1");
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
-  await expect(page.getByText("Mon panier (1)")).toBeVisible();
-  await page.getByRole("button", { name: "Ajouter au panier" }).click();
-  await expect(page.getByText("Mon panier (2)")).toBeVisible();
+  await page.getByRole("link", { name: "cart Mon panier (1)" }).click();
+  await page.goto(baseUrl + "/panier");
+  await page
+    .locator("div")
+    .filter({ hasText: /^Vos dates de location :Valider les dates$/ })
+    .getByRole("textbox")
+    .click();
+  await page.getByRole("option", { name: date16 }).click();
+  await page.getByRole("option", { name: date19 }).click();
+  await page.getByRole("button", { name: "Valider les dates" }).click();
+  await page
+    .locator("div")
+    .filter({ hasText: /^45€$/ })
+    .getByRole("paragraph")
+    .click();
+  await page.getByRole("button", { name: "+" }).click();
+  await page.getByText("2", { exact: true }).click();
+  await page
+    .locator("div")
+    .filter({ hasText: /^90€$/ })
+    .getByRole("paragraph")
+    .click();
+  await page.getByRole("button", { name: "-" }).click();
+  await page.getByText("1", { exact: true }).click();
+  await page.getByRole("button", { name: "corbeille" }).click();
+  await expect(page.getByText("Mon panier (0)")).toBeVisible();
 });

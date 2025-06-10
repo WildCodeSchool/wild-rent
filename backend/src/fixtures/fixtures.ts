@@ -143,10 +143,6 @@ async function createProducts() {
       const description = faker.lorem.sentence();
       const created_at = new Date();
 
-      // On utilise 'create' car on a besoin de créer une instance de produit AVANT de pouvoir lui associer les images
-      // Précédemment on sauvegardait en DB la fin, mais, de ce cas précis nous avons besoin de créer le produit afin de pouvoir lui associer une image
-      // Création d'une instance du produit sans le sauvegarder immédiatement
-      
        // On créé ou récupère les entitées Tags à partir des labels
       if (tagLabels && tagLabels.length > 0) {
         for (const label of tagLabels) {
@@ -166,6 +162,10 @@ async function createProducts() {
           tags.push(tag);
         }
       }
+
+       // On utilise 'create' car on a besoin de créer une instance de produit AVANT de pouvoir lui associer les images
+      // Précédemment on sauvegardait en DB la fin, mais, de ce cas précis nous avons besoin de créer le produit afin de pouvoir lui associer une image
+      // Création d'une instance du produit sans le sauvegarder immédiatement
       
       const product = Product.create({
         name,

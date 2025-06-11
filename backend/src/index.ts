@@ -18,7 +18,6 @@ const start = async () => {
   await dataSource.initialize();
 
   if (process.env.FIXTURES) {
-    console.log("in fixture if");
     await createFixtures();
   }
 

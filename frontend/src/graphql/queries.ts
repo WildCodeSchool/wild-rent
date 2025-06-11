@@ -27,13 +27,39 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
   }
 `;
 
+export const GET_PRODUCTS_BY_FILTERS = gql`
+  query GetProductWithFilters(
+    $maxPrice: Float!
+    $minPrice: Float!
+    $categoryId: Float!
+    $tags: [String!]!
+  ) {
+    getProductWithFilters(
+      maxPrice: $maxPrice
+      minPrice: $minPrice
+      categoryId: $categoryId
+      tags: $tags
+    ) {
+      category {
+        title
+      }
+      name
+      price
+      pictures {
+        id
+        url
+      }
+      id
+    }
+  }
+`;
+
 export const GET_PRODUCT_OPTIONS_BY_ID_PRODUCT = gql`
   query GetProductOptions($productId: Float!) {
     getProductOptions(productId: $productId) {
       id
       size
       total_quantity
-      available_quantity
     }
   }
 `;
@@ -57,7 +83,6 @@ export const GET_PRODUCT_BY_ID = gql`
       product_options {
         size
         id
-        available_quantity
       }
     }
   }
@@ -66,8 +91,32 @@ export const GET_PRODUCT_BY_ID = gql`
 export const GET_USER_INFO = gql`
   query GetUserInfo {
     getUserInfo {
-      email
       isLoggedIn
+      email
+      user {
+        address {
+          street
+          city
+          zipcode
+          country
+        }
+        created_at
+        email
+        first_name
+        id
+        last_name
+        phone_number
+        role
+      }
+    }
+  }
+`;
+
+export const GET_TAGS_BY_CATEGORY = gql`
+  query GetTagsByCategory($category: Float!) {
+    getTagsByCategory(category: $category) {
+      id
+      label
     }
   }
 `;

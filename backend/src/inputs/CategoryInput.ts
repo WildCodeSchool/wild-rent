@@ -1,11 +1,13 @@
-import { Category } from "../entities/Category";
 import { Field, InputType } from "type-graphql";
 
 @InputType()
-export class CategoryInput implements Partial<Category> {
-  @Field()
-  id: number;
+export class CategoryInput {
+  @Field({ nullable: true })
+  id?: number;
 
-  @Field()
-  title: string;
+  @Field({ nullable: true })
+  title?: string;
+
+  @Field({ nullable: true })
+  image?: string;
 }

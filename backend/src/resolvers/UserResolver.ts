@@ -17,6 +17,7 @@ import { Resend } from "resend";
 import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
+import { Context } from "../types/Context";
 
 const baseUrl = "http://localhost:7000/confirm/";
 
@@ -26,7 +27,10 @@ class UserInfo {
   isLoggedIn: boolean;
 
   @Field({ nullable: true })
-  email?: String;
+  email?: string;
+
+  @Field(() => User, { nullable: true })
+  user?: User;
 }
 
 @Resolver(User)
@@ -72,7 +76,10 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-  async login(@Arg("data") login_user_data: LoginInput, @Ctx() context: any) {
+  async login(
+    @Arg("data") login_user_data: LoginInput,
+    @Ctx() context: Context
+  ) {
     let is_password_correct = false;
     const user = await User.findOneBy({ email: login_user_data.email });
     if (user) {
@@ -95,7 +102,7 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-  async logout(@Ctx() context: any) {
+  async logout(@Ctx() context: Context) {
     context.res.setHeader(
       "Set-Cookie",
       `token=; Secure; HttpOnly;expires=${new Date(Date.now()).toUTCString()}`
@@ -104,9 +111,10 @@ export class UserResolver {
   }
 
   @Query(() => UserInfo)
-  async getUserInfo(@Ctx() context: any) {
+  async getUserInfo(@Ctx() context: Context) {
     if (context.email) {
-      return { isLoggedIn: true, email: context.email };
+      const user = await User.findOneByOrFail({ email: context.email });
+      return { isLoggedIn: true, email: context.email, user };
     } else {
       return { isLoggedIn: false };
     }
@@ -123,7 +131,7 @@ export class UserResolver {
       email: tempUser.email,
       phone_number: tempUser.phone_number,
       hashed_password: tempUser.hashed_password,
-      created_at: new Date
+      created_at: new Date(),
     });
     tempUser.remove();
     return "ok";

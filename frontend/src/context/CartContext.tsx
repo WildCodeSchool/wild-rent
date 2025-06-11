@@ -2,12 +2,7 @@ import { createContext, useEffect, useReducer } from "react";
 
 export const cartContext = createContext({
   items: [],
-  addItemToCart: (
-    _product: any,
-    _totalPrice: number,
-    _startDate: any,
-    _endDate: any
-  ) => {},
+  addItemToCart: (_product: any) => {},
   removeItemFromCart: (_product: any) => {},
   updateQuantity: (_product: any) => {},
 });
@@ -63,18 +58,9 @@ export const CartContextProvider = ({ children }: any) => {
     localStorage.setItem("cart", JSON.stringify(cartState));
   }, [cartState]);
 
-  const handleToAddItem = (
-    product: any,
-    totalPrice: number,
-    startDate: any,
-    endDate: any,
-    quantity: number = 1
-  ) => {
+  const handleToAddItem = (product: any, quantity: number = 1) => {
     const productWithTotalPrice = {
       ...product,
-      totalPrice,
-      startDate,
-      endDate,
       quantity,
     };
     cartDispatch({

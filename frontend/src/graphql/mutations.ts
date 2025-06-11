@@ -12,8 +12,40 @@ export const LOGIN = gql`
   }
 `;
 
+export const LOGOUT = gql`
+mutation Logout {
+  logout
+}
+`;
+
 export const CONFIRM_EMAIL = gql`
   mutation ConfirmEmail($codeByUser: String!) {
     confirmEmail(code_by_user: $codeByUser)
+  }
+`;
+
+export const CREATE_PRODUCT = gql`
+  mutation CreateProduct($data: ProductInput!) {
+    createProduct(data: $data) {
+      category {
+        title
+        id
+        image
+      }
+      created_at
+      description
+      id
+      name
+      price
+      product_options {
+        id
+        size
+        total_quantity
+      }
+      pictures {
+        id
+        url
+      }
+    }
   }
 `;

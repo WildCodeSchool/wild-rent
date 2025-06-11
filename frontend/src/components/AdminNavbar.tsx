@@ -16,7 +16,7 @@ export const AdminNavbar = () => {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-x-2">
               <img
-                src="/assets/images/logo.png"
+                src="/assets/images/icons/logo.png"
                 alt="Wild Rent logo"
                 className="w-10 h-10"
               />
@@ -28,7 +28,7 @@ export const AdminNavbar = () => {
             </div>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="text-light-beige hover:text-green hover:bg-light-beige rounded-full bg-green cursor-pointer"
+              className="text-light-beige hover:text-green hover:bg-light-beige rounded-full bg-green cursor-pointer hover:border-1 border-1 border-green"
             >
               {isOpen ? <ChevronLeft size={24} /> : <ChevronRight size={24} />}
             </button>

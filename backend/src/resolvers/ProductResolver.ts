@@ -59,26 +59,26 @@ export class ProductResolver {
   }
 
   @Query(() => [Product])
-  async getProductWithFilters( @Arg("categoryId") categoryId: number,
-  @Arg("minPrice") minPrice: number,
-  @Arg("maxPrice") maxPrice: number,
-  @Arg("tags", () => [String]) tags: string[]
-)
-  {
+  async getProductWithFilters(
+    @Arg("categoryId") categoryId: number,
+    @Arg("minPrice") minPrice: number,
+    @Arg("maxPrice") maxPrice: number,
+    @Arg("tags", () => [String]) tags: string[]
+  ) {
     const queryBuilder = Product.createQueryBuilder("product")
-    .leftJoinAndSelect("product.category", "category")
-    .leftJoinAndSelect("product.tags", "tag")
-    .leftJoinAndSelect("product.pictures", "pictures")
-    .where("product.categoryId = :categoryId", {categoryId: categoryId})
-    .andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
-    .andWhere("product.price >= :minPrice", { minPrice: minPrice })
+      .leftJoinAndSelect("product.category", "category")
+      .leftJoinAndSelect("product.tags", "tag")
+      .leftJoinAndSelect("product.pictures", "pictures")
+      .where("product.categoryId = :categoryId", { categoryId: categoryId })
+      .andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
+      .andWhere("product.price >= :minPrice", { minPrice: minPrice });
 
-    if(tags && tags.length >0){
-      queryBuilder.andWhere("tag.label IN (:...tags)", {tags})
+    if (tags && tags.length > 0) {
+      queryBuilder.andWhere("tag.label IN (:...tags)", { tags });
     }
 
-    const products= await queryBuilder.getMany()
-    
+    const products = await queryBuilder.getMany();
+
     return products;
   }
 
@@ -107,5 +107,13 @@ export class ProductResolver {
     });
 
     return await newProduct.save();
+  }
+
+  @Mutation(() => Product)
+  async modifyProductById(@Arg("data") data: ProductInput) {
+    let productToUpdate = await Product.findOneByOrFail({ id: data.id });
+    productToUpdate = Object.assign(productToUpdate, data);
+    console.log("Product modified :", productToUpdate);
+    return await productToUpdate.save();
   }
 }

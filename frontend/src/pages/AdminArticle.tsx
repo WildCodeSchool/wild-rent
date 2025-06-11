@@ -7,7 +7,7 @@ export const AdminArticle = () => {
       <div>
         <section>
           <h2 className="font-bold text-3xl mb-6">Nouvel article</h2>
-          <ArticleForm createOrUpdate="create" />
+          <ArticleForm createOrUpdate="create" formId="form-1" />
         </section>
         <section>
           <h2 className="font-bold text-3xl mb-6">Modifier un article</h2>

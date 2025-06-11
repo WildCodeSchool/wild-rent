@@ -43,3 +43,33 @@ export const CREATE_PRODUCT = gql`
     }
   }
 `;
+
+export const MODIFY_PRODUCT = gql`
+  mutation ModifyProduct($data: ProductInput!) {
+    modifyProductById(data: $data) {
+      id
+      name
+      description
+      price
+      pictures {
+        id
+        url
+      }
+      product_options {
+        id
+        size
+        total_quantity
+      }
+      created_at
+      category {
+        id
+        image
+        title
+      }
+      tags {
+        label
+        id
+      }
+    }
+  }
+`;

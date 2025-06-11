@@ -54,6 +54,7 @@ export type Mutation = {
   login: Scalars['String']['output'];
   logout: Scalars['String']['output'];
   modifyCategory: Category;
+  modifyProductById: Product;
   register: Scalars['String']['output'];
 };
 
@@ -85,6 +86,11 @@ export type MutationLoginArgs = {
 
 export type MutationModifyCategoryArgs = {
   data: CategoryInput;
+};
+
+
+export type MutationModifyProductByIdArgs = {
+  data: ProductInput;
 };
 
 
@@ -274,6 +280,13 @@ export type CreateProductMutationVariables = Exact<{
 
 
 export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', created_at: any, description: string, id: number, name: string, price: number, category: { __typename?: 'Category', title: string, id: number, image: string }, product_options: Array<{ __typename?: 'ProductOption', id: number, size: string, total_quantity: number }>, pictures: Array<{ __typename?: 'Picture', id: number, url: string }> } };
+
+export type ModifyProductMutationVariables = Exact<{
+  data: ProductInput;
+}>;
+
+
+export type ModifyProductMutation = { __typename?: 'Mutation', modifyProductById: { __typename?: 'Product', id: number, name: string, description: string, price: number, created_at: any, pictures: Array<{ __typename?: 'Picture', id: number, url: string }>, product_options: Array<{ __typename?: 'ProductOption', id: number, size: string, total_quantity: number }>, category: { __typename?: 'Category', id: number, image: string, title: string }, tags: Array<{ __typename?: 'Tag', label: string, id: number }> } };
 
 export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -475,6 +488,61 @@ export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
 export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const ModifyProductDocument = gql`
+    mutation ModifyProduct($data: ProductInput!) {
+  modifyProductById(data: $data) {
+    id
+    name
+    description
+    price
+    pictures {
+      id
+      url
+    }
+    product_options {
+      id
+      size
+      total_quantity
+    }
+    created_at
+    category {
+      id
+      image
+      title
+    }
+    tags {
+      label
+      id
+    }
+  }
+}
+    `;
+export type ModifyProductMutationFn = Apollo.MutationFunction<ModifyProductMutation, ModifyProductMutationVariables>;
+
+/**
+ * __useModifyProductMutation__
+ *
+ * To run a mutation, you first call `useModifyProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useModifyProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [modifyProductMutation, { data, loading, error }] = useModifyProductMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useModifyProductMutation(baseOptions?: Apollo.MutationHookOptions<ModifyProductMutation, ModifyProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ModifyProductMutation, ModifyProductMutationVariables>(ModifyProductDocument, options);
+      }
+export type ModifyProductMutationHookResult = ReturnType<typeof useModifyProductMutation>;
+export type ModifyProductMutationResult = Apollo.MutationResult<ModifyProductMutation>;
+export type ModifyProductMutationOptions = Apollo.BaseMutationOptions<ModifyProductMutation, ModifyProductMutationVariables>;
 export const GetAllCategoriesDocument = gql`
     query GetAllCategories {
   getAllCategories {

@@ -18,7 +18,7 @@ const Header = () => {
     );
   if (data) {
     return (
-      <>
+      <header>
         <div className="bg-light-beige flex items-center justify-between px-4 md:px-8 py-3">
           <div className="md:hidden">
             <img
@@ -84,7 +84,7 @@ const Header = () => {
           </div>
         </div>
         <Navbar />
-      </>
+      </header>
     );
   }
 };

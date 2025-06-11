@@ -172,6 +172,12 @@ export type Query = {
 };
 
 
+export type QueryGetAllUsersArgs = {
+  limit: Scalars['Float']['input'];
+  offset: Scalars['Float']['input'];
+};
+
+
 export type QueryGetProductByCategoryArgs = {
   category: Scalars['Float']['input'];
 };
@@ -298,6 +304,14 @@ export type GetProductByIdQueryVariables = Exact<{
 
 
 export type GetProductByIdQuery = { __typename?: 'Query', getProductById: { __typename?: 'Product', id: number, name: string, description: string, price: number, created_at: any, pictures: Array<{ __typename?: 'Picture', id: number, url: string }>, product_options: Array<{ __typename?: 'ProductOption', size: string, id: number }> } };
+
+export type GetAllUsersQueryVariables = Exact<{
+  offset: Scalars['Float']['input'];
+  limit: Scalars['Float']['input'];
+}>;
+
+
+export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers: Array<{ __typename?: 'User', created_at: any, email: string, first_name: string, id: number, last_name: string, phone_number: string, role: string, address: { __typename?: 'Address', city: string, country: string, street: string, zipcode: string } }> };
 
 export type GetUserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -697,6 +711,59 @@ export type GetProductByIdQueryHookResult = ReturnType<typeof useGetProductByIdQ
 export type GetProductByIdLazyQueryHookResult = ReturnType<typeof useGetProductByIdLazyQuery>;
 export type GetProductByIdSuspenseQueryHookResult = ReturnType<typeof useGetProductByIdSuspenseQuery>;
 export type GetProductByIdQueryResult = Apollo.QueryResult<GetProductByIdQuery, GetProductByIdQueryVariables>;
+export const GetAllUsersDocument = gql`
+    query GetAllUsers($offset: Float!, $limit: Float!) {
+  getAllUsers(offset: $offset, limit: $limit) {
+    address {
+      city
+      country
+      street
+      zipcode
+    }
+    created_at
+    email
+    first_name
+    id
+    last_name
+    phone_number
+    role
+  }
+}
+    `;
+
+/**
+ * __useGetAllUsersQuery__
+ *
+ * To run a query within a React component, call `useGetAllUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllUsersQuery({
+ *   variables: {
+ *      offset: // value for 'offset'
+ *      limit: // value for 'limit'
+ *   },
+ * });
+ */
+export function useGetAllUsersQuery(baseOptions: Apollo.QueryHookOptions<GetAllUsersQuery, GetAllUsersQueryVariables> & ({ variables: GetAllUsersQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllUsersQuery, GetAllUsersQueryVariables>(GetAllUsersDocument, options);
+      }
+export function useGetAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllUsersQuery, GetAllUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllUsersQuery, GetAllUsersQueryVariables>(GetAllUsersDocument, options);
+        }
+export function useGetAllUsersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetAllUsersQuery, GetAllUsersQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAllUsersQuery, GetAllUsersQueryVariables>(GetAllUsersDocument, options);
+        }
+export type GetAllUsersQueryHookResult = ReturnType<typeof useGetAllUsersQuery>;
+export type GetAllUsersLazyQueryHookResult = ReturnType<typeof useGetAllUsersLazyQuery>;
+export type GetAllUsersSuspenseQueryHookResult = ReturnType<typeof useGetAllUsersSuspenseQuery>;
+export type GetAllUsersQueryResult = Apollo.QueryResult<GetAllUsersQuery, GetAllUsersQueryVariables>;
 export const GetUserInfoDocument = gql`
     query GetUserInfo {
   getUserInfo {

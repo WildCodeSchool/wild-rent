@@ -32,8 +32,15 @@ class UserInfo {
 @Resolver(User)
 export class UserResolver {
   @Query(() => [User])
-  async getAllUsers() {
-    const users = await User.find();
+  async getAllUsers( @Arg("offset") offset: number,
+  @Arg("limit") limit: number, ) {
+    const users = await User.find({
+      skip: offset,
+      take: limit ,
+      order: {
+        created_at: "DESC"
+      }
+    });
     return users;
   }
 

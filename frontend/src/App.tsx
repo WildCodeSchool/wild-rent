@@ -12,6 +12,7 @@ import Cart from "./pages/Cart";
 import { AdminLayout } from "./pages/AdminLayout";
 import { AdminArticle } from "./pages/AdminArticle";
 import { AdminHomepage } from "./pages/AdminHomepage";
+import AdminUsers from "./pages/AdminUsers";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHomepage />} />
           <Route path="article" element={<AdminArticle />} />
+          <Route path="utilisateurs" element={<AdminUsers />} />
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

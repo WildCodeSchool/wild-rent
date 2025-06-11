@@ -1,13 +1,21 @@
-import { useLogoutMutation } from "@/generated/graphql-types";
+import {
+  useGetUserInfoQuery,
+  useLogoutMutation,
+} from "../generated/graphql-types";
 import { GET_USER_INFO } from "@/graphql/queries";
 import { useNavigate } from "react-router-dom";
 
 export const AccountDetails = () => {
   const navigate = useNavigate();
+  const { loading, error, data } = useGetUserInfoQuery();
+  const user = data?.getUserInfo.user;
+
   const [logout] = useLogoutMutation({
     refetchQueries: [{ query: GET_USER_INFO }],
   });
 
+  if (loading) return <p>Loading ...</p>;
+  if (error) return <p> Error : {error.message}</p>;
   return (
     <>
       <div className="flex max-w-5xl mx-auto p-4">
@@ -56,7 +64,7 @@ export const AccountDetails = () => {
             <div className="mt-2 space-y-2">
               <div>
                 <div className="text-gray-500">Prénom</div>
-                <div>Jean Patrick</div>
+                <div>{user?.first_name}</div>
               </div>
               <div>
                 <div className="text-gray-500">Nom</div>

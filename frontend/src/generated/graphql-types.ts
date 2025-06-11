@@ -213,7 +213,6 @@ export type User = {
   created_at: Scalars['DateTimeISO']['output'];
   email: Scalars['String']['output'];
   first_name: Scalars['String']['output'];
-  hashed_password: Scalars['String']['output'];
   id: Scalars['Float']['output'];
   last_name: Scalars['String']['output'];
   orders: Array<Order>;
@@ -225,6 +224,7 @@ export type UserInfo = {
   __typename?: 'UserInfo';
   email?: Maybe<Scalars['String']['output']>;
   isLoggedIn: Scalars['Boolean']['output'];
+  user?: Maybe<User>;
 };
 
 export type UserInput = {
@@ -307,7 +307,7 @@ export type GetProductByIdQuery = { __typename?: 'Query', getProductById: { __ty
 export type GetUserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserInfoQuery = { __typename?: 'Query', getUserInfo: { __typename?: 'UserInfo', email?: string | null, isLoggedIn: boolean } };
+export type GetUserInfoQuery = { __typename?: 'Query', getUserInfo: { __typename?: 'UserInfo', isLoggedIn: boolean, email?: string | null, user?: { __typename?: 'User', created_at: any, email: string, first_name: string, id: number, last_name: string, phone_number: string, role: string, address: { __typename?: 'Address', street: string, city: string, zipcode: string, country: string } } | null } };
 
 export type GetTagsByCategoryQueryVariables = Exact<{
   category: Scalars['Float']['input'];
@@ -735,8 +735,23 @@ export type GetProductByIdQueryResult = Apollo.QueryResult<GetProductByIdQuery, 
 export const GetUserInfoDocument = gql`
     query GetUserInfo {
   getUserInfo {
-    email
     isLoggedIn
+    email
+    user {
+      address {
+        street
+        city
+        zipcode
+        country
+      }
+      created_at
+      email
+      first_name
+      id
+      last_name
+      phone_number
+      role
+    }
   }
 }
     `;

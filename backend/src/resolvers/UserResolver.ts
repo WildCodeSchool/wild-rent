@@ -27,6 +27,9 @@ class UserInfo {
 
   @Field({ nullable: true })
   email?: String;
+
+  @Field({ nullable: true })
+  id?: Number;
 }
 
 @Resolver(User)
@@ -106,7 +109,7 @@ export class UserResolver {
   @Query(() => UserInfo)
   async getUserInfo(@Ctx() context: any) {
     if (context.email) {
-      return { isLoggedIn: true, email: context.email };
+      return { isLoggedIn: true, email: context.email, id: context.id };
     } else {
       return { isLoggedIn: false };
     }
@@ -123,7 +126,7 @@ export class UserResolver {
       email: tempUser.email,
       phone_number: tempUser.phone_number,
       hashed_password: tempUser.hashed_password,
-      created_at: new Date
+      created_at: new Date(),
     });
     tempUser.remove();
     return "ok";

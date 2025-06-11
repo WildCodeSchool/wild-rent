@@ -28,19 +28,29 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
 `;
 
 export const GET_PRODUCTS_BY_FILTERS = gql`
-  query GetProductWithFilters($maxPrice: Float!, $minPrice: Float!, $categoryId: Float!, $tags: [String!]!) {
-    getProductWithFilters(maxPrice: $maxPrice, minPrice: $minPrice, categoryId: $categoryId, tags: $tags) {
-        category {
-          title
-        }
-        name
-        price
-        pictures {
-          id
-          url
-        }
-        id
+  query GetProductWithFilters(
+    $maxPrice: Float!
+    $minPrice: Float!
+    $categoryId: Float!
+    $tags: [String!]!
+  ) {
+    getProductWithFilters(
+      maxPrice: $maxPrice
+      minPrice: $minPrice
+      categoryId: $categoryId
+      tags: $tags
+    ) {
+      category {
+        title
       }
+      name
+      price
+      pictures {
+        id
+        url
+      }
+      id
+    }
   }
 `;
 
@@ -93,5 +103,32 @@ export const GET_TAGS_BY_CATEGORY = gql`
       id
       label
     }
-}
+  }
+`;
+
+export const GET_ALL_ORDERS = gql`
+  query Query {
+    getAllOrders {
+      created_at
+      total_price
+      rental_start_date
+      rental_end_date
+      status
+      user {
+        id
+      }
+      products_in_order {
+        quantity
+        productOption {
+          product {
+            id
+            name
+            price
+          }
+          size
+          total_quantity
+        }
+      }
+    }
+  }
 `;

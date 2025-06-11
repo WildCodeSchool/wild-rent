@@ -111,11 +111,9 @@ export type Order = {
 
 export type OrderInput = {
   created_at: Scalars['DateTimeISO']['input'];
-  id: Scalars['Float']['input'];
-  products_in_orderIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  products: Array<ProductInOrderInput>;
   rental_end_date: Scalars['DateTimeISO']['input'];
   rental_start_date: Scalars['DateTimeISO']['input'];
-  status: Scalars['String']['input'];
   total_price: Scalars['Float']['input'];
   userId: Scalars['Float']['input'];
 };
@@ -149,6 +147,11 @@ export type ProductInOrder = {
   order: Order;
   productOption: ProductOption;
   quantity: Scalars['Float']['output'];
+};
+
+export type ProductInOrderInput = {
+  productOptionId: Scalars['Int']['input'];
+  quantity: Scalars['Int']['input'];
 };
 
 export type ProductInput = {
@@ -281,6 +284,13 @@ export type CreateProductMutationVariables = Exact<{
 
 export type CreateProductMutation = { __typename?: 'Mutation', createProduct: { __typename?: 'Product', created_at: any, description: string, id: number, name: string, price: number, category: { __typename?: 'Category', title: string, id: number, image: string }, product_options: Array<{ __typename?: 'ProductOption', id: number, size: string, total_quantity: number }>, pictures: Array<{ __typename?: 'Picture', id: number, url: string }> } };
 
+export type CreateNewOrderMutationVariables = Exact<{
+  data: OrderInput;
+}>;
+
+
+export type CreateNewOrderMutation = { __typename?: 'Mutation', createNewOrder: { __typename?: 'Order', created_at: any, total_price: number, rental_start_date: any, rental_end_date: any, status: string, user: { __typename?: 'User', id: number }, products_in_order: Array<{ __typename?: 'ProductInOrder', quantity: number, productOption: { __typename?: 'ProductOption', size: string, total_quantity: number, product: { __typename?: 'Product', id: number } } }> } };
+
 export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -328,6 +338,11 @@ export type GetTagsByCategoryQueryVariables = Exact<{
 
 
 export type GetTagsByCategoryQuery = { __typename?: 'Query', getTagsByCategory: Array<{ __typename?: 'Tag', id: number, label: string }> };
+
+export type QueryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type QueryQuery = { __typename?: 'Query', getAllOrders: Array<{ __typename?: 'Order', created_at: any, total_price: number, rental_start_date: any, rental_end_date: any, status: string, user: { __typename?: 'User', id: number }, products_in_order: Array<{ __typename?: 'ProductInOrder', quantity: number, productOption: { __typename?: 'ProductOption', size: string, total_quantity: number, product: { __typename?: 'Product', id: number, name: string, price: number } } }> }> };
 
 
 export const RegisterDocument = gql`
@@ -474,6 +489,56 @@ export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
 export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const CreateNewOrderDocument = gql`
+    mutation CreateNewOrder($data: OrderInput!) {
+  createNewOrder(data: $data) {
+    created_at
+    total_price
+    rental_start_date
+    rental_end_date
+    status
+    user {
+      id
+    }
+    products_in_order {
+      productOption {
+        product {
+          id
+        }
+        size
+        total_quantity
+      }
+      quantity
+    }
+  }
+}
+    `;
+export type CreateNewOrderMutationFn = Apollo.MutationFunction<CreateNewOrderMutation, CreateNewOrderMutationVariables>;
+
+/**
+ * __useCreateNewOrderMutation__
+ *
+ * To run a mutation, you first call `useCreateNewOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNewOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNewOrderMutation, { data, loading, error }] = useCreateNewOrderMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateNewOrderMutation(baseOptions?: Apollo.MutationHookOptions<CreateNewOrderMutation, CreateNewOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNewOrderMutation, CreateNewOrderMutationVariables>(CreateNewOrderDocument, options);
+      }
+export type CreateNewOrderMutationHookResult = ReturnType<typeof useCreateNewOrderMutation>;
+export type CreateNewOrderMutationResult = Apollo.MutationResult<CreateNewOrderMutation>;
+export type CreateNewOrderMutationOptions = Apollo.BaseMutationOptions<CreateNewOrderMutation, CreateNewOrderMutationVariables>;
 export const GetAllCategoriesDocument = gql`
     query GetAllCategories {
   getAllCategories {
@@ -796,3 +861,61 @@ export type GetTagsByCategoryQueryHookResult = ReturnType<typeof useGetTagsByCat
 export type GetTagsByCategoryLazyQueryHookResult = ReturnType<typeof useGetTagsByCategoryLazyQuery>;
 export type GetTagsByCategorySuspenseQueryHookResult = ReturnType<typeof useGetTagsByCategorySuspenseQuery>;
 export type GetTagsByCategoryQueryResult = Apollo.QueryResult<GetTagsByCategoryQuery, GetTagsByCategoryQueryVariables>;
+export const QueryDocument = gql`
+    query Query {
+  getAllOrders {
+    created_at
+    total_price
+    rental_start_date
+    rental_end_date
+    status
+    user {
+      id
+    }
+    products_in_order {
+      quantity
+      productOption {
+        product {
+          id
+          name
+          price
+        }
+        size
+        total_quantity
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useQueryQuery__
+ *
+ * To run a query within a React component, call `useQueryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useQueryQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useQueryQuery(baseOptions?: Apollo.QueryHookOptions<QueryQuery, QueryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
+      }
+export function useQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QueryQuery, QueryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
+        }
+export function useQuerySuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<QueryQuery, QueryQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
+        }
+export type QueryQueryHookResult = ReturnType<typeof useQueryQuery>;
+export type QueryLazyQueryHookResult = ReturnType<typeof useQueryLazyQuery>;
+export type QuerySuspenseQueryHookResult = ReturnType<typeof useQuerySuspenseQuery>;
+export type QueryQueryResult = Apollo.QueryResult<QueryQuery, QueryQueryVariables>;

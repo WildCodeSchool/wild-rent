@@ -22,7 +22,10 @@ const ProductDetails = () => {
     variables: { getProductByIdId: parseInt(id) },
   });
 
-  const [selectedSize, setSelectedSize] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<{
+    id: number;
+    size: string;
+  } | null>(null);
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
   const products = data?.getProductById;
@@ -76,11 +79,17 @@ const ProductDetails = () => {
               </label>
               <select
                 className="border rounded-md p-2 w-full"
-                value={selectedSize}
-                onChange={(e) => setSelectedSize(e.target.value)}
+                value={selectedOption ? JSON.stringify(selectedOption) : ""}
+                onChange={(e) => {
+                  const parsed = JSON.parse(e.target.value);
+                  setSelectedOption(parsed);
+                }}
               >
                 {products?.product_options?.map((el: any) => (
-                  <option key={el.id} value={el.size}>
+                  <option
+                    key={el.id}
+                    value={JSON.stringify({ id: el.id, size: el.size })}
+                  >
                     {el.size}
                   </option>
                 ))}
@@ -98,7 +107,11 @@ const ProductDetails = () => {
 
             <button
               onClick={() => {
-                addItemToCart(products);
+                const productWithOptions = {
+                  ...products,
+                  selectedOption,
+                };
+                addItemToCart(productWithOptions);
               }}
               className="h-15 mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
             >

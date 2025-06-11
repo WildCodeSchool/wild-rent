@@ -1,10 +1,8 @@
-import { Field, InputType, Int } from "type-graphql";
+import { Field, InputType } from "type-graphql";
+import { ProductInOrderInput } from "./ProductInOrderInput";
 
 @InputType()
 export class OrderInput {
-  @Field()
-  id?: number;
-
   @Field()
   created_at?: Date;
 
@@ -18,11 +16,8 @@ export class OrderInput {
   rental_end_date?: Date;
 
   @Field()
-  status?: string;
-
-  @Field()
   userId: number;
 
-  @Field(() => [Int], { nullable: true })
-  products_in_orderIds?: number[];
+  @Field(() => [ProductInOrderInput])
+  products: ProductInOrderInput[];
 }

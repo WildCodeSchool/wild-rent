@@ -49,6 +49,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   confirmEmail: Scalars['String']['output'];
   createNewCategory: Category;
+  createNewOrder: Order;
   createProduct: Product;
   deleteCategory: Scalars['String']['output'];
   login: Scalars['String']['output'];
@@ -65,6 +66,11 @@ export type MutationConfirmEmailArgs = {
 
 export type MutationCreateNewCategoryArgs = {
   title: Scalars['String']['input'];
+};
+
+
+export type MutationCreateNewOrderArgs = {
+  data: OrderInput;
 };
 
 
@@ -101,6 +107,17 @@ export type Order = {
   status: Scalars['String']['output'];
   total_price: Scalars['Float']['output'];
   user: User;
+};
+
+export type OrderInput = {
+  created_at: Scalars['DateTimeISO']['input'];
+  id: Scalars['Float']['input'];
+  products_in_orderIds?: InputMaybe<Array<Scalars['Int']['input']>>;
+  rental_end_date: Scalars['DateTimeISO']['input'];
+  rental_start_date: Scalars['DateTimeISO']['input'];
+  status: Scalars['String']['input'];
+  total_price: Scalars['Float']['input'];
+  userId: Scalars['Float']['input'];
 };
 
 export type Picture = {
@@ -161,6 +178,7 @@ export type ProductOptionInput = {
 export type Query = {
   __typename?: 'Query';
   getAllCategories: Array<Category>;
+  getAllOrders: Array<Order>;
   getAllTags: Array<Tag>;
   getAllUsers: Array<User>;
   getProductByCategory: Array<Product>;

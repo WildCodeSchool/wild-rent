@@ -12,18 +12,39 @@ export const AccountDetails = () => {
     <>
       <div className="flex max-w-5xl mx-auto p-4">
         <section className="w-1/3 max-w-xs border rounded-md p-4 space-y-4 text-sm font-semibold text-gray-700">
-          <div className="text-green-900 font-semibold">
-            <span className="mr-2">←</span>Accueil du compte
+          <div
+            className="text-green-900 cursor-pointer"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Accueil
           </div>
-          <div className="text-green-900">Mes infos personnelles</div>
-          <div className="text-green-900">Mes commandes</div>
-          <div className="text-green-900">Déconnexion</div>
-          <button className="text-green-900 cursor-pointer"
-                onClick={() => {
-                  logout()
-                  navigate("/")
-                }}
-              >Se déconnecter</button>
+          <div
+            className="text-green-900 cursor-pointer"
+            onClick={() => {
+              navigate("/moncompte");
+            }}
+          >
+            Mes informations personnelles
+          </div>
+          <div
+            className="text-green-900 cursor-pointer"
+            onClick={() => {
+              navigate("/mes-commandes");
+            }}
+          >
+            Mes commandes
+          </div>
+          <div
+            className="text-green-900 cursor-pointer"
+            onClick={() => {
+              logout();
+              navigate("/");
+            }}
+          >
+            Se déconnecter
+          </div>
         </section>
 
         <section className="flex-1 pl-8 space-y-6 text-sm text-gray-800">

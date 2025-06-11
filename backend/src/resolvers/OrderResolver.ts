@@ -55,6 +55,15 @@ export class OrderResolver {
 
       await productInOrder.save();
     }
-    return newOrder;
+
+    return await Order.findOne({
+      where: { id: newOrder.id },
+      relations: [
+        "products_in_order",
+        "products_in_order.productOption",
+        "products_in_order.productOption.product",
+        "user",
+      ],
+    });
   }
 }

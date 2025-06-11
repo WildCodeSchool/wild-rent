@@ -2,10 +2,23 @@ import { useContext, useEffect, useState } from "react";
 import { cartContext } from "../context/CartContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useCreateNewOrderMutation } from "@/generated/graphql-types";
+import {
+  useCreateNewOrderMutation,
+  useGetUserInfoQuery,
+} from "../generated/graphql-types";
 
 const cart = () => {
   const [createOrderMutation] = useCreateNewOrderMutation();
+  const { loading, error, data } = useGetUserInfoQuery();
+  if (loading) return <p>Loading...</p>;
+  if (error)
+    return (
+      <>
+        <h2>An error occured</h2>
+        <p>Error : {error.message}</p>
+      </>
+    );
+
   const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -60,7 +73,7 @@ const cart = () => {
     setStartDate(start);
     setEndDate(end);
   };
-  /* const createOrder = () => {
+  const createOrder = () => {
     createOrderMutation({
       variables: {
         data: {
@@ -72,13 +85,13 @@ const cart = () => {
             quantity: item.quantity,
             productOptionId: item.selectedOption.id,
           })),
-          userId: parseInt(localStorage.getItem("userId") || "0"),
+          userId: Number(data?.getUserInfo?.user?.id) ?? 0,
         },
       },
     });
     console.log("Création de la commande...");
   };
- */
+
   return (
     <>
       {items.length === 0 && (
@@ -202,7 +215,7 @@ const cart = () => {
           </div>
           <div className="flex justify-center pb-8 pt-8">
             <button
-              //onClick={() => createOrder()}
+              onClick={() => createOrder()}
               className="md:w-1/4 m-auto bg-green text-white p-2 rounded-xl sm:text-xl"
             >
               Passer ma commande

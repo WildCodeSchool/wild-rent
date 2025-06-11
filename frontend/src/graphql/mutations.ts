@@ -12,6 +12,12 @@ export const LOGIN = gql`
   }
 `;
 
+export const LOGOUT = gql`
+mutation Logout {
+  logout
+}
+`;
+
 export const CONFIRM_EMAIL = gql`
   mutation ConfirmEmail($codeByUser: String!) {
     confirmEmail(code_by_user: $codeByUser)

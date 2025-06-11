@@ -60,7 +60,7 @@ const cart = () => {
     setStartDate(start);
     setEndDate(end);
   };
-  const createOrder = () => {
+  /* const createOrder = () => {
     createOrderMutation({
       variables: {
         data: {
@@ -78,7 +78,7 @@ const cart = () => {
     });
     console.log("Création de la commande...");
   };
-
+ */
   return (
     <>
       {items.length === 0 && (

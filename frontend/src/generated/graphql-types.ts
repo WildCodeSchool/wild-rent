@@ -245,6 +245,7 @@ export type User = {
 export type UserInfo = {
   __typename?: 'UserInfo';
   email?: Maybe<Scalars['String']['output']>;
+  id?: Maybe<Scalars['Float']['output']>;
   isLoggedIn: Scalars['Boolean']['output'];
 };
 

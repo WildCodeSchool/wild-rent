@@ -37,6 +37,7 @@ export class ProductResolver {
   @Arg("tags", () => [String]) tags: string[]
 )
   {
+    console.log(maxPrice, minPrice, categoryId, tags)
     const queryBuilder = Product.createQueryBuilder("product")
     .leftJoinAndSelect("product.category", "category")
     .leftJoinAndSelect("product.tags", "tag")
@@ -46,10 +47,12 @@ export class ProductResolver {
     .andWhere("product.price >= :minPrice", { minPrice: minPrice })
 
     if(tags && tags.length >0){
+      console.log("ia am here")
       queryBuilder.andWhere("tag.label IN (:...tags)", {tags})
     }
 
-    const products= await queryBuilder.getMany()
+    const products= await queryBuilder.distinct(true).getMany()
+
     
     return products;
   }

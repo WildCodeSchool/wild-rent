@@ -21,7 +21,7 @@ export function PriceRangeSlider({ values, onChange }: PriceRangeSliderProps) {
         <Slider
           value={values}
           min={0}
-          max={100}
+          max={50}
           onValueChange={handleValueChange}
           className="py-4 "
         />

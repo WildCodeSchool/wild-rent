@@ -68,15 +68,15 @@ export const AccountDetails = () => {
               </div>
               <div>
                 <div className="text-gray-500">Nom</div>
-                <div>Michelot</div>
+                <div>{user?.last_name}</div>
               </div>
               <div>
                 <div className="text-gray-500">Email</div>
-                <div>Michelot</div>
+                <div>{user?.email}</div>
               </div>
               <div>
                 <div className="text-gray-500">Numéro de téléphone</div>
-                <div>08 36 65 65 65</div>
+                <div>{user?.phone_number}</div>
               </div>
             </div>
           </section>
@@ -93,9 +93,9 @@ export const AccountDetails = () => {
               Mon adresse de facturation
             </div>
             <div className="mt-2 space-y-1">
-              <div>5 rue du petoncle habité</div>
-              <div>51420 L'endroit</div>
-              <div>France</div>
+              <div>{user?.address.street}</div>
+              <div>{user?.address.zipcode} {user?.address.city}</div>
+              <div>{user?.address.country}</div>
             </div>
           </section>
         </section>

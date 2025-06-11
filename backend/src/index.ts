@@ -7,7 +7,6 @@ import { createFixtures } from "./fixtures/fixtures";
 import { getSchema } from "./schema";
 import { ContextType, getUserFromContext } from "./auth";
 
-
 const start = async () => {
   await dataSource.initialize();
 

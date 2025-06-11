@@ -26,7 +26,7 @@ class UserInfo {
   isLoggedIn: boolean;
 
   @Field({ nullable: true })
-  email?: String;
+  email?: string;
 }
 
 @Resolver(User)

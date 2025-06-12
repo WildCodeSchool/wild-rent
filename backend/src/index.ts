@@ -4,15 +4,9 @@ import * as jwt from "jsonwebtoken";
 import * as cookie from "cookie";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { buildSchema } from "type-graphql";
-import { UserResolver } from "./resolvers/UserResolver";
 import { dataSource } from "./config/db";
-import { CategoryResolver } from "./resolvers/CategoryResolver";
-import { ProductResolver } from "./resolvers/ProductResolver";
-import { ProductOptionResolver } from "./resolvers/ProductOptionResolver";
 import { createFixtures } from "./fixtures/fixtures";
-import { TagResolver } from "./resolvers/TagResolver";
-import { OrderResolver } from "./resolvers/OrderResolver";
+import { getSchema } from "./schema";
 
 const start = async () => {
   await dataSource.initialize();
@@ -21,16 +15,7 @@ const start = async () => {
     await createFixtures();
   }
 
-  const schema = await buildSchema({
-    resolvers: [
-      UserResolver,
-      CategoryResolver,
-      ProductResolver,
-      ProductOptionResolver,
-      TagResolver,
-      OrderResolver,
-    ],
-  });
+  const schema = await getSchema();
 
   const server = new ApolloServer({
     schema,

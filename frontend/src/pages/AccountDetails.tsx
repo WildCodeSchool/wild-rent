@@ -9,6 +9,9 @@ export const AccountDetails = () => {
   const navigate = useNavigate();
   const { loading, error, data } = useGetUserInfoQuery();
   const user = data?.getUserInfo.user;
+  // Formate la date (string) au bon format dd-mm-yyyy
+  const date = new Date(user?.created_at);
+  const formattedCreatedAt = date.toLocaleDateString("fr");
 
   const [logout] = useLogoutMutation({
     refetchQueries: [{ query: GET_USER_INFO }],
@@ -78,6 +81,10 @@ export const AccountDetails = () => {
                 <div className="text-gray-500">Numéro de téléphone</div>
                 <div>{user?.phone_number}</div>
               </div>
+              <div>
+                <div className="text-gray-500">Membre depuis le </div>
+                <div>{formattedCreatedAt}</div>
+              </div>
             </div>
           </section>
 
@@ -94,7 +101,9 @@ export const AccountDetails = () => {
             </div>
             <div className="mt-2 space-y-1">
               <div>{user?.address.street}</div>
-              <div>{user?.address.zipcode} {user?.address.city}</div>
+              <div>
+                {user?.address.zipcode} {user?.address.city}
+              </div>
               <div>{user?.address.country}</div>
             </div>
           </section>

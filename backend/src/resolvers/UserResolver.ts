@@ -8,6 +8,7 @@ import {
   Ctx,
   Field,
   ObjectType,
+  Int,
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
@@ -29,19 +30,38 @@ class UserInfo {
   email?: String;
 }
 
+@ObjectType()
+class PaginatedUsers {
+  @Field(() => [User])
+  users: User[];
+
+  @Field(() => Int)
+  totalUsersLength: number;
+}
+
 @Resolver(User)
 export class UserResolver {
-  @Query(() => [User])
+  @Query(() => PaginatedUsers)
   async getAllUsers( @Arg("offset") offset: number,
-  @Arg("limit") limit: number, ) {
+  @Arg("limit") limit: number,  @Arg("role", { nullable: true }) role?: string, ) {
+    const whereClause = role ? { role } : {};
+
     const users = await User.find({
+      where: whereClause,
       skip: offset,
       take: limit ,
       order: {
-        created_at: "DESC"
+       id: "ASC"
       }
     });
-    return users;
+    const totalUsers = await User.find({
+      where: whereClause,
+      order: {
+       id: "ASC"
+      }
+    });
+
+    return {users: users, totalUsersLength: totalUsers.length};
   }
 
   @Mutation(() => String)

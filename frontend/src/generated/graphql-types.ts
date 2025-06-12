@@ -103,6 +103,12 @@ export type Order = {
   user: User;
 };
 
+export type PaginatedUsers = {
+  __typename?: 'PaginatedUsers';
+  totalUsersLength: Scalars['Int']['output'];
+  users: Array<User>;
+};
+
 export type Picture = {
   __typename?: 'Picture';
   id: Scalars['Float']['output'];
@@ -162,7 +168,7 @@ export type Query = {
   __typename?: 'Query';
   getAllCategories: Array<Category>;
   getAllTags: Array<Tag>;
-  getAllUsers: Array<User>;
+  getAllUsers: PaginatedUsers;
   getProductByCategory: Array<Product>;
   getProductById: Product;
   getProductOptions: Array<ProductOption>;
@@ -175,6 +181,7 @@ export type Query = {
 export type QueryGetAllUsersArgs = {
   limit: Scalars['Float']['input'];
   offset: Scalars['Float']['input'];
+  role?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -308,10 +315,11 @@ export type GetProductByIdQuery = { __typename?: 'Query', getProductById: { __ty
 export type GetAllUsersQueryVariables = Exact<{
   offset: Scalars['Float']['input'];
   limit: Scalars['Float']['input'];
+  role?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers: Array<{ __typename?: 'User', created_at: any, email: string, first_name: string, id: number, last_name: string, phone_number: string, role: string, address: { __typename?: 'Address', city: string, country: string, street: string, zipcode: string } }> };
+export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers: { __typename?: 'PaginatedUsers', totalUsersLength: number, users: Array<{ __typename?: 'User', created_at: any, email: string, first_name: string, id: number, last_name: string, phone_number: string, role: string, address: { __typename?: 'Address', city: string, country: string, street: string, zipcode: string } }> } };
 
 export type GetUserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -712,21 +720,24 @@ export type GetProductByIdLazyQueryHookResult = ReturnType<typeof useGetProductB
 export type GetProductByIdSuspenseQueryHookResult = ReturnType<typeof useGetProductByIdSuspenseQuery>;
 export type GetProductByIdQueryResult = Apollo.QueryResult<GetProductByIdQuery, GetProductByIdQueryVariables>;
 export const GetAllUsersDocument = gql`
-    query GetAllUsers($offset: Float!, $limit: Float!) {
-  getAllUsers(offset: $offset, limit: $limit) {
-    address {
-      city
-      country
-      street
-      zipcode
+    query GetAllUsers($offset: Float!, $limit: Float!, $role: String) {
+  getAllUsers(offset: $offset, limit: $limit, role: $role) {
+    totalUsersLength
+    users {
+      address {
+        city
+        country
+        street
+        zipcode
+      }
+      created_at
+      email
+      first_name
+      id
+      last_name
+      phone_number
+      role
     }
-    created_at
-    email
-    first_name
-    id
-    last_name
-    phone_number
-    role
   }
 }
     `;
@@ -745,6 +756,7 @@ export const GetAllUsersDocument = gql`
  *   variables: {
  *      offset: // value for 'offset'
  *      limit: // value for 'limit'
+ *      role: // value for 'role'
  *   },
  * });
  */

@@ -79,21 +79,24 @@ export const GET_PRODUCT_BY_ID = gql`
 `;
 
 export const GET_USERS = gql`
-  query GetAllUsers($offset: Float!, $limit: Float!) {
-  getAllUsers(offset: $offset, limit: $limit) {
-    address {
+  query GetAllUsers($offset: Float!, $limit: Float!, $role: String) {
+  getAllUsers(offset: $offset, limit: $limit,  role: $role) {
+    totalUsersLength
+    users {
+      address {
       city
       country
       street
       zipcode
+      }
+      created_at
+      email
+      first_name
+      id
+      last_name
+      phone_number
+      role
     }
-    created_at
-    email
-    first_name
-    id
-    last_name
-    phone_number
-    role
   }
 }
 `;

@@ -2,8 +2,23 @@ import { useContext, useEffect, useState } from "react";
 import { cartContext } from "../context/CartContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {
+  useCreateNewOrderMutation,
+  useGetUserInfoQuery,
+} from "../generated/graphql-types";
 
 const cart = () => {
+  const [createOrderMutation] = useCreateNewOrderMutation();
+  const { loading, error, data } = useGetUserInfoQuery();
+  if (loading) return <p>Loading...</p>;
+  if (error)
+    return (
+      <>
+        <h2>An error occured</h2>
+        <p>Error : {error.message}</p>
+      </>
+    );
+
   const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -58,6 +73,25 @@ const cart = () => {
     setStartDate(start);
     setEndDate(end);
   };
+  const createOrder = () => {
+    createOrderMutation({
+      variables: {
+        data: {
+          rental_start_date: localStorage.getItem("rentalStartDate"),
+          rental_end_date: localStorage.getItem("rentalEndDate"),
+          created_at: new Date(),
+          total_price: total,
+          products: items.map((item: any) => ({
+            quantity: item.quantity,
+            productOptionId: item.selectedOption.id,
+          })),
+          userId: Number(data?.getUserInfo?.user?.id) ?? 0,
+        },
+      },
+    });
+    console.log("Création de la commande...");
+  };
+
   return (
     <>
       {items.length === 0 && (
@@ -84,7 +118,7 @@ const cart = () => {
                     className="border rounded-xl p-2 w-full"
                   />
                   <button
-                    className="text-sm lg:text-base bg-[#52796F] text-white p-2 lg:pr-5 lg:pl-5 ml-5 lg:ml-15 rounded-xl"
+                    className="text-sm lg:text-base bg-green text-white p-2 lg:pr-5 lg:pl-5 ml-5 lg:ml-15 rounded-xl"
                     onClick={() => handleDuration(startDate, endDate)}
                   >
                     Valider les dates
@@ -115,7 +149,7 @@ const cart = () => {
           <div className="bg-white flex justify-center flex-col md:p-4 ">
             {items.map((item: any, index: number) => (
               <div
-                className="w-[95%] lg:w-[80%] bg-[#52796F] rounded-lg m-auto mt-4 flex justify-between items-center"
+                className="w-[95%] lg:w-[80%] bg-green rounded-lg m-auto mt-4 flex justify-between items-center"
                 key={index}
               >
                 <div className="w-[20%] md:w-[25%] flex justify-center mt-2 mb-2">
@@ -125,9 +159,12 @@ const cart = () => {
                     alt={item.name}
                   />
                 </div>
-                <div className="bg-[#D9D9D9] w-[40%] lg:w-[50%] p-2 rounded-lg">
-                  <p className="text-base sm:text-xl"> {item.name}</p>
-                  <p>{item.product_options}</p>
+                <div className="bg-[#D9D9D9] w-[40%] lg:w-[50%] p-1 rounded-lg">
+                  <p className="text-base sm:text-xl">
+                    {" "}
+                    {item.name} - {item.selectedOption.size}
+                  </p>
+
                   <p className="text-xs sm:text-base">{item.price}€ / jour</p>
                 </div>
                 <div className="w-[30%] flex flex-col items-center">
@@ -135,7 +172,7 @@ const cart = () => {
                     <div>
                       <div className="flex flex-row">
                         <button
-                          className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-10 xl:w-14 rounded-tl-lg rounded-bl-lg flex justify-center"
+                          className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-10 xl:w-14 rounded-tl-lg rounded-bl-lg text-center"
                           onClick={() => handleRemoveQuantity(item)}
                         >
                           -
@@ -177,7 +214,10 @@ const cart = () => {
             <p className="text-2xl">{total}€</p>
           </div>
           <div className="flex justify-center pb-8 pt-8">
-            <button className="md:w-1/4 m-auto bg-[#52796F] text-white p-2 rounded-xl sm:text-xl">
+            <button
+              onClick={() => createOrder()}
+              className="md:w-1/4 m-auto bg-green text-white p-2 rounded-xl sm:text-xl"
+            >
               Passer ma commande
             </button>
           </div>

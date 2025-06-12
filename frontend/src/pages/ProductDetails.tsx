@@ -1,7 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useGetProductByIdQuery } from "../generated/graphql-types";
 import { useContext, useState } from "react";
-//import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { cartContext } from "../context/CartContext";
 

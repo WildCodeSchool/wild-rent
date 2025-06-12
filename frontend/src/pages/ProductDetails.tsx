@@ -24,7 +24,9 @@ const ProductDetails = () => {
   const [selectedOption, setSelectedOption] = useState<{
     id: number;
     size: string;
+    total_quantity: number;
   } | null>(null);
+
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
   const products = data?.getProductById;
@@ -32,7 +34,7 @@ const ProductDetails = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error loading product</p>;
   const mainImage = activeImage || products?.pictures[0].url;
-  console.log(selectedOption);
+
   return (
     <div className="flex flex-col md:flex-row items-start gap-10 p-10 bg-white shadow-md rounded-lg max-w-4xl mx-auto">
       {/* Image Section */}
@@ -90,7 +92,11 @@ const ProductDetails = () => {
                 {products?.product_options?.map((el: any) => (
                   <option
                     key={el.id}
-                    value={JSON.stringify({ id: el.id, size: el.size })}
+                    value={JSON.stringify({
+                      id: el.id,
+                      size: el.size,
+                      total_quantity: el.total_quantity,
+                    })}
                   >
                     {el.size}
                   </option>

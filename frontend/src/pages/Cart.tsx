@@ -19,6 +19,8 @@ const Cart = () => {
   const [duration, setDuration] = useState<number>(0);
   const [datesValidated, setDatesValidated] = useState(false);
 
+  const { loading, error, data } = useGetUserInfoQuery();
+
   const total = items
     .map((item: any) => item.price * item.quantity * duration)
     .reduce((acc, price) => acc + price, 0);

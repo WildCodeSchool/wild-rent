@@ -137,7 +137,7 @@ const Cart = () => {
                     className="text-sm lg:text-base bg-green text-white p-2 lg:pr-5 lg:pl-5 ml-5 lg:ml-15 rounded-xl"
                     onClick={() => handleDuration(startDate, endDate)}
                   >
-                    Valider les dates
+                    Valider les date
                   </button>
                 </div>
               </div>

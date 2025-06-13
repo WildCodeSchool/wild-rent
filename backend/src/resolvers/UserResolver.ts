@@ -13,11 +13,12 @@ import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
 import { UserInput } from "../inputs/UserInput";
 import { LoginInput } from "../inputs/LoginInput";
+import { ContextType } from "../auth";
 import { Resend } from "resend";
 import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
-import { Context } from "../types/Context";
+import Cookies from "cookies";
 
 const baseUrl = "http://localhost:7000/confirm/";
 
@@ -78,7 +79,7 @@ export class UserResolver {
   @Mutation(() => String)
   async login(
     @Arg("data") login_user_data: LoginInput,
-    @Ctx() context: Context
+    @Ctx() context: ContextType
   ) {
     let is_password_correct = false;
     const user = await User.findOneBy({ email: login_user_data.email });
@@ -93,7 +94,13 @@ export class UserResolver {
         { email: user.email, user_role: user.role },
         process.env.JWT_SECRET_KEY as jwt.Secret
       );
-      context.res.setHeader("Set-Cookie", `token=${token}; Secure; HttpOnly`);
+      const cookies = new Cookies(context.req, context.res);
+
+      cookies.set("token", token, {
+        secure: false,
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 72,
+      });
 
       return "ok";
     } else {
@@ -109,10 +116,10 @@ export class UserResolver {
   }
 
   @Query(() => UserInfo)
-  async getUserInfo(@Ctx() context: Context) {
-    if (context.email) {
-      const user = await User.findOneByOrFail({ email: context.email });
-      return { isLoggedIn: true, email: context.email, user };
+  async getUserInfo(@Ctx() context: ContextType) {
+    if (context.user) {
+      const user = await User.findOneByOrFail({ email: context.user.email });
+      return { isLoggedIn: true, user };
     } else {
       return { isLoggedIn: false };
     }
@@ -134,4 +141,7 @@ export class UserResolver {
     tempUser.remove();
     return "ok";
   }
+
+  // @Mutation(() => Boolean)
+  // async changePassword(@Ctx())
 }

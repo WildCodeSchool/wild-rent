@@ -1,0 +1,57 @@
+import "dotenv/config";
+import { verify } from "jsonwebtoken";
+import { AuthChecker } from "type-graphql";
+import { User } from "./entities/User";
+import Cookies from "cookies";
+
+export type ContextType = { req: any; res: any; user: User | null | undefined };
+export type AuthContextType = ContextType & { user: User }; // Intersection de types, user ici est forcémment User et non plus null ou undefined
+
+export async function getUserFromContext(
+  context: ContextType
+): Promise<User | null> {
+  const cookies = new Cookies(context.req, context.res);
+  const token = cookies.get("token");
+  if (!token) {
+    return null;
+  }
+  try {
+    const secret = process.env.JWT_SECRET_KEY;
+    if (!secret) {
+      throw new Error("JWT_SECRET_KEY is not defined in environment variables");
+    }
+
+    const payload = verify(token, secret) as { id: number };
+
+    console.log("OK, access authorized");
+
+    const user = await User.findOneBy({
+      id: payload.id,
+    });
+
+    return user;
+  } catch {
+    console.log("Invalid JWT");
+    return null;
+  }
+}
+
+export const authChecker: AuthChecker<ContextType> = async (
+  { context },
+  roles
+) => {
+  // @Authorized(["admin", "user"]) → roles = ["admin", "user"]
+  // @Authorized() → roles = []
+  // if the roles are omitted, should be consider as an admin autorization → least privileges security concern
+  if (roles.length === 0) {
+    roles = ["ADMIN"];
+  }
+
+  // user has already been put in context (if found) by the global middleware (see index.ts)
+  const user = context.user;
+  if (user && roles.includes(user.role)) {
+    return true;
+  } else {
+    return false;
+  }
+};

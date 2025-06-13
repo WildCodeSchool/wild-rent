@@ -182,6 +182,7 @@ export type QueryGetAllUsersArgs = {
   limit: Scalars['Float']['input'];
   offset: Scalars['Float']['input'];
   role?: InputMaybe<Scalars['String']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -316,6 +317,7 @@ export type GetAllUsersQueryVariables = Exact<{
   offset: Scalars['Float']['input'];
   limit: Scalars['Float']['input'];
   role?: InputMaybe<Scalars['String']['input']>;
+  search?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -720,8 +722,8 @@ export type GetProductByIdLazyQueryHookResult = ReturnType<typeof useGetProductB
 export type GetProductByIdSuspenseQueryHookResult = ReturnType<typeof useGetProductByIdSuspenseQuery>;
 export type GetProductByIdQueryResult = Apollo.QueryResult<GetProductByIdQuery, GetProductByIdQueryVariables>;
 export const GetAllUsersDocument = gql`
-    query GetAllUsers($offset: Float!, $limit: Float!, $role: String) {
-  getAllUsers(offset: $offset, limit: $limit, role: $role) {
+    query GetAllUsers($offset: Float!, $limit: Float!, $role: String, $search: String) {
+  getAllUsers(offset: $offset, limit: $limit, role: $role, search: $search) {
     totalUsersLength
     users {
       address {
@@ -757,6 +759,7 @@ export const GetAllUsersDocument = gql`
  *      offset: // value for 'offset'
  *      limit: // value for 'limit'
  *      role: // value for 'role'
+ *      search: // value for 'search'
  *   },
  * });
  */

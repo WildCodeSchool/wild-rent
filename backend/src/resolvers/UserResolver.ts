@@ -19,6 +19,7 @@ import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
 
+
 const baseUrl = "http://localhost:7000/confirm/";
 
 @ObjectType()
@@ -43,25 +44,18 @@ class PaginatedUsers {
 export class UserResolver {
   @Query(() => PaginatedUsers)
   async getAllUsers( @Arg("offset") offset: number,
-  @Arg("limit") limit: number,  @Arg("role", { nullable: true }) role?: string, ) {
-    const whereClause = role ? { role } : {};
+  @Arg("limit") limit: number,  @Arg("role", { nullable: true }) role?: string,  @Arg("search", { nullable: true }) search?: string, ) {
+    const query = User.createQueryBuilder("user").leftJoinAndSelect("user.address", "address");
+    if (role){
+      query.andWhere("user.role = :role", {role})
+    }
+    if (search){
+    query.andWhere("user.first_name ILIKE :search OR user.last_name ILIKE :search OR user.email ILIKE :search", { search: `%${search}%`})
+    }
+    const totalUsersLength = await query.getCount()
+    const users = await query.orderBy("user.id", "ASC").skip(offset).take(limit).getMany()
 
-    const users = await User.find({
-      where: whereClause,
-      skip: offset,
-      take: limit ,
-      order: {
-       id: "ASC"
-      }
-    });
-    const totalUsers = await User.find({
-      where: whereClause,
-      order: {
-       id: "ASC"
-      }
-    });
-
-    return {users: users, totalUsersLength: totalUsers.length};
+    return {users: users, totalUsersLength: totalUsersLength};
   }
 
   @Mutation(() => String)

@@ -13,9 +13,9 @@ export const LOGIN = gql`
 `;
 
 export const LOGOUT = gql`
-mutation Logout {
-  logout
-}
+  mutation Logout {
+    logout
+  }
 `;
 
 export const CONFIRM_EMAIL = gql`
@@ -70,6 +70,16 @@ export const CREATE_ORDER = gql`
         }
         quantity
       }
+    }
+  }
+`;
+export const UPDATE_PRODUCT_OPTION_QUANTITY = gql`
+  mutation UpdateProductOptionQuantity(
+    $data: [ProductOptionQuantityUpdateInput!]!
+  ) {
+    updateProductOptionQuantity(data: $data) {
+      id
+      total_quantity
     }
   }
 `;

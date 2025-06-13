@@ -83,6 +83,7 @@ export const GET_PRODUCT_BY_ID = gql`
       product_options {
         size
         id
+        total_quantity
       }
     }
   }
@@ -122,7 +123,7 @@ export const GET_TAGS_BY_CATEGORY = gql`
 `;
 
 export const GET_ALL_ORDERS = gql`
-  query Query {
+  query GetAllOrders {
     getAllOrders {
       created_at
       total_price
@@ -138,10 +139,34 @@ export const GET_ALL_ORDERS = gql`
           product {
             id
             name
-            price
           }
           size
-          total_quantity
+          id
+        }
+      }
+    }
+  }
+`;
+export const GET_ORDER_BY_ID = gql`
+  query getOrderById($getOrderById: Float!) {
+    getOrderBy(id: $getOrderById) {
+      created_at
+      total_price
+      rental_start_date
+      rental_end_date
+      status
+      user {
+        id
+      }
+      products_in_order {
+        quantity
+        productOption {
+          product {
+            name
+            id
+          }
+          id
+          size
         }
       }
     }

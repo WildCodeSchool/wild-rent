@@ -5,25 +5,20 @@ import "react-datepicker/dist/react-datepicker.css";
 import {
   useCreateNewOrderMutation,
   useGetUserInfoQuery,
+  useUpdateProductOptionQuantityMutation,
 } from "../generated/graphql-types";
 
 const cart = () => {
   const [createOrderMutation] = useCreateNewOrderMutation();
-  const { loading, error, data } = useGetUserInfoQuery();
-  if (loading) return <p>Loading...</p>;
-  if (error)
-    return (
-      <>
-        <h2>An error occured</h2>
-        <p>Error : {error.message}</p>
-      </>
-    );
-
+  const [updateProductOptionQuantityMutation] =
+    useUpdateProductOptionQuantityMutation();
   const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [duration, setDuration] = useState<number>(0);
   const [datesValidated, setDatesValidated] = useState(false);
+
+  const { loading, error, data } = useGetUserInfoQuery();
 
   const total = items
     .map((item: any) => item.price * item.quantity * duration)
@@ -91,6 +86,36 @@ const cart = () => {
     });
     console.log("Création de la commande...");
   };
+
+  const updateProductOptionQuantity = () => {
+    updateProductOptionQuantityMutation({
+      variables: {
+        data: items.map((item: any) => ({
+          id: item.selectedOption.id,
+          total_quantity: item.selectedOption.total_quantity - item.quantity,
+        })),
+      },
+    });
+  };
+
+  const handleSubmit = () => {
+    createOrder();
+    updateProductOptionQuantity();
+    localStorage.removeItem("cart");
+    localStorage.removeItem("rentalStartDate");
+    localStorage.removeItem("rentalEndDate");
+    localStorage.removeItem("rentalDuration");
+    window.location.reload();
+  };
+
+  if (loading) return <p>Loading...</p>;
+  if (error)
+    return (
+      <>
+        <h2>An error occured</h2>
+        <p>Error : {error.message}</p>
+      </>
+    );
 
   return (
     <>
@@ -215,7 +240,7 @@ const cart = () => {
           </div>
           <div className="flex justify-center pb-8 pt-8">
             <button
-              onClick={() => createOrder()}
+              onClick={() => handleSubmit()}
               className="md:w-1/4 m-auto bg-green text-white p-2 rounded-xl sm:text-xl"
             >
               Passer ma commande

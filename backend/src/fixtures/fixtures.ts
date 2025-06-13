@@ -72,6 +72,7 @@ async function createUsers() {
       const phone_number = "+336" + randomEightDigit;
       const email = `${normalizeString(full_name)}@wild-rent.com`;
       const hashed_password = await argon2.hash("password");
+      const role = 'USER';
       const created_at = new Date();
       const userAddress = await Address.findOne({ where: { id: i + 1 } });
 
@@ -85,6 +86,7 @@ async function createUsers() {
         email,
         phone_number,
         hashed_password,
+        role,
         created_at,
         address: userAddress,
       });

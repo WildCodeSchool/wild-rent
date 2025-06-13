@@ -149,4 +149,14 @@ export class UserResolver {
     tempUser.remove();
     return "ok";
   }
+
+  @Mutation(() => String)
+    async deleteUser(@Arg("id") id: number) {
+      const result = await User.delete(id);
+      if (result.affected === 1) {
+        return "L'utilisateur a bien été supprimé";
+      } else {
+        throw new Error("L'utilisateur n'a pas été trouvé");
+      }
+    }
 }

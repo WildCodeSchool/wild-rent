@@ -12,6 +12,16 @@ import {
 import { formatDate } from "@/utils/formatDate";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { useDeleteUserMutation } from "@/generated/graphql-types";
+import { useState } from "react";
 
 interface UserTableProps {
   columns: {
@@ -30,6 +40,28 @@ interface UserTableProps {
 }
 
 export function UserTable({ columns, data }: UserTableProps) {
+  const [deleteUserMutation] = useDeleteUserMutation();
+
+  const [deleteMessage, setDeleteMessage] = useState("");
+
+  const deteleUser = async (id: number) => {
+    try {
+      const response = await deleteUserMutation({
+        variables: { deleteUserId: id },
+      });
+      if (response.data?.deleteUser) {
+        setDeleteMessage(response.data.deleteUser);
+      } else {
+        setDeleteMessage(
+          "Une erreur est survenue, veuillez réessayer plus tard"
+        );
+      }
+      return response.data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -72,9 +104,50 @@ export function UserTable({ columns, data }: UserTableProps) {
                   </Button>
                 </TableCell>
                 <TableCell>
-                  <Button variant={"ghost"} className="hover:cursor-pointer">
-                    <RiDeleteBin6Line size={20} className="text-red-600" />
-                  </Button>
+                  <Dialog>
+                    <DialogTrigger>
+                      <Button
+                        variant={"ghost"}
+                        className="hover:cursor-pointer"
+                        onClick={() => setDeleteMessage("")}
+                      >
+                        <RiDeleteBin6Line size={20} className="text-red-600" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="flex flex-col items-center gap-5">
+                      {!deleteMessage ? (
+                        <DialogHeader>
+                          <DialogTitle className="flex flex-col items-center gap-4">
+                            <div>
+                              Êtes-vous certain de vouloir supprimer cet
+                              utilisateur:
+                            </div>
+                            <p className="text-green">
+                              {item.first_name} {item.last_name}
+                            </p>
+                          </DialogTitle>
+                          <DialogDescription className="text-center mt-5">
+                            <div>
+                              Cette action est irréversible. Elle entraînera la
+                              suppression définitive du compte ainsi que
+                              l’effacement des données de nos serveurs.
+                            </div>
+                            <Button
+                              onClick={() => deteleUser(item.id)}
+                              variant={"destructive"}
+                              className="mt-5"
+                            >
+                              Confirmer
+                            </Button>
+                          </DialogDescription>
+                        </DialogHeader>
+                      ) : (
+                        <DialogHeader>
+                          <DialogTitle>{deleteMessage}</DialogTitle>
+                        </DialogHeader>
+                      )}
+                    </DialogContent>
+                  </Dialog>
                 </TableCell>
               </TableRow>
             );

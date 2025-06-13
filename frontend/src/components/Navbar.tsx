@@ -14,6 +14,11 @@ const Navbar = () => {
           <Link
             key={category.id}
             to={`/products/category/${normalizeString(category.title)}`}
+            state={{
+              id: category.id,
+              title: category.title,
+              image: category.image,
+            }}
             className="text-white font-bold hover:underline hidden sm:flex gap-x-6"
           >
             {category.title}

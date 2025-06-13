@@ -9,7 +9,10 @@ import { Layout } from "./pages/Layout";
 import ConfirmEmailPage from "./pages/ConfirmEmail";
 import { ToastContainer } from "react-toastify";
 import Cart from "./pages/Cart";
-import { Admin } from "./pages/Admin";
+import { AdminLayout } from "./pages/AdminLayout";
+import { AdminArticle } from "./pages/AdminArticle";
+import { AdminHomepage } from "./pages/AdminHomepage";
+import { AccountDetails } from "./pages/AccountDetails";
 
 function App() {
   return (
@@ -23,11 +26,15 @@ function App() {
           />
           <Route path="produit/:id" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
+          <Route path="moncompte" element={<AccountDetails />} />
           <Route path="panier" element={<Cart />} />
           <Route path="register" element={<Register />} />
           <Route path="confirm/:code?" element={<ConfirmEmailPage />} />
         </Route>
-        <Route path="/admin" element={<Admin />}></Route>
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminHomepage />} />
+          <Route path="article" element={<AdminArticle />} />
+        </Route>
       </Routes>
       <ToastContainer theme="colored" />
     </>

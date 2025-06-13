@@ -2,6 +2,8 @@ import {
   BaseEntity,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -10,6 +12,7 @@ import { Category } from "./Category";
 import { Picture } from "./Picture";
 import { ProductOption } from "./ProductOption";
 import { Field, ObjectType } from "type-graphql";
+import { Tag } from "./Tag";
 
 @ObjectType()
 @Entity()
@@ -27,7 +30,7 @@ export class Product extends BaseEntity {
   description: string;
 
   @Field()
-  @Column()
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   price: number;
 
   @Field(() => [Picture])
@@ -44,13 +47,21 @@ export class Product extends BaseEntity {
     eager: true,
     onDelete: "CASCADE",
   })
-    product_options: ProductOption[];
+  product_options: ProductOption[];
 
   @Field()
-  @Column()
+  @Column({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   created_at: Date;
 
   @Field(() => Category)
   @ManyToOne(() => Category, (category) => category.products, { eager: true })
   category: Category;
+
+  @Field(() => [Tag])
+  @ManyToMany(() => Tag, (tag) => tag.products, { eager: true })
+  @JoinTable()
+  tags: Tag[];
 }

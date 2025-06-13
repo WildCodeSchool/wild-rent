@@ -8,6 +8,7 @@ import {
 
 import { Product } from "./Product";
 import { Field, ObjectType } from "type-graphql";
+import { Tag } from "./Tag";
 
 @ObjectType()
 @Entity()
@@ -26,4 +27,8 @@ export class Category extends BaseEntity {
 
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];
+
+  @Field(() => [Tag])
+  @OneToMany(() => Tag, (tag) => tag.category)
+  tags: Tag[];
 }

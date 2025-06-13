@@ -85,7 +85,7 @@ const ProductDetails = () => {
                 }}
               >
                 <option value="" disabled>
-                  -- Sélectionnez une taille+++ --
+                  -- Sélectionnez une taille --
                 </option>
                 {products?.product_options?.map((el: any) => (
                   <option

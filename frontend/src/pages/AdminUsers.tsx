@@ -8,14 +8,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetAllUsersQuery } from "@/generated/graphql-types";
+import {
+  GetAllUsersQuery,
+  useGetAllUsersQuery,
+} from "@/generated/graphql-types";
 
 import { RiSearchLine } from "react-icons/ri";
 import { FiPlusCircle } from "react-icons/fi";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
+import AdminUserForm from "@/components/adminUserForm";
+
+export type User = GetAllUsersQuery["getAllUsers"]["users"][number];
 
 const AdminUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,6 +30,9 @@ const AdminUsers = () => {
   const [selectedRole, setSelectedRole] = useState<string | undefined>(
     undefined
   );
+  const [formOpen, setFormOpen] = useState(false);
+  const [modeUpdate, setModeUpdate] = useState(false);
+  const [userToUpdate, setUserToUpdate] = useState<User | undefined>(undefined);
   const limit = 10;
   const debouncedSearch = useDebounce(search, 500);
 
@@ -33,8 +42,6 @@ const AdminUsers = () => {
 
   const users = data?.getAllUsers?.users ?? [];
   const totalUsersLength = data?.getAllUsers.totalUsersLength;
-
-  console.log("args", offset, limit, debouncedSearch, selectedRole);
 
   const columns = [
     {
@@ -88,73 +95,90 @@ const AdminUsers = () => {
     return <p>Une erreur est survenue, veuillez réessayer plus tard</p>;
   }
 
+  console.log(modeUpdate);
+
   return (
     <div className="flex flex-col p-2 lg:mp-4 gap-4 w-full relative">
       <h1 className="font-bold text-lg md:text-xl lg:text-2xl">Utilisateurs</h1>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex relative items-center ">
-            <RiSearchLine className="absolute m-1 text-gray-500" size={20} />
-            <Input
-              value={search}
-              className="pl-8"
-              placeholder="Chercher un utilisateur"
-              onChange={(e) => {
-                setOffset(0);
+      {!formOpen && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex relative items-center ">
+              <RiSearchLine className="absolute m-1 text-gray-500" size={20} />
+              <Input
+                value={search}
+                className="pl-8"
+                placeholder="Chercher un utilisateur"
+                onChange={(e) => {
+                  setOffset(0);
+                  setCurrentPage(1);
+                  setSearch(e.target.value);
+                }}
+              />
+            </div>
+            <Select
+              value={selectedRole}
+              onValueChange={(value) => {
                 setCurrentPage(1);
-                setSearch(e.target.value);
+                setOffset(0);
+                setSelectedRole(value === "all" ? undefined : value);
+                setSearch(undefined);
               }}
-            />
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USER">User</SelectItem>
+                <SelectItem value="ADMIN">Admin</SelectItem>
+                <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
+                <SelectItem value="all">Tous les utilisateurs</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <Select
-            value={selectedRole}
-            onValueChange={(value) => {
-              setCurrentPage(1);
-              setOffset(0);
-              setSelectedRole(value === "all" ? undefined : value);
-              setSearch(undefined);
-            }}
+          <Button
+            onClick={() => setFormOpen(true)}
+            className="bg-green flex items-center hover:bg-green/70 hover:cursor-pointer"
           >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Role" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="USER">User</SelectItem>
-              <SelectItem value="ADMIN">Admin</SelectItem>
-              <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
-              <SelectItem value="all">Tous les utilisateurs</SelectItem>
-            </SelectContent>
-          </Select>
+            <FiPlusCircle />
+            <p className="translate-y-[1px]">Créer un utilisateur</p>
+          </Button>
         </div>
-        <Button className="bg-green flex items-center hover:bg-green/70 hover:cursor-pointer">
-          <FiPlusCircle />
-          <p className="translate-y-[1px]">Créer un utilisateur</p>
-        </Button>
-      </div>
-      {users && users.length > 0 ? (
-        <>
-          <UserTable columns={columns} data={users} />
-          <div className="flex items-center justify-center gap-2">
-            <button
-              className="bg-white rounded-md border-gray-300 text-gray-600 disabled:text-gray-300 disabled:hover:bg-white  hover:bg-gray-200 hover:cursor-pointer disabled:cursor-auto border py-2 px-2 text-center"
-              disabled={currentPage === 1}
-              onClick={() => fetchPreviousPage()}
-            >
-              <SlArrowLeft size={15} />
-            </button>
-            <p>{`Page ${currentPage} de ${totalPages}`}</p>
-            <button
-              className="bg-white rounded-md border-gray-300 text-gray-600 disabled:text-gray-300 disabled:hover:bg-white  hover:bg-gray-200 hover:cursor-pointer disabled:cursor-auto border py-2 px-2 text-center"
-              disabled={currentPage === totalPages}
-              onClick={() => fetchNextPage()}
-            >
-              <SlArrowRight size={15} />
-            </button>
-          </div>
-        </>
+      )}
+      {!formOpen ? (
+        users && users.length > 0 ? (
+          <>
+            <UserTable
+              columns={columns}
+              data={users}
+              setFormOpen={setFormOpen}
+              setModeUpdate={setModeUpdate}
+              setUserToUpdate={setUserToUpdate}
+            />
+            <div className="flex items-center justify-center gap-2">
+              <button
+                className="bg-white rounded-md border-gray-300 text-gray-600 disabled:text-gray-300 disabled:hover:bg-white  hover:bg-gray-200 hover:cursor-pointer disabled:cursor-auto border py-2 px-2 text-center"
+                disabled={currentPage === 1}
+                onClick={() => fetchPreviousPage()}
+              >
+                <SlArrowLeft size={15} />
+              </button>
+              <p>{`Page ${currentPage} de ${totalPages}`}</p>
+              <button
+                className="bg-white rounded-md border-gray-300 text-gray-600 disabled:text-gray-300 disabled:hover:bg-white  hover:bg-gray-200 hover:cursor-pointer disabled:cursor-auto border py-2 px-2 text-center"
+                disabled={currentPage === totalPages}
+                onClick={() => fetchNextPage()}
+              >
+                <SlArrowRight size={15} />
+              </button>
+            </div>
+          </>
+        ) : (
+          <p>Aucun utilisateur trouvé</p>
+        )
       ) : (
-        <p>Aucun utilisateur trouvé</p>
+        <AdminUserForm modeUpdate={modeUpdate} userToUpdate={userToUpdate} />
       )}
     </div>
   );

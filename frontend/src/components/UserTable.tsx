@@ -22,24 +22,26 @@ import {
 } from "./ui/dialog";
 import { useDeleteUserMutation } from "@/generated/graphql-types";
 import { useState } from "react";
+import { User } from "@/pages/AdminUsers";
 
 interface UserTableProps {
   columns: {
     accessorKey: string;
     header: string;
   }[];
-  data: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone_number: string;
-    created_at: string;
-    role: string;
-  }[];
+  data: User[];
+  setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setModeUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+  setUserToUpdate: React.Dispatch<React.SetStateAction<User | undefined>>;
 }
 
-export function UserTable({ columns, data }: UserTableProps) {
+export function UserTable({
+  columns,
+  data,
+  setFormOpen,
+  setModeUpdate,
+  setUserToUpdate,
+}: UserTableProps) {
   const [deleteUserMutation] = useDeleteUserMutation();
 
   const [deleteMessage, setDeleteMessage] = useState("");
@@ -60,6 +62,13 @@ export function UserTable({ columns, data }: UserTableProps) {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const openEditForm = (user: User) => {
+    console.log("user:", user);
+    setFormOpen(true);
+    setModeUpdate(true);
+    setUserToUpdate(user);
   };
 
   return (
@@ -99,7 +108,11 @@ export function UserTable({ columns, data }: UserTableProps) {
                 <TableCell>{item.phone_number}</TableCell>
                 <TableCell>{formatDate(item.created_at)}</TableCell>
                 <TableCell>
-                  <Button variant={"ghost"} className="hover:cursor-pointer">
+                  <Button
+                    variant={"ghost"}
+                    className="hover:cursor-pointer"
+                    onClick={() => openEditForm(item)}
+                  >
                     <MdOutlineModeEdit size={25} className="text-green" />
                   </Button>
                 </TableCell>

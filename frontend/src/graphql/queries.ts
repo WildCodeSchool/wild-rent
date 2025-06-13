@@ -147,9 +147,10 @@ export const GET_ALL_ORDERS = gql`
     }
   }
 `;
+
 export const GET_ORDER_BY_ID = gql`
   query getOrderById($getOrderById: Float!) {
-    getOrderBy(id: $getOrderById) {
+    getOrderById(id: $getOrderById) {
       created_at
       total_price
       rental_start_date

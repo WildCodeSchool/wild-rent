@@ -20,7 +20,7 @@ export class OrderResolver {
   }
 
   @Query(() => Order)
-  async getOrderBy(@Arg("id") id: number) {
+  async getOrderById(@Arg("id") id: number) {
     const order = await Order.findOne({
       where: { id: id },
       relations: [

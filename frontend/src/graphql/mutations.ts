@@ -13,9 +13,9 @@ export const LOGIN = gql`
 `;
 
 export const LOGOUT = gql`
-mutation Logout {
-  logout
-}
+  mutation Logout {
+    logout
+  }
 `;
 
 export const CONFIRM_EMAIL = gql`
@@ -46,6 +46,40 @@ export const CREATE_PRODUCT = gql`
         id
         url
       }
+    }
+  }
+`;
+export const CREATE_ORDER = gql`
+  mutation CreateNewOrder($data: OrderInput!) {
+    createNewOrder(data: $data) {
+      created_at
+      total_price
+      rental_start_date
+      rental_end_date
+      status
+      user {
+        id
+      }
+      products_in_order {
+        productOption {
+          product {
+            id
+          }
+          size
+          total_quantity
+        }
+        quantity
+      }
+    }
+  }
+`;
+export const UPDATE_PRODUCT_OPTION_QUANTITY = gql`
+  mutation UpdateProductOptionQuantity(
+    $data: [ProductOptionQuantityUpdateInput!]!
+  ) {
+    updateProductOptionQuantity(data: $data) {
+      id
+      total_quantity
     }
   }
 `;

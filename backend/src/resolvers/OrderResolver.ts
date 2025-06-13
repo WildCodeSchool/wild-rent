@@ -19,6 +19,23 @@ export class OrderResolver {
     });
   }
 
+  @Query(() => Order)
+  async getOrderById(@Arg("id") id: number) {
+    const order = await Order.findOne({
+      where: { id: id },
+      relations: [
+        "products_in_order",
+        "products_in_order.productOption",
+        "products_in_order.productOption.product",
+        "user",
+      ],
+    });
+    if (!order) {
+      throw new Error("Order not found");
+    }
+    return order;
+  }
+
   @Mutation(() => Order)
   async createNewOrder(@Arg("data") data: OrderInput) {
     const user = await User.findOne({ where: { id: data.userId } });

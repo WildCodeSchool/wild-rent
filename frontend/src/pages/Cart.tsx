@@ -243,7 +243,7 @@ const cart = () => {
               onClick={() => handleSubmit()}
               className="md:w-1/4 m-auto bg-green text-white p-2 rounded-xl sm:text-xl"
             >
-              Passer ma commande
+              Valider ma commande
             </button>
           </div>
         </div>

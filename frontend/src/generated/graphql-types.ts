@@ -195,7 +195,7 @@ export type Query = {
   getAllOrders: Array<Order>;
   getAllTags: Array<Tag>;
   getAllUsers: Array<User>;
-  getOrderBy: Order;
+  getOrderById: Order;
   getProductByCategory: Array<Product>;
   getProductById: Product;
   getProductOptions: Array<ProductOption>;
@@ -205,7 +205,7 @@ export type Query = {
 };
 
 
-export type QueryGetOrderByArgs = {
+export type QueryGetOrderByIdArgs = {
   id: Scalars['Float']['input'];
 };
 
@@ -378,7 +378,7 @@ export type GetOrderByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetOrderByIdQuery = { __typename?: 'Query', getOrderBy: { __typename?: 'Order', created_at: any, total_price: number, rental_start_date: any, rental_end_date: any, status: string, user: { __typename?: 'User', id: number }, products_in_order: Array<{ __typename?: 'ProductInOrder', quantity: number, productOption: { __typename?: 'ProductOption', id: number, size: string, product: { __typename?: 'Product', name: string, id: number } } }> } };
+export type GetOrderByIdQuery = { __typename?: 'Query', getOrderById: { __typename?: 'Order', created_at: any, total_price: number, rental_start_date: any, rental_end_date: any, status: string, user: { __typename?: 'User', id: number }, products_in_order: Array<{ __typename?: 'ProductInOrder', quantity: number, productOption: { __typename?: 'ProductOption', id: number, size: string, product: { __typename?: 'Product', name: string, id: number } } }> } };
 
 
 export const RegisterDocument = gql`
@@ -1036,7 +1036,7 @@ export type GetAllOrdersSuspenseQueryHookResult = ReturnType<typeof useGetAllOrd
 export type GetAllOrdersQueryResult = Apollo.QueryResult<GetAllOrdersQuery, GetAllOrdersQueryVariables>;
 export const GetOrderByIdDocument = gql`
     query getOrderById($getOrderById: Float!) {
-  getOrderBy(id: $getOrderById) {
+  getOrderById(id: $getOrderById) {
     created_at
     total_price
     rental_start_date

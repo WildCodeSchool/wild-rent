@@ -101,13 +101,11 @@ export class UserResolver {
     }
   }
 
-  @Mutation(() => String)
-  async logout(@Ctx() context: Context) {
-    context.res.setHeader(
-      "Set-Cookie",
-      `token=; Secure; HttpOnly;expires=${new Date(Date.now()).toUTCString()}`
-    );
-    return "logged out";
+  @Mutation(() => Boolean)
+  async logout(@Ctx() context: ContextType): Promise<boolean> {
+    const cookies = new Cookies(context.req, context.res);
+    cookies.set("token", "", { maxAge: 0 });
+    return true;
   }
 
   @Query(() => UserInfo)

@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, ObjectType, UseMiddleware } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -10,6 +10,7 @@ import {
 } from "typeorm";
 import { Address } from "./Address";
 import { Order } from "./Order";
+import { IsUser } from "../middleware/AuthChecker";
 
 @ObjectType()
 @Entity()
@@ -28,10 +29,12 @@ export class User extends BaseEntity {
 
   @Field()
   @Column({ default: "USER" })
+  @UseMiddleware(IsUser)
   role: string;
 
   @Field()
   @Column()
+  @UseMiddleware(IsUser)
   email: string;
 
   @Column()
@@ -39,6 +42,7 @@ export class User extends BaseEntity {
 
   @Field()
   @Column()
+  @UseMiddleware(IsUser)
   phone_number: string;
 
   @Field()

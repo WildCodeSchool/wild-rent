@@ -46,14 +46,17 @@ export const authChecker: AuthChecker<ContextType> = async (
   { context },
   roles
 ) => {
+  // Exemple du fonctionnement des autorisations venant de la doc (https://typegraphql.com/docs/authorization.html)
   // @Authorized(["admin", "user"]) → roles = ["admin", "user"]
   // @Authorized() → roles = []
-  // if the roles are omitted, should be consider as an admin autorization → least privileges security concern
+
+  // Si aucun rôle n’est spécifié dans le décorateur @Authorized(),
+  // Alors, par défaut, seul un utilisateur avec le rôle "admin" pourra accéder à cette ressource
   if (roles.length === 0) {
     roles = ["ADMIN"];
   }
 
-  // user has already been put in context (if found) by the global middleware (see index.ts)
+  // L'utilisateur connecté est déjà défini dans le contexte (index.ts)
   const user = context.user;
   if (user && roles.includes(user.role)) {
     return true;

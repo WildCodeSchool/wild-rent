@@ -301,7 +301,7 @@ export type GetProductByIdQuery = { __typename?: 'Query', getProductById: { __ty
 export type GetUserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserInfoQuery = { __typename?: 'Query', getUserInfo?: { __typename?: 'User', email: string, id: number, first_name: string, last_name: string, phone_number: string, role: string, created_at: any, address: { __typename?: 'Address', street: string, city: string, zipcode: string, country: string } } | null };
+export type GetUserInfoQuery = { __typename?: 'Query', getUserInfo?: { __typename?: 'User', id: number, first_name: string, last_name: string, email: string, phone_number: string, role: string, created_at: any, address: { __typename?: 'Address', street: string, city: string, zipcode: string, country: string } } | null };
 
 export type WhoamiQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -734,10 +734,10 @@ export type GetProductByIdQueryResult = Apollo.QueryResult<GetProductByIdQuery, 
 export const GetUserInfoDocument = gql`
     query GetUserInfo {
   getUserInfo {
-    email
     id
     first_name
     last_name
+    email
     phone_number
     role
     created_at

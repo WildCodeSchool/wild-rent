@@ -52,9 +52,8 @@ describe("Header", () => {
       loading: false,
       error: undefined,
       data: {
-        getUserInfo: {
+        whoami: {
           email: null,
-          isLoggedIn: false,
         },
       },
     });
@@ -74,9 +73,8 @@ describe("Header", () => {
       loading: false,
       error: undefined,
       data: {
-        getUserInfo: {
+        whoami: {
           email: "email@gmail.com",
-          isLoggedIn: true,
         },
       },
     });

@@ -3,19 +3,19 @@ import {
   useGetUserInfoQuery,
   useLogoutMutation,
 } from "../generated/graphql-types";
-import { GET_USER_INFO } from "@/graphql/queries";
+import { WHO_AM_I } from "@/graphql/queries";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const AccountDetails = () => {
   const navigate = useNavigate();
   const { loading, error, data } = useGetUserInfoQuery();
-  const user = data?.getUserInfo.user;
+  const user = data?.getUserInfo;
   const date = new Date(user?.created_at);
   const formattedCreatedAt = date.toLocaleDateString("fr");
 
   const [logout] = useLogoutMutation({
-    refetchQueries: [{ query: GET_USER_INFO }],
+    refetchQueries: [{ query: WHO_AM_I }],
   });
 
   const [showPasswordForm, setShowPasswordForm] = useState(false);

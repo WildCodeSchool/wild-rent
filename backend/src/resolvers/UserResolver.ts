@@ -6,8 +6,6 @@ import {
   Resolver,
   Arg,
   Ctx,
-  Field,
-  ObjectType,
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
@@ -21,18 +19,6 @@ import * as jwt from "jsonwebtoken";
 import Cookies from "cookies";
 
 const baseUrl = "http://localhost:7000/confirm/";
-
-@ObjectType()
-class UserInfo {
-  @Field()
-  isLoggedIn: boolean;
-
-  @Field({ nullable: true })
-  email?: string;
-
-  @Field(() => User, { nullable: true })
-  user?: User;
-}
 
 @Resolver(User)
 export class UserResolver {
@@ -91,7 +77,8 @@ export class UserResolver {
     }
     if (is_password_correct === true && user !== null) {
       const token = jwt.sign(
-        { email: user.email, user_role: user.role },
+        // On signe le jwt avec l'id de l'utilisateur qu'on va ensuite récupérer au moment de déchiffrer le token (auth.ts)
+        { id: user.id, email: user.email, user_role: user.role },
         process.env.JWT_SECRET_KEY as jwt.Secret
       );
       const cookies = new Cookies(context.req, context.res);
@@ -115,13 +102,20 @@ export class UserResolver {
     return true;
   }
 
-  @Query(() => UserInfo)
-  async getUserInfo(@Ctx() context: ContextType) {
+  // Sert pour le front afin de récupérer l'utilisateur courant (via le contexte) sans faire de requête à la BDD
+  @Query(() => User, { nullable: true })
+  async whoami(@Ctx() context: ContextType): Promise<User | null | undefined> {
+    return context.user;
+  }
+
+  // Sert pour récupérer les données de l'utilisateur connecté
+  @Query(() => User, { nullable: true })
+  async getUserInfo(@Ctx() context: ContextType): Promise<User | null> {
     if (context.user) {
       const user = await User.findOneByOrFail({ email: context.user.email });
-      return { isLoggedIn: true, user };
+      return user;
     } else {
-      return { isLoggedIn: false };
+      return null;
     }
   }
 
@@ -141,7 +135,4 @@ export class UserResolver {
     tempUser.remove();
     return "ok";
   }
-
-  // @Mutation(() => Boolean)
-  // async changePassword(@Ctx())
 }

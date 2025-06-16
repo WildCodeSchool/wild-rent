@@ -21,7 +21,13 @@ export async function getUserFromContext(
       throw new Error("JWT_SECRET_KEY is not defined in environment variables");
     }
 
-    const payload = verify(token, secret) as { id: number };
+    // On récupère dans le payload l'id de l'utilisateur qui vient de se connecter, 
+    // on fait passer l'id lors de la signature du token (UserResolver.ts)
+    const payload = verify(token, secret) as {
+      id: number;
+      email: string;
+      user_role: string;
+    };
 
     console.log("OK, access authorized");
 

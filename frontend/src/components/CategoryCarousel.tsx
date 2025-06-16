@@ -13,7 +13,6 @@ function CategoryCarousel({ title, id, image }: categoryProps) {
   });
   const products = data?.getProductByCategory;
 
-  console.log(products);
   if (error) <p>error</p>;
   if (loading) <p>loading</p>;
   return (

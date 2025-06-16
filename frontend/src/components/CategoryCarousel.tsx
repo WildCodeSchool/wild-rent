@@ -33,7 +33,7 @@ function CategoryCarousel({ title, id, image }: categoryProps) {
         </Link>
       </div>
       <Carousel>
-        {products && products.map((product) => <ItemCard product={product} />)}
+        {products && products.map((product) => <ItemCard key={product.id} product={product} />)}
       </Carousel>
     </div>
   );

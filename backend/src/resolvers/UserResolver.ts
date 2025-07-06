@@ -26,7 +26,7 @@ const baseUrl = "http://localhost:7000/confirm/";
 export class UserResolver {
   @Query(() => [User])
   @UseMiddleware(IsAdmin)
-  async getAllUsers() {
+  async getAllUsers(): Promise<User[]> {
     const users = await User.find();
     return users;
   }

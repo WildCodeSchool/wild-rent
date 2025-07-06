@@ -54,6 +54,7 @@ export class User extends BaseEntity {
   orders: Order[];
 
   @Field()
+  @UseMiddleware(IsUser)
   @OneToOne(() => Address, {
     eager: true,
     cascade: true,

@@ -6,7 +6,7 @@ import {
   Resolver,
   Arg,
   Ctx,
-  UseMiddleware,
+  Authorized,
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
@@ -18,14 +18,13 @@ import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
 import Cookies from "cookies";
-import { IsAdmin } from "../middleware/AuthChecker";
 
 const baseUrl = "http://localhost:7000/confirm/";
 
 @Resolver(User)
 export class UserResolver {
   @Query(() => [User])
-  @UseMiddleware(IsAdmin)
+  @Authorized()
   async getAllUsers(): Promise<User[]> {
     const users = await User.find();
     return users;

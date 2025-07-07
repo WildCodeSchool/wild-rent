@@ -29,11 +29,13 @@ export async function getUserFromContext(
       user_role: string;
     };
 
-    console.log("OK, access authorized");
-
     const user = await User.findOneBy({
       id: payload.id,
     });
+
+    if (user) {
+      console.log(`Access authorized for user ${user.first_name} ${user.last_name}, ID : ${user.id}`);
+    }
 
     return user;
   } catch {

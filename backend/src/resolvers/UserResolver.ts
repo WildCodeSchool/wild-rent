@@ -12,12 +12,13 @@ import {
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
-import { UserInput } from "../inputs/UserInput";
+import { UpdateUserInput, UserInput } from "../inputs/UserInput";
 import { LoginInput } from "../inputs/LoginInput";
 import { Resend } from "resend";
 import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
+import { Address } from "../entities/Address";
 
 
 const baseUrl = "http://localhost:7000/confirm/";
@@ -104,7 +105,7 @@ export class UserResolver {
     }
     if (is_password_correct === true && user !== null) {
       const token = jwt.sign(
-        { email: user.email, user_role: user.role },
+        { email: user.email, user_role: user.role, user_id: user.id },
         process.env.JWT_SECRET_KEY as jwt.Secret
       );
       context.res.setHeader("Set-Cookie", `token=${token}; Secure; HttpOnly`);
@@ -151,7 +152,10 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-    async deleteUser(@Arg("id") id: number) {
+    async deleteUser(@Arg("id") id: number, @Ctx() context: any) {
+       if(context.role !== "ADMIN" && context.id !== id){
+          throw new Error("Unauthorized")
+      }
       const result = await User.delete(id);
       if (result.affected === 1) {
         return "L'utilisateur a bien été supprimé";
@@ -159,6 +163,45 @@ export class UserResolver {
         throw new Error("L'utilisateur n'a pas été trouvé");
       }
     }
+
+
+    @Mutation(() => User)
+    async editUser(@Arg("data") updateUserData: UpdateUserInput,  @Ctx() context: any) {
+      if(context.role !== "ADMIN" && context.email !== updateUserData.email){
+          throw new Error("Unauthorized")
+      }
+      let userToUpdate = await User.findOne({where : {id:updateUserData.id},relations:["address"]} )
+      if(!userToUpdate){
+        throw new Error("User not found")
+      }
+
+      // Modifie les champs users
+      userToUpdate.first_name=updateUserData.first_name;
+      userToUpdate.last_name = updateUserData.last_name;
+      userToUpdate.email = updateUserData.email;
+      userToUpdate.phone_number = updateUserData.phone_number;
+      userToUpdate.created_at = userToUpdate.created_at
+
+      // Modifie l'adresse
+      if(userToUpdate.address){
+        userToUpdate.address.street = updateUserData.street
+        userToUpdate.address.city = updateUserData.city
+        userToUpdate.address.zipcode = updateUserData.zipcode
+        userToUpdate.address.country = "France"
+        await userToUpdate.address.save()
+      } else {
+        const newAddress = Address.create({street:updateUserData.street, city: updateUserData.city, zipcode: updateUserData.zipcode, country: "France"})
+        await newAddress.save()
+        userToUpdate.address = newAddress
+      }
+
+      await userToUpdate.save()
+
+      return userToUpdate
+    }
+
+
+    
 
   
 

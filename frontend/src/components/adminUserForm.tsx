@@ -40,9 +40,9 @@ export default function AdminUserForm({
       first_name: modeUpdate ? userToUpdate?.first_name : "",
       email: modeUpdate ? userToUpdate?.email : "",
       phone_number: modeUpdate ? userToUpdate?.phone_number : "",
-      street: modeUpdate ? userToUpdate?.address.street : "",
-      zipcode: modeUpdate ? userToUpdate?.address.zipcode : "",
-      city: modeUpdate ? userToUpdate?.address.city : "",
+      street: modeUpdate ? userToUpdate?.address?.street : "",
+      zipcode: modeUpdate ? userToUpdate?.address?.zipcode : "",
+      city: modeUpdate ? userToUpdate?.address?.city : "",
     },
   });
 

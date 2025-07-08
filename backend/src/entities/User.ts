@@ -50,11 +50,12 @@ export class User extends BaseEntity {
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
 
-  @Field()
+  @Field(() => Address, { nullable: true })
   @OneToOne(() => Address, {
     eager: true,
     cascade: true,
+    nullable: true
   })
   @JoinColumn()
-  address: Address;
+  address: Address | null;
 }

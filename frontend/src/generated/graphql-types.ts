@@ -52,6 +52,7 @@ export type Mutation = {
   createProduct: Product;
   deleteCategory: Scalars['String']['output'];
   deleteUser: Scalars['String']['output'];
+  editUser: Scalars['String']['output'];
   login: Scalars['String']['output'];
   logout: Scalars['String']['output'];
   modifyCategory: Category;
@@ -81,6 +82,11 @@ export type MutationDeleteCategoryArgs = {
 
 export type MutationDeleteUserArgs = {
   id: Scalars['Float']['input'];
+};
+
+
+export type MutationEditUserArgs = {
+  data: UpdateUserInput;
 };
 
 
@@ -227,9 +233,21 @@ export type Tag = {
   products: Array<Product>;
 };
 
+export type UpdateUserInput = {
+  city: Scalars['String']['input'];
+  created_at: Scalars['DateTimeISO']['input'];
+  email: Scalars['String']['input'];
+  first_name: Scalars['String']['input'];
+  id: Scalars['Float']['input'];
+  last_name: Scalars['String']['input'];
+  phone_number: Scalars['String']['input'];
+  street: Scalars['String']['input'];
+  zipcode: Scalars['String']['input'];
+};
+
 export type User = {
   __typename?: 'User';
-  address: Address;
+  address?: Maybe<Address>;
   created_at: Scalars['DateTimeISO']['output'];
   email: Scalars['String']['output'];
   first_name: Scalars['String']['output'];
@@ -334,7 +352,7 @@ export type GetAllUsersQueryVariables = Exact<{
 }>;
 
 
-export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers: { __typename?: 'PaginatedUsers', totalUsersLength: number, users: Array<{ __typename?: 'User', created_at: any, email: string, first_name: string, id: number, last_name: string, phone_number: string, role: string, address: { __typename?: 'Address', city: string, country: string, street: string, zipcode: string } }> } };
+export type GetAllUsersQuery = { __typename?: 'Query', getAllUsers: { __typename?: 'PaginatedUsers', totalUsersLength: number, users: Array<{ __typename?: 'User', created_at: any, email: string, first_name: string, id: number, last_name: string, phone_number: string, role: string, address?: { __typename?: 'Address', city: string, country: string, street: string, zipcode: string } | null }> } };
 
 export type GetUserInfoQueryVariables = Exact<{ [key: string]: never; }>;
 

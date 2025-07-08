@@ -33,6 +33,7 @@ interface UserTableProps {
   setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setModeUpdate: React.Dispatch<React.SetStateAction<boolean>>;
   setUserToUpdate: React.Dispatch<React.SetStateAction<User | undefined>>;
+  refetchUsers: () => void;
 }
 
 export function UserTable({
@@ -41,6 +42,7 @@ export function UserTable({
   setFormOpen,
   setModeUpdate,
   setUserToUpdate,
+  refetchUsers,
 }: UserTableProps) {
   const [deleteUserMutation] = useDeleteUserMutation();
 
@@ -51,6 +53,7 @@ export function UserTable({
       const response = await deleteUserMutation({
         variables: { deleteUserId: id },
       });
+      refetchUsers();
       if (response.data?.deleteUser) {
         setDeleteMessage(response.data.deleteUser);
       } else {
@@ -118,14 +121,8 @@ export function UserTable({
                 </TableCell>
                 <TableCell>
                   <Dialog>
-                    <DialogTrigger>
-                      <Button
-                        variant={"ghost"}
-                        className="hover:cursor-pointer"
-                        onClick={() => setDeleteMessage("")}
-                      >
-                        <RiDeleteBin6Line size={20} className="text-red-600" />
-                      </Button>
+                    <DialogTrigger onClick={() => setDeleteMessage("")}>
+                      <RiDeleteBin6Line size={20} className="text-red-600" />
                     </DialogTrigger>
                     <DialogContent className="flex flex-col items-center gap-5">
                       {!deleteMessage ? (
@@ -139,16 +136,14 @@ export function UserTable({
                               {item.first_name} {item.last_name}
                             </p>
                           </DialogTitle>
-                          <DialogDescription className="text-center mt-5">
-                            <div>
-                              Cette action est irréversible. Elle entraînera la
-                              suppression définitive du compte ainsi que
-                              l’effacement des données de nos serveurs.
-                            </div>
+                          <DialogDescription className="text-center mt-5 flex flex-col items-center">
+                            Cette action est irréversible. Elle entraînera la
+                            suppression définitive du compte ainsi que
+                            l’effacement des données de nos serveurs.
                             <Button
                               onClick={() => deteleUser(item.id)}
                               variant={"destructive"}
-                              className="mt-5"
+                              className="mt-5 w-[140px]"
                             >
                               Confirmer
                             </Button>

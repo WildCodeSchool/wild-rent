@@ -36,12 +36,14 @@ const AdminUsers = () => {
   const limit = 10;
   const debouncedSearch = useDebounce(search, 500);
 
-  const { loading, data, error } = useGetAllUsersQuery({
+  const { loading, data, error, refetch } = useGetAllUsersQuery({
     variables: { offset, limit, role: selectedRole, search: debouncedSearch },
   });
 
   const users = data?.getAllUsers?.users ?? [];
   const totalUsersLength = data?.getAllUsers.totalUsersLength;
+
+  console.log("users:", users);
 
   const columns = [
     {
@@ -155,6 +157,7 @@ const AdminUsers = () => {
               setFormOpen={setFormOpen}
               setModeUpdate={setModeUpdate}
               setUserToUpdate={setUserToUpdate}
+              refetchUsers={refetch}
             />
             <div className="flex items-center justify-center gap-2">
               <button

@@ -13,11 +13,16 @@ import { AdminLayout } from "./pages/AdminLayout";
 import { AdminArticle } from "./pages/AdminArticle";
 import { AdminHomepage } from "./pages/AdminHomepage";
 import { AccountDetails } from "./pages/AccountDetails";
+import ProtectedRoutes from "./utils/ProtectedRoutes";
 
 function App() {
   return (
     <>
       <Routes>
+        <Route element={<ProtectedRoutes />}>
+          <Route path="moncompte" element={<AccountDetails />} />
+          <Route path="confirm/:code?" element={<ConfirmEmailPage />} />
+        </Route>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route
@@ -26,10 +31,9 @@ function App() {
           />
           <Route path="produit/:id" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
-          <Route path="moncompte" element={<AccountDetails />} />
+
           <Route path="panier" element={<Cart />} />
           <Route path="register" element={<Register />} />
-          <Route path="confirm/:code?" element={<ConfirmEmailPage />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHomepage />} />

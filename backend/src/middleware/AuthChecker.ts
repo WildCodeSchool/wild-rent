@@ -27,7 +27,7 @@ export const IsAdmin: MiddlewareFn<AuthContextType> = async (
   { context },
   next
 ) => {
-  if (context.user?.role === "ADMIN") { 
+  if (context.user.role === "ADMIN") { 
     return next(); 
   }
   throw new GraphQLError("You are not authorized to perform this action.", {

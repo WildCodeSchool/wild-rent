@@ -104,6 +104,7 @@ export class UserResolver {
       );
     }
     if (is_password_correct === true && user !== null) {
+      console.log("user:", user)
       const token = jwt.sign(
         { email: user.email, user_role: user.role, user_id: user.id },
         process.env.JWT_SECRET_KEY as jwt.Secret
@@ -167,6 +168,7 @@ export class UserResolver {
 
     @Mutation(() => User)
     async editUser(@Arg("data") updateUserData: UpdateUserInput,  @Ctx() context: any) {
+      console.log("context:", context)
       if(context.role !== "ADMIN" && context.email !== updateUserData.email){
           throw new Error("Unauthorized")
       }

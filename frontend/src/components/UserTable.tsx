@@ -23,6 +23,7 @@ import {
 import { useDeleteUserMutation } from "@/generated/graphql-types";
 import { useState } from "react";
 import { User } from "@/pages/AdminUsers";
+import { toast } from "react-toastify";
 
 interface UserTableProps {
   columns: {
@@ -46,8 +47,6 @@ export function UserTable({
 }: UserTableProps) {
   const [deleteUserMutation] = useDeleteUserMutation();
 
-  const [deleteMessage, setDeleteMessage] = useState("");
-
   const deteleUser = async (id: number) => {
     try {
       const response = await deleteUserMutation({
@@ -55,11 +54,9 @@ export function UserTable({
       });
       refetchUsers();
       if (response.data?.deleteUser) {
-        setDeleteMessage(response.data.deleteUser);
+        toast.success("Utilisateur supprimé avec succès");
       } else {
-        setDeleteMessage(
-          "Une erreur est survenue, veuillez réessayer plus tard"
-        );
+        toast.error("Une erreur est survenue, veuillez réessayer plus tard");
       }
       return response.data;
     } catch (err) {
@@ -121,39 +118,33 @@ export function UserTable({
                 </TableCell>
                 <TableCell>
                   <Dialog>
-                    <DialogTrigger onClick={() => setDeleteMessage("")}>
+                    <DialogTrigger>
                       <RiDeleteBin6Line size={20} className="text-red-600" />
                     </DialogTrigger>
                     <DialogContent className="flex flex-col items-center gap-5">
-                      {!deleteMessage ? (
-                        <DialogHeader>
-                          <DialogTitle className="flex flex-col items-center gap-4">
-                            <div>
-                              Êtes-vous certain de vouloir supprimer cet
-                              utilisateur:
-                            </div>
-                            <p className="text-green">
-                              {item.first_name} {item.last_name}
-                            </p>
-                          </DialogTitle>
-                          <DialogDescription className="text-center mt-5 flex flex-col items-center">
-                            Cette action est irréversible. Elle entraînera la
-                            suppression définitive du compte ainsi que
-                            l’effacement des données de nos serveurs.
-                            <Button
-                              onClick={() => deteleUser(item.id)}
-                              variant={"destructive"}
-                              className="mt-5 w-[140px]"
-                            >
-                              Confirmer
-                            </Button>
-                          </DialogDescription>
-                        </DialogHeader>
-                      ) : (
-                        <DialogHeader>
-                          <DialogTitle>{deleteMessage}</DialogTitle>
-                        </DialogHeader>
-                      )}
+                      <DialogHeader>
+                        <DialogTitle className="flex flex-col items-center gap-4">
+                          <div>
+                            Êtes-vous certain de vouloir supprimer cet
+                            utilisateur:
+                          </div>
+                          <p className="text-green">
+                            {item.first_name} {item.last_name}
+                          </p>
+                        </DialogTitle>
+                        <DialogDescription className="text-center mt-5 flex flex-col items-center">
+                          Cette action est irréversible. Elle entraînera la
+                          suppression définitive du compte ainsi que
+                          l’effacement des données de nos serveurs.
+                          <Button
+                            onClick={() => deteleUser(item.id)}
+                            variant={"destructive"}
+                            className="mt-5 w-[140px]"
+                          >
+                            Confirmer
+                          </Button>
+                        </DialogDescription>
+                      </DialogHeader>
                     </DialogContent>
                   </Dialog>
                 </TableCell>

@@ -49,3 +49,23 @@ export const DELETE_USER = gql`
     deleteUser(id: $deleteUserId)
   }
 `;
+
+export const EDIT_USER = gql`
+  mutation EditUser($data: UpdateUserInput!) {
+    editUser(data: $data) {
+      address {
+        city
+        country
+        street
+        zipcode
+      }
+      email
+      created_at
+      first_name
+      id
+      last_name
+      phone_number
+      role
+  }
+  }
+`;

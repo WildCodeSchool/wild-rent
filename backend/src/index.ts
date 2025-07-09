@@ -43,7 +43,7 @@ const start = async () => {
             if (cookies.token !== undefined) {
                 const payload: any = jwt.verify(cookies.token, process.env.JWT_SECRET_KEY as jwt.Secret);
                 if (payload) {
-                    return { email: payload.email, role:payload.user, id:payload.user_id, res: res };
+                    return { email: payload.email, role:payload.user_role, id:payload.user_id, res: res };
                 }
             }
         }

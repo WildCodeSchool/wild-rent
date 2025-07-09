@@ -15,6 +15,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { User } from "@/pages/AdminUsers";
 import { formatDate } from "@/utils/formatDate";
+import { useEditUserMutation } from "@/generated/graphql-types";
+import { toast } from "react-toastify";
 
 const formSchema = z.object({
   last_name: z.string().min(2),
@@ -29,9 +31,11 @@ const formSchema = z.object({
 export default function AdminUserForm({
   modeUpdate,
   userToUpdate,
+  setFormOpen,
 }: {
   modeUpdate: boolean;
-  userToUpdate: User | undefined;
+  userToUpdate: User;
+  setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,15 +50,39 @@ export default function AdminUserForm({
     },
   });
 
-  console.log("userToUPdate:", userToUpdate);
+  const [editUserMutation] = useEditUserMutation();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log(values);
+      if (modeUpdate === true) {
+        const user = await editUserMutation({
+          variables: {
+            data: {
+              id: userToUpdate.id,
+              created_at: userToUpdate.created_at,
+              city: values.city,
+              email: values.email,
+              first_name: values.first_name,
+              last_name: values.last_name,
+              phone_number: values.phone_number,
+              zipcode: values.zipcode,
+              street: values.street,
+            },
+          },
+        });
+        if (user) {
+          toast.success("Utilisateur modifié avec succès");
+        } else {
+          toast.error(
+            "Erreur dans la supression de l'utilisateur, veuillez réessayer"
+          );
+        }
+        setFormOpen(false);
+      }
     } catch (error) {
       console.error("Form submission error", error);
     }
-  }
+  };
 
   return (
     <Form {...form}>

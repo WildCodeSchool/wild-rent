@@ -31,6 +31,9 @@ class UserInfo {
 
   @Field({ nullable: true })
   email?: String;
+
+  @Field(() => User, { nullable: true })
+  user?: User;
 }
 
 @ObjectType()

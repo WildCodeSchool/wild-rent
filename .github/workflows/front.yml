@@ -11,4 +11,4 @@ jobs:
       - name: Create .env
         run: cp .env.example .env
       - name: Goto frontend and run tests
-        run: cd frontend && npm install && npx playwright codegen && npm run test
+        run: cd frontend && npm install && npm run start && npm run test

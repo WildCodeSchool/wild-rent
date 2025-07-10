@@ -34,7 +34,6 @@ export class User extends BaseEntity {
   @Column()
   email: string;
 
-  @Field()
   @Column()
   hashed_password: string;
 

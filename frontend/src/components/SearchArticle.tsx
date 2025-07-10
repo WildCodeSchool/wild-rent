@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { SEARCH_PRODUCTS_BY_OPTIONS } from "../graphql/queries";
 import { toast } from "react-toastify";
@@ -12,6 +12,7 @@ interface Product {
   pictures: { url: string }[];
   product_options: { size: string; total_quantity: number }[];
   category: { id: string; title: string };
+  tags: { id: string; label: string }[];
 }
 
 interface SearchResult {
@@ -26,7 +27,12 @@ interface SearchVariables {
   };
 }
 
-export function SearchArticle() {
+type SearchArticleProps = {
+  isReload?: boolean;
+  onReload?: () => void;
+};
+
+export function SearchArticle({ isReload, onReload }: SearchArticleProps) {
   const [search, setSearch] = useState("");
   const [searchProducts, queryResult] = useLazyQuery<
     SearchResult,
@@ -48,6 +54,13 @@ export function SearchArticle() {
     }
   };
 
+  useEffect(() => {
+    if (isReload) {
+      queryResult.refetch?.();
+      onReload?.();
+    }
+  }, [isReload]);
+
   return (
     <div className="w-full mx-auto">
       <div className="mb-10">
@@ -59,11 +72,14 @@ export function SearchArticle() {
             placeholder="Rechercher un produit..."
             className="w-full border pl-4 pr-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
           />
-          <button type="submit" className="ml-2 border pr-2 pl-2 rounded">
+          <button
+            type="submit"
+            className="ml-2 border pr-2 pl-2 rounded cursor-pointer"
+          >
             <img
               src="/assets/images/icons/loupe.png"
               alt="Recherche"
-              className="w-5 h-5 cursor-pointer"
+              className="w-5 h-5 "
             />
           </button>
         </form>
@@ -85,7 +101,10 @@ export function SearchArticle() {
                     ? "border-blue-500 ring-2 ring-blue-300"
                     : "hover:border-gray-400"
                 }`}
-                onClick={() => setSelectedProduct(product)}
+                onClick={() => {
+                  setSelectedProduct(product);
+                  console.log(product);
+                }}
               >
                 <p className="font-bold">{product.name}</p>
                 <p className="text-sm text-gray-600">{product.description}</p>
@@ -110,12 +129,18 @@ export function SearchArticle() {
             createOrUpdate="update"
             previewDefault={true}
             productDefault={{
+              id: parseInt(selectedProduct.id),
               name: selectedProduct.name,
               description: selectedProduct.description,
               price: selectedProduct.price,
               category: selectedProduct.category.id,
               pictures: selectedProduct.pictures,
               product_options: selectedProduct.product_options,
+              tags: selectedProduct.tags,
+            }}
+            onDelete={() => {
+              setSelectedProduct(null);
+              queryResult.refetch?.();
             }}
           />
         )}
@@ -123,3 +148,6 @@ export function SearchArticle() {
     </div>
   );
 }
+
+// todo limiter le nombre d'item renvoyer par la requette (et ajouter un boutton pour load plus( peut etre garder le nmbre pour le reload))
+// todo ajouter des options sur la recherche

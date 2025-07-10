@@ -63,7 +63,6 @@ export const MODIFY_PRODUCT = gql`
       created_at
       category {
         id
-        image
         title
       }
       tags {
@@ -71,5 +70,11 @@ export const MODIFY_PRODUCT = gql`
         id
       }
     }
+  }
+`;
+
+export const DELETE_PRODUCT_BY_ID = gql`
+  mutation DeleteProductById($id: Float!) {
+    deleteProductById(id: $id)
   }
 `;

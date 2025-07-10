@@ -113,17 +113,23 @@ export const SEARCH_PRODUCTS_BY_OPTIONS = gql`
       category {
         title
         id
+        image
       }
       description
       id
       pictures {
         url
+        id
       }
       price
       product_options {
         size
         id
         total_quantity
+      }
+      tags {
+        id
+        label
       }
     }
   }

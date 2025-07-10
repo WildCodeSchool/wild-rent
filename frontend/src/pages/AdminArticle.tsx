@@ -1,17 +1,25 @@
+import { useState } from "react";
 import { ArticleForm } from "../components/ArticleForm";
 import { SearchArticle } from "../components/SearchArticle";
 
 export const AdminArticle = () => {
+  const [reload, setReload] = useState<boolean>(false);
   return (
     <>
       <div>
         <section>
           <h2 className="font-bold text-3xl mb-6">Nouvel article</h2>
-          <ArticleForm createOrUpdate="create" formId="form-1" />
+          <ArticleForm
+            createOrUpdate="create"
+            formId="form-1"
+            onAdd={() => {
+              setReload(true);
+            }}
+          />
         </section>
         <section>
           <h2 className="font-bold text-3xl mb-6">Modifier un article</h2>
-          <SearchArticle />
+          <SearchArticle isReload={reload} onReload={() => setReload(false)} />
         </section>
       </div>
     </>

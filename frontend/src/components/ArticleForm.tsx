@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { FieldError, useForm, useFieldArray } from "react-hook-form";
 import {
   useCreateProductMutation,
+  useDeleteProductByIdMutation,
   useGetAllCategoriesQuery,
   useModifyProductMutation,
 } from "../generated/graphql-types";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { ItemCardPreview, ProductType } from "./ItemCardPreview";
+import { DeleteButton } from "./ui/deleteButton";
 
 type ProductFormValues = {
   id?: number;
@@ -17,22 +19,26 @@ type ProductFormValues = {
   category: string;
   pictures: { url: string }[];
   product_options: { size: string; total_quantity: number }[];
+  tags: { id: string; label: string }[];
 };
 
 type ArticleFormProps = {
   createOrUpdate: "create" | "update";
+  // formId permet d’identifier le bon formulaire afin d’afficher l’image dans la bonne instance
   formId: string;
   previewDefault?: boolean;
   productDefault?: ProductFormValues;
+  onDelete?: () => void;
+  onAdd?: () => void;
 };
-
-// formId permet d’identifier le bon formulaire afin d’afficher l’image dans la bonne instance
 
 export const ArticleForm = ({
   createOrUpdate,
   formId,
   previewDefault = false,
   productDefault,
+  onDelete,
+  onAdd,
 }: ArticleFormProps) => {
   const {
     control,
@@ -54,12 +60,18 @@ export const ArticleForm = ({
     { error: errorMutation, loading: loadingMutation, data: dataMutation },
   ] = useModifyProductMutation();
   const [createProductMutation] = useCreateProductMutation();
+  const [modifyProduct, setModifyProduct] = useState<
+    ProductFormValues | undefined
+  >(productDefault);
   const [selectedSize, setSelectedSize] = useState<
     { index: number; value: string }[]
   >([{ index: 0, value: "" }]);
   const [isEnable, setIsEnable] = useState(true);
   const [preview, setPreview] = useState(previewDefault);
-  console.log(errorMutation, loadingMutation, dataMutation);
+  const [
+    deleteProductByIdMutation,
+    { data: dataDelete, loading: loadingDelete, error: errorDelete },
+  ] = useDeleteProductByIdMutation();
   const watchValues = watch();
   const previewProduct: ProductType = {
     id: 0,
@@ -149,6 +161,7 @@ export const ArticleForm = ({
       }));
       setSelectedSize(sizes);
     }
+    setModifyProduct(productDefault);
   }, [productDefault, createOrUpdate, reset]);
 
   const onSubmit = async (formData: ProductFormValues) => {
@@ -185,6 +198,7 @@ export const ArticleForm = ({
         console.log(result);
         toast.success("Article publié! 💪");
         reset();
+        onAdd?.();
       } catch (error) {
         console.log(error);
         toast.error("Erreur lors de la publication");
@@ -192,9 +206,21 @@ export const ArticleForm = ({
     } else if (createOrUpdate === "update") {
       try {
         const result = await modifyProductMutation({
-          variables: { data: { ...input, id: productDefault?.id } },
+          variables: { data: { ...input, id: modifyProduct?.id } },
         });
-        console.log(result);
+
+        if (result.data) {
+          const newProduct = {
+            ...result.data.modifyProductById,
+            category: result.data.modifyProductById.category.id.toString(),
+            tags: result.data.modifyProductById.tags.map((tag) => ({
+              id: tag.id.toString(),
+              label: tag.label,
+            })),
+          };
+          setModifyProduct(newProduct);
+        }
+
         toast.success("Article modifié! 💪");
       } catch (error) {
         console.log(error);
@@ -212,10 +238,34 @@ export const ArticleForm = ({
     }
   };
 
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteProductByIdMutation({ variables: { id: id } });
+      toast.success("🗑️ Article supprimé avec succès !");
+      setModifyProduct(undefined);
+      setSelectedSize([{ index: 0, value: "" }]);
+      reset({
+        name: "",
+        description: "",
+        price: 0,
+        category: "",
+        pictures: [{ url: "" }],
+        product_options: [{ size: "", total_quantity: 1 }],
+        tags: [],
+      });
+      onDelete?.();
+    } catch (error) {
+      console.log(error);
+      toast.error("⚠️ Échec de la suppression");
+    }
+  };
+
   if (error) return <p>Error, something went wrong</p>;
   if (loading) return <p>Loading ...</p>;
   if (loadingMutation) return <p>Modification en cours...</p>;
   if (errorMutation) return <p>Erreur : {errorMutation.message}</p>;
+  if (loadingDelete) return <p>Loading ...</p>;
+  if (errorDelete) return <p>Erreur : {errorDelete.message}</p>;
 
   return (
     <div className="relative flex justify-between mb-20">
@@ -568,6 +618,16 @@ export const ArticleForm = ({
           >
             Envoyer
           </button>
+          {createOrUpdate === "update" && (
+            <DeleteButton
+              style={{ marginTop: "1rem" }}
+              onSuccess={() => {
+                if (modifyProduct && modifyProduct.id) {
+                  handleDelete(modifyProduct.id);
+                }
+              }}
+            />
+          )}
         </form>
       </div>
 

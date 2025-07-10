@@ -5,6 +5,7 @@ import { Picture } from "../entities/Picture";
 import { ProductOption } from "../entities/ProductOption";
 import { Category } from "../entities/Category";
 import { FindManyOptions, Raw } from "typeorm";
+import { merge } from "../assets/utils";
 
 @Resolver(Product)
 export class ProductResolver {
@@ -111,9 +112,33 @@ export class ProductResolver {
 
   @Mutation(() => Product)
   async modifyProductById(@Arg("data") data: ProductInput) {
-    let productToUpdate = await Product.findOneByOrFail({ id: data.id });
-    productToUpdate = Object.assign(productToUpdate, data);
-    console.log("Product modified :", productToUpdate);
-    return await productToUpdate.save();
+    let productToUpdate = await Product.findOneOrFail({
+      where: { id: data.id },
+      relations: ["category", "pictures", "product_options", "tags"],
+    });
+
+    console.log("found product", productToUpdate);
+
+    productToUpdate = merge(productToUpdate, data);
+
+    console.log("change product", merge(productToUpdate, data));
+
+    await productToUpdate.save();
+
+    const finalProduct = await Product.findOneOrFail({
+      where: { id: data.id },
+      relations: ["category", "pictures", "product_options", "tags"],
+    });
+    console.log("finalProduct", finalProduct);
+    return finalProduct;
+  }
+
+  @Mutation(() => String)
+  async deleteProductById(@Arg("id") id: number) {
+    let productToDelete = await Product.findOneOrFail({ where: { id: id } });
+
+    await productToDelete.remove();
+
+    return "Product has been deleted";
   }
 }

@@ -13,6 +13,7 @@ import { AdminLayout } from "./pages/AdminLayout";
 import { AdminArticle } from "./pages/AdminArticle";
 import { AdminHomepage } from "./pages/AdminHomepage";
 import AdminUsers from "./pages/AdminUsers";
+import ConfirmRegistration from "./pages/ConfirmRegistration";
 
 function App() {
   return (
@@ -29,6 +30,10 @@ function App() {
           <Route path="panier" element={<Cart />} />
           <Route path="register" element={<Register />} />
           <Route path="confirm/:code?" element={<ConfirmEmailPage />} />
+          <Route
+            path="confirm/registration/:code?"
+            element={<ConfirmRegistration />}
+          />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHomepage />} />

@@ -12,7 +12,7 @@ import {
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
-import { UpdateUserInput, UserInput } from "../inputs/UserInput";
+import { UpdateOrCreateUserInput, UserInput } from "../inputs/UserInput";
 import { LoginInput } from "../inputs/LoginInput";
 import { Resend } from "resend";
 import * as argon2 from "argon2";
@@ -167,7 +167,7 @@ export class UserResolver {
 
 
     @Mutation(() => User)
-    async editUser(@Arg("data") updateUserData: UpdateUserInput,  @Ctx() context: any) {
+    async editUser(@Arg("data") updateUserData: UpdateOrCreateUserInput,  @Ctx() context: any) {
       console.log("context:", context)
       if(context.role !== "ADMIN" && context.email !== updateUserData.email){
           throw new Error("Unauthorized")
@@ -201,6 +201,44 @@ export class UserResolver {
 
       return userToUpdate
     }
+
+    @Mutation(() => String)
+    async addUser(@Arg("data") new_user_data: UpdateOrCreateUserInput) {
+    const random_code = uuidv4();
+    const result = TempUser.save({
+      first_name: new_user_data.first_name,
+      last_name: new_user_data.last_name,
+      email: new_user_data.email,
+      phone_number: new_user_data.phone_number,
+      street: new_user_data.street,
+      city: new_user_data.city,
+      zipcode: new_user_data.zipcode,
+      random_code: random_code,
+    });
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    (async function () {
+      const { data, error } = await resend.emails.send({
+        from: "wild-rent@test.anniec.eu",
+        to: [new_user_data.email],
+        subject: "Verify Email",
+        html: `
+                <p>Please click the link below to complete you subscription to Wild Rent</p>
+                <a href=http://localhost:7000/confirm/registration/${random_code}>
+                http://localhost:7000/confirm/registration/${random_code}</a>
+                `,
+      });
+      if (error) {
+        return console.error({ error });
+      }
+      console.log({ data });
+    })();
+    console.log("result", result);
+    return "Temp user was created, validate with confirmation email";
+  }
+
+
 
 
     

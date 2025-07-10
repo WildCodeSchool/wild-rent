@@ -13,7 +13,7 @@ export class TempUser extends BaseEntity {
   @Column()
   email: string;
 
-  @Column()
+  @Column({nullable: true})
   hashed_password: string;
 
   @Column()
@@ -21,4 +21,13 @@ export class TempUser extends BaseEntity {
 
   @Column()
   phone_number: string;
+
+  @Column({nullable:true})
+  street: string;
+
+  @Column({nullable:true})
+  city: string;
+
+  @Column({nullable:true})
+  zipcode: string;
 }

@@ -20,8 +20,8 @@ export class UserInput implements Partial<User> {
 }
 
 @InputType()
-export class UpdateUserInput {
-  @Field()
+export class UpdateOrCreateUserInput {
+  @Field({nullable:true})
   id: number;
   
   @Field()
@@ -45,6 +45,6 @@ export class UpdateUserInput {
   @Field()
   zipcode: string;
 
-  @Field()
+  @Field({nullable:true})
   created_at: Date;
 }

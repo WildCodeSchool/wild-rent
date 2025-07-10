@@ -181,13 +181,11 @@ const AdminUsers = () => {
           <p>Aucun utilisateur trouvé</p>
         )
       ) : (
-        userToUpdate !== undefined && (
-          <AdminUserForm
-            modeUpdate={modeUpdate}
-            userToUpdate={userToUpdate}
-            setFormOpen={setFormOpen}
-          />
-        )
+        <AdminUserForm
+          modeUpdate={modeUpdate}
+          userToUpdate={userToUpdate}
+          setFormOpen={setFormOpen}
+        />
       )}
     </div>
   );

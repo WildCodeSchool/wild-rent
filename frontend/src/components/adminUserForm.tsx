@@ -34,7 +34,7 @@ export default function AdminUserForm({
   setFormOpen,
 }: {
   modeUpdate: boolean;
-  userToUpdate: User;
+  userToUpdate: User | undefined;
   setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,7 +54,7 @@ export default function AdminUserForm({
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      if (modeUpdate === true) {
+      if (modeUpdate === true && userToUpdate) {
         const user = await editUserMutation({
           variables: {
             data: {

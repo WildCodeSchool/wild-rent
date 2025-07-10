@@ -48,9 +48,7 @@ const AdminUsers = () => {
   const tempUsers = tempUsersData?.getAllTempUsers ?? [];
 
   const allUsers = [...tempUsers, ...users];
-  console.log("allUsers", allUsers);
-
-  console.log("users:", users);
+  console.log(allUsers);
 
   const columns = [
     {

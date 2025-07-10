@@ -45,6 +45,9 @@ export class UpdateOrCreateUserInput {
   @Field()
   zipcode: string;
 
+  @Field()
+  role: string;
+
   @Field({nullable:true})
   created_at: Date;
 }

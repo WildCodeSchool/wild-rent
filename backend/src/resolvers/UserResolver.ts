@@ -190,7 +190,8 @@ export class UserResolver {
       userToUpdate.last_name = updateUserData.last_name;
       userToUpdate.email = updateUserData.email;
       userToUpdate.phone_number = updateUserData.phone_number;
-      userToUpdate.created_at = userToUpdate.created_at
+      userToUpdate.created_at = userToUpdate.created_at;
+      userToUpdate.role = updateUserData.role
 
       // Modifie l'adresse
       if(userToUpdate.address){
@@ -222,6 +223,7 @@ export class UserResolver {
       city: new_user_data.city,
       zipcode: new_user_data.zipcode,
       random_code: random_code,
+      role: new_user_data.role
     });
 
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -267,7 +269,8 @@ export class UserResolver {
       phone_number: tempUser.phone_number,
       hashed_password: hashed_password,
       created_at: new Date(),
-      address: newAddress
+      address: newAddress, 
+      role: tempUser.role
     });
     await tempUser.remove();
 

@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { FaRegUser } from "react-icons/fa6";
+import { FaArrowLeftLong } from "react-icons/fa6";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,7 @@ import {
   useEditUserMutation,
 } from "@/generated/graphql-types";
 import { toast } from "react-toastify";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 const formSchema = z.object({
   last_name: z.string().min(2),
@@ -29,6 +31,7 @@ const formSchema = z.object({
   street: z.string().min(3),
   zipcode: z.string().min(5),
   city: z.string().min(1).min(3),
+  role: z.string().min(4),
 });
 
 export default function AdminUserForm({
@@ -50,6 +53,7 @@ export default function AdminUserForm({
       street: modeUpdate ? userToUpdate?.address?.street : "",
       zipcode: modeUpdate ? userToUpdate?.address?.zipcode : "",
       city: modeUpdate ? userToUpdate?.address?.city : "",
+      role: modeUpdate ? userToUpdate?.role : "USER",
     },
   });
 
@@ -71,6 +75,7 @@ export default function AdminUserForm({
               phone_number: values.phone_number,
               zipcode: values.zipcode,
               street: values.street,
+              role: values.role,
             },
           },
         });
@@ -93,6 +98,7 @@ export default function AdminUserForm({
               phone_number: values.phone_number,
               zipcode: values.zipcode,
               street: values.street,
+              role: values.role,
             },
           },
         });
@@ -114,21 +120,30 @@ export default function AdminUserForm({
 
   return (
     <Form {...form}>
-      <div className="max-w-4xl w-full mx-auto py-8  flex flex-col justify-center border border-gray-300 border-t-4 border-t-green rounded-md shadow-md ">
-        <div className="border-b border-b-gray-300 pb-5 px-5 lg:px-10">
-          <h2 className="font-semibold text-xl lg:text-2xl text-title text-green">
-            {!modeUpdate
-              ? "Création d'un utilisateur"
-              : "Modification d'un utilisateur"}
-          </h2>
-          {modeUpdate && userToUpdate && (
-            <div className="flex items-center gap-2 text-gray-600 mt-1">
-              <FaRegUser size={15} />
-              <div className="w-full text-gray-600 translate-y-[2px]">{`Utilisateur enregistré depuis le ${formatDate(
-                userToUpdate.created_at
-              )}`}</div>
-            </div>
-          )}
+      <div className="max-w-4xl w-full mx-auto py-8 flex flex-col justify-center border border-gray-300 border-t-4 border-t-green rounded-md shadow-md">
+        <div className="border-b border-b-gray-300 pb-5 px-5 lg:px-10 flex flex-col items-start gap-4">
+          <Button
+            variant={"ghost"}
+            className="flex items-center gap-2 text-gray-600 hover:cursor-pointer"
+            onClick={() => setFormOpen(false)}
+          >
+            <FaArrowLeftLong /> <p>Revenir à la liste</p>
+          </Button>
+          <div className="w-full flex flex-col items-center">
+            <h2 className="font-semibold text-xl lg:text-2xl text-title text-green">
+              {!modeUpdate
+                ? "Création d'un utilisateur"
+                : "Modification d'un utilisateur"}
+            </h2>
+            {modeUpdate && userToUpdate && (
+              <div className="flex items-center gap-2 text-gray-600 mt-1">
+                <FaRegUser size={15} />
+                <div className="w-full text-gray-600 translate-y-[2px]">{`Utilisateur enregistré depuis le ${formatDate(
+                  userToUpdate.created_at
+                )}`}</div>
+              </div>
+            )}
+          </div>
         </div>
 
         <form
@@ -247,11 +262,47 @@ export default function AdminUserForm({
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Role </FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex"
+                    >
+                      <FormItem className="flex items-center gap-3">
+                        <FormControl>
+                          <RadioGroupItem value="USER" />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          Utilisateur
+                        </FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center gap-3">
+                        <FormControl>
+                          <RadioGroupItem value="ADMIN" />
+                        </FormControl>
+                        <FormLabel className="font-normal">
+                          Administrateur
+                        </FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <div className="w-full flex justify-end gap-4 border-t border-gray-300 px-5 lg:px-10 pt-5">
             <Button
               className="min-w-32  hover:cursor-pointer"
               variant={"outline"}
+              onClick={() => setFormOpen(false)}
             >
               Annuler
             </Button>

@@ -145,7 +145,10 @@ const AdminUsers = () => {
           </div>
 
           <Button
-            onClick={() => setFormOpen(true)}
+            onClick={() => {
+              setFormOpen(true);
+              setModeUpdate(false);
+            }}
             className="bg-green flex items-center hover:bg-green/70 hover:cursor-pointer"
           >
             <FiPlusCircle />

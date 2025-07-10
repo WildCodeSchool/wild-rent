@@ -7,7 +7,6 @@ import {
   Arg,
   Ctx,
   Authorized,
-  UseMiddleware,
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
@@ -19,7 +18,6 @@ import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
 import Cookies from "cookies";
-import { IsUser } from "../middleware/AuthChecker";
 
 const baseUrl = "http://localhost:7000/confirm/";
 
@@ -107,7 +105,6 @@ export class UserResolver {
 
   // Sert pour récupérer les données de l'utilisateur connecté
   @Query(() => User, { nullable: true })
-  @UseMiddleware(IsUser)
   async getUserInfo(@Ctx() context: ContextType): Promise<User | null> {
     if (context.user) {
       const user = await User.findOneByOrFail({ email: context.user.email });

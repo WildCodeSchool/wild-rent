@@ -14,6 +14,7 @@ import { AdminArticle } from "./pages/AdminArticle";
 import { AdminHomepage } from "./pages/AdminHomepage";
 import AdminUsers from "./pages/AdminUsers";
 import ConfirmRegistration from "./pages/ConfirmRegistration";
+import AdminPendingUsers from "./pages/AdminPendingUsers";
 
 function App() {
   return (
@@ -39,6 +40,10 @@ function App() {
           <Route index element={<AdminHomepage />} />
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
+          <Route
+            path="utilisateurs-en-attente"
+            element={<AdminPendingUsers />}
+          />
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

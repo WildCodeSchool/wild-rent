@@ -261,7 +261,7 @@ export class UserResolver {
       created_at: new Date(),
       address: newAddress
     });
-    tempUser.remove();
+    await tempUser.remove();
 
     return userResult
   }

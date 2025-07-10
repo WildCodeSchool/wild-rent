@@ -11,6 +11,7 @@ import {
 import {
   GetAllUsersQuery,
   useGetAllUsersQuery,
+  useGetTempUsersQuery,
 } from "@/generated/graphql-types";
 
 import { RiSearchLine } from "react-icons/ri";
@@ -40,8 +41,14 @@ const AdminUsers = () => {
     variables: { offset, limit, role: selectedRole, search: debouncedSearch },
   });
 
+  const { data: tempUsersData } = useGetTempUsersQuery();
+
   const users = data?.getAllUsers?.users ?? [];
   const totalUsersLength = data?.getAllUsers.totalUsersLength;
+  const tempUsers = tempUsersData?.getAllTempUsers ?? [];
+
+  const allUsers = [...tempUsers, ...users];
+  console.log("allUsers", allUsers);
 
   console.log("users:", users);
 
@@ -97,12 +104,9 @@ const AdminUsers = () => {
     return <p>Une erreur est survenue, veuillez réessayer plus tard</p>;
   }
 
-  console.log(modeUpdate);
-
   return (
     <div className="flex flex-col p-2 lg:mp-4 gap-4 w-full relative">
       <h1 className="font-bold text-lg md:text-xl lg:text-2xl">Utilisateurs</h1>
-
       {!formOpen && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -139,6 +143,7 @@ const AdminUsers = () => {
               </SelectContent>
             </Select>
           </div>
+
           <Button
             onClick={() => setFormOpen(true)}
             className="bg-green flex items-center hover:bg-green/70 hover:cursor-pointer"

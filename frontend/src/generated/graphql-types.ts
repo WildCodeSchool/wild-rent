@@ -193,6 +193,7 @@ export type Query = {
   __typename?: 'Query';
   getAllCategories: Array<Category>;
   getAllTags: Array<Tag>;
+  getAllTempUsers: Array<TempUser>;
   getAllUsers: PaginatedUsers;
   getProductByCategory: Array<Product>;
   getProductById: Product;
@@ -244,6 +245,15 @@ export type Tag = {
   id: Scalars['Float']['output'];
   label: Scalars['String']['output'];
   products: Array<Product>;
+};
+
+export type TempUser = {
+  __typename?: 'TempUser';
+  email: Scalars['String']['output'];
+  first_name: Scalars['String']['output'];
+  id: Scalars['Float']['output'];
+  last_name: Scalars['String']['output'];
+  phone_number: Scalars['String']['output'];
 };
 
 export type UpdateOrCreateUserInput = {
@@ -400,6 +410,11 @@ export type GetTagsByCategoryQueryVariables = Exact<{
 
 
 export type GetTagsByCategoryQuery = { __typename?: 'Query', getTagsByCategory: Array<{ __typename?: 'Tag', id: number, label: string }> };
+
+export type GetTempUsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTempUsersQuery = { __typename?: 'Query', getAllTempUsers: Array<{ __typename?: 'TempUser', email: string, first_name: string, id: number, last_name: string, phone_number: string }> };
 
 
 export const RegisterDocument = gql`
@@ -1077,3 +1092,46 @@ export type GetTagsByCategoryQueryHookResult = ReturnType<typeof useGetTagsByCat
 export type GetTagsByCategoryLazyQueryHookResult = ReturnType<typeof useGetTagsByCategoryLazyQuery>;
 export type GetTagsByCategorySuspenseQueryHookResult = ReturnType<typeof useGetTagsByCategorySuspenseQuery>;
 export type GetTagsByCategoryQueryResult = Apollo.QueryResult<GetTagsByCategoryQuery, GetTagsByCategoryQueryVariables>;
+export const GetTempUsersDocument = gql`
+    query GetTempUsers {
+  getAllTempUsers {
+    email
+    first_name
+    id
+    last_name
+    phone_number
+  }
+}
+    `;
+
+/**
+ * __useGetTempUsersQuery__
+ *
+ * To run a query within a React component, call `useGetTempUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTempUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTempUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTempUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetTempUsersQuery, GetTempUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTempUsersQuery, GetTempUsersQueryVariables>(GetTempUsersDocument, options);
+      }
+export function useGetTempUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTempUsersQuery, GetTempUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTempUsersQuery, GetTempUsersQueryVariables>(GetTempUsersDocument, options);
+        }
+export function useGetTempUsersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetTempUsersQuery, GetTempUsersQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetTempUsersQuery, GetTempUsersQueryVariables>(GetTempUsersDocument, options);
+        }
+export type GetTempUsersQueryHookResult = ReturnType<typeof useGetTempUsersQuery>;
+export type GetTempUsersLazyQueryHookResult = ReturnType<typeof useGetTempUsersLazyQuery>;
+export type GetTempUsersSuspenseQueryHookResult = ReturnType<typeof useGetTempUsersSuspenseQuery>;
+export type GetTempUsersQueryResult = Apollo.QueryResult<GetTempUsersQuery, GetTempUsersQueryVariables>;

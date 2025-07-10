@@ -12,6 +12,7 @@ import { ProductResolver } from "./resolvers/ProductResolver";
 import { ProductOptionResolver } from "./resolvers/ProductOptionResolver";
 import { createFixtures } from "./fixtures/fixtures";
 import { TagResolver } from "./resolvers/TagResolver";
+import { TempUserResolver } from "./resolvers/TempUserResolver";
 
 const start = async () => {
   await dataSource.initialize();
@@ -27,7 +28,8 @@ const start = async () => {
       CategoryResolver,
       ProductResolver,
       ProductOptionResolver,
-      TagResolver
+      TagResolver,
+      TempUserResolver
     ],
   });
 

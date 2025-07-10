@@ -118,3 +118,15 @@ export const GET_TAGS_BY_CATEGORY = gql`
     }
 }
 `;
+
+export const GET_ALL_TEMP_USERS = gql`
+  query GetTempUsers {
+    getAllTempUsers {
+      email
+      first_name
+      id
+      last_name
+      phone_number
+    }
+}
+`;

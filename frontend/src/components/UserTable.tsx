@@ -21,7 +21,6 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { useDeleteUserMutation } from "@/generated/graphql-types";
-import { useState } from "react";
 import { User } from "@/pages/AdminUsers";
 import { toast } from "react-toastify";
 

@@ -10,9 +10,5 @@ jobs:
         uses: actions/checkout@v2
       - name: Create .env
         run: cp .env.example .env
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-      - name: Generate GraphQL types
-        run: npx playwright codegen
       - name: Goto frontend and run tests
-        run: cd frontend && npm install && npm run test
+        run: cd frontend && npm install && npx playwright codegen && npm run test

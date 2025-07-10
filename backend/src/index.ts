@@ -29,7 +29,7 @@ const start = async () => {
       ProductResolver,
       ProductOptionResolver,
       TagResolver,
-      OrderResolver,,
+      OrderResolver,
       TempUserResolver
     ],
   });

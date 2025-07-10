@@ -15,7 +15,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { User } from "@/pages/AdminUsers";
 import { formatDate } from "@/utils/formatDate";
-import { useEditUserMutation } from "@/generated/graphql-types";
+import {
+  useAddUserMutation,
+  useEditUserMutation,
+} from "@/generated/graphql-types";
 import { toast } from "react-toastify";
 
 const formSchema = z.object({
@@ -51,6 +54,7 @@ export default function AdminUserForm({
   });
 
   const [editUserMutation] = useEditUserMutation();
+  const [addUserMutation] = useAddUserMutation();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -74,7 +78,31 @@ export default function AdminUserForm({
           toast.success("Utilisateur modifié avec succès");
         } else {
           toast.error(
-            "Erreur dans la supression de l'utilisateur, veuillez réessayer"
+            "Erreur dans la modification de l'utilisateur, veuillez réessayer"
+          );
+        }
+        setFormOpen(false);
+      } else {
+        const newUserResult = await addUserMutation({
+          variables: {
+            data: {
+              city: values.city,
+              email: values.email,
+              first_name: values.first_name,
+              last_name: values.last_name,
+              phone_number: values.phone_number,
+              zipcode: values.zipcode,
+              street: values.street,
+            },
+          },
+        });
+        if (newUserResult) {
+          toast.success(
+            "Utilisateur ajouté avec succès, en attente de création de mot de passe"
+          );
+        } else {
+          toast.error(
+            "Erreur dans la création de l'utilisateur, veuillez réessayer"
           );
         }
         setFormOpen(false);

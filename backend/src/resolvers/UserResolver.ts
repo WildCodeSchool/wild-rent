@@ -238,12 +238,32 @@ export class UserResolver {
     return "Temp user was created, validate with confirmation email";
   }
 
-
-
-
+  @Mutation(() => User)
+  async addUserConfirmation( @Arg("random_code") random_code: string,
+  @Arg("password") password: string,
+) {
+    const tempUser = await TempUser.findOneByOrFail({
+      random_code: random_code,
+    });
     
+    const hashed_password= await argon2.hash(password)
 
+    const newAddress = Address.create({street:tempUser.street, city: tempUser.city, zipcode: tempUser.zipcode, country: "France"})
+    
+    await newAddress.save()
+
+    const userResult = await User.save({
+      first_name: tempUser.first_name,
+      last_name: tempUser.last_name,
+      email: tempUser.email,
+      phone_number: tempUser.phone_number,
+      hashed_password: hashed_password,
+      created_at: new Date(),
+      address: newAddress
+    });
+    tempUser.remove();
+
+    return userResult
+  }
   
-
-    
 }

@@ -8,8 +8,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAddUserConfirmationMutation } from "@/generated/graphql-types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -28,65 +30,90 @@ const ConfirmRegistration = () => {
     resolver: zodResolver(formSchema),
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const navigate = useNavigate();
+
+  const params = useParams();
+  const { code } = params;
+
+  const [addUserConfirmationMutation] = useAddUserConfirmationMutation();
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      console.log(values);
+      const result = await addUserConfirmationMutation({
+        variables: {
+          randomCode: code || "",
+          password: values.confirm_password,
+        },
+      });
+      if (result) {
+        toast.success("Enregistrement complété avec succès");
+        navigate("/login");
+      } else {
+        toast.error(
+          "Votre enregistrement n'a pas pu être finalisé, veuillez contacter notre service client"
+        );
+      }
     } catch (error) {
       console.error("Form submission error", error);
       toast.error("Failed to submit the form. Please try again.");
     }
-  }
+  };
 
   return (
-    <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 max-w-3xl mx-auto py-10"
-        >
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter your password"
-                    type="text"
-                    {...field}
-                  />
-                </FormControl>
+    <div className="w-full flex flex-col items-center">
+      <div className="flex flex-col items-start m-5 lg:m-10 max-w-3xl">
+        <h1 className="font-bold lg:text-lg">
+          Créez votre mot de passe pour compléter votre enregistrement:
+        </h1>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-8 max-w-3xl mx-auto py-10 w-full"
+          >
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter your password"
+                      type="text"
+                      {...field}
+                    />
+                  </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="confirm_password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirm password</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Confirm your password"
-                    type="text"
-                    {...field}
-                  />
-                </FormControl>
+            <FormField
+              control={form.control}
+              name="confirm_password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Confirm your password"
+                      type="text"
+                      {...field}
+                    />
+                  </FormControl>
 
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit" className="bg-green hover:bg-green/70">
-            Submit
-          </Button>
-        </form>
-      </Form>
-    </>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="bg-green hover:bg-green/70">
+              Submit
+            </Button>
+          </form>
+        </Form>
+      </div>
+    </div>
   );
 };
 

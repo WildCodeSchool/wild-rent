@@ -47,6 +47,8 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addUser: Scalars['String']['output'];
+  addUserConfirmation: User;
   confirmEmail: Scalars['String']['output'];
   createNewCategory: Category;
   createProduct: Product;
@@ -57,6 +59,17 @@ export type Mutation = {
   logout: Scalars['String']['output'];
   modifyCategory: Category;
   register: Scalars['String']['output'];
+};
+
+
+export type MutationAddUserArgs = {
+  data: UpdateOrCreateUserInput;
+};
+
+
+export type MutationAddUserConfirmationArgs = {
+  password: Scalars['String']['input'];
+  random_code: Scalars['String']['input'];
 };
 
 
@@ -86,7 +99,7 @@ export type MutationDeleteUserArgs = {
 
 
 export type MutationEditUserArgs = {
-  data: UpdateUserInput;
+  data: UpdateOrCreateUserInput;
 };
 
 
@@ -233,12 +246,12 @@ export type Tag = {
   products: Array<Product>;
 };
 
-export type UpdateUserInput = {
+export type UpdateOrCreateUserInput = {
   city: Scalars['String']['input'];
-  created_at: Scalars['DateTimeISO']['input'];
+  created_at?: InputMaybe<Scalars['DateTimeISO']['input']>;
   email: Scalars['String']['input'];
   first_name: Scalars['String']['input'];
-  id: Scalars['Float']['input'];
+  id?: InputMaybe<Scalars['Float']['input']>;
   last_name: Scalars['String']['input'];
   phone_number: Scalars['String']['input'];
   street: Scalars['String']['input'];
@@ -309,11 +322,26 @@ export type DeleteUserMutationVariables = Exact<{
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: string };
 
 export type EditUserMutationVariables = Exact<{
-  data: UpdateUserInput;
+  data: UpdateOrCreateUserInput;
 }>;
 
 
 export type EditUserMutation = { __typename?: 'Mutation', editUser: { __typename?: 'User', email: string, created_at: any, first_name: string, id: number, last_name: string, phone_number: string, role: string, address?: { __typename?: 'Address', city: string, country: string, street: string, zipcode: string } | null } };
+
+export type AddUserMutationVariables = Exact<{
+  data: UpdateOrCreateUserInput;
+}>;
+
+
+export type AddUserMutation = { __typename?: 'Mutation', addUser: string };
+
+export type AddUserConfirmationMutationVariables = Exact<{
+  password: Scalars['String']['input'];
+  randomCode: Scalars['String']['input'];
+}>;
+
+
+export type AddUserConfirmationMutation = { __typename?: 'Mutation', addUserConfirmation: { __typename?: 'User', email: string, first_name: string, last_name: string, id: number, role: string, address?: { __typename?: 'Address', city: string, country: string, street: string, zipcode: string } | null } };
 
 export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -550,7 +578,7 @@ export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutati
 export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
 export const EditUserDocument = gql`
-    mutation EditUser($data: UpdateUserInput!) {
+    mutation EditUser($data: UpdateOrCreateUserInput!) {
   editUser(data: $data) {
     address {
       city
@@ -594,6 +622,81 @@ export function useEditUserMutation(baseOptions?: Apollo.MutationHookOptions<Edi
 export type EditUserMutationHookResult = ReturnType<typeof useEditUserMutation>;
 export type EditUserMutationResult = Apollo.MutationResult<EditUserMutation>;
 export type EditUserMutationOptions = Apollo.BaseMutationOptions<EditUserMutation, EditUserMutationVariables>;
+export const AddUserDocument = gql`
+    mutation AddUser($data: UpdateOrCreateUserInput!) {
+  addUser(data: $data)
+}
+    `;
+export type AddUserMutationFn = Apollo.MutationFunction<AddUserMutation, AddUserMutationVariables>;
+
+/**
+ * __useAddUserMutation__
+ *
+ * To run a mutation, you first call `useAddUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserMutation, { data, loading, error }] = useAddUserMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAddUserMutation(baseOptions?: Apollo.MutationHookOptions<AddUserMutation, AddUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, options);
+      }
+export type AddUserMutationHookResult = ReturnType<typeof useAddUserMutation>;
+export type AddUserMutationResult = Apollo.MutationResult<AddUserMutation>;
+export type AddUserMutationOptions = Apollo.BaseMutationOptions<AddUserMutation, AddUserMutationVariables>;
+export const AddUserConfirmationDocument = gql`
+    mutation AddUserConfirmation($password: String!, $randomCode: String!) {
+  addUserConfirmation(password: $password, random_code: $randomCode) {
+    email
+    first_name
+    last_name
+    id
+    role
+    address {
+      city
+      country
+      street
+      zipcode
+    }
+  }
+}
+    `;
+export type AddUserConfirmationMutationFn = Apollo.MutationFunction<AddUserConfirmationMutation, AddUserConfirmationMutationVariables>;
+
+/**
+ * __useAddUserConfirmationMutation__
+ *
+ * To run a mutation, you first call `useAddUserConfirmationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserConfirmationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserConfirmationMutation, { data, loading, error }] = useAddUserConfirmationMutation({
+ *   variables: {
+ *      password: // value for 'password'
+ *      randomCode: // value for 'randomCode'
+ *   },
+ * });
+ */
+export function useAddUserConfirmationMutation(baseOptions?: Apollo.MutationHookOptions<AddUserConfirmationMutation, AddUserConfirmationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddUserConfirmationMutation, AddUserConfirmationMutationVariables>(AddUserConfirmationDocument, options);
+      }
+export type AddUserConfirmationMutationHookResult = ReturnType<typeof useAddUserConfirmationMutation>;
+export type AddUserConfirmationMutationResult = Apollo.MutationResult<AddUserConfirmationMutation>;
+export type AddUserConfirmationMutationOptions = Apollo.BaseMutationOptions<AddUserConfirmationMutation, AddUserConfirmationMutationVariables>;
 export const GetAllCategoriesDocument = gql`
     query GetAllCategories {
   getAllCategories {

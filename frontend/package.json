@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "graphql-codegen --config codegen.ts && vite",
+    "codegen": "graphql-codegen --config codegen.ts",
     "test": "vitest"
   },
   "dependencies": {

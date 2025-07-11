@@ -39,4 +39,4 @@ jobs:
       - name: Install backend
         run: cd backend && npm ci && npm run start & sleep 5
       - name: Goto frontend and run tests
-        run: cd frontend && npm ci && npm run test
+        run: cd frontend && npm ci && npm run codegen && npm run test

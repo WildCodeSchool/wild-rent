@@ -26,24 +26,20 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
   await page.goto(`${baseUrl}/panier`);
 
   // Vérifie que la textbox du calendrier est visible avant de cliquer
-  const dateTextbox = page.getByPlaceholder("Choisir une date"); // <-- adapter si nécessaire
+  const dateTextbox = page.getByPlaceholder("Choisir une date");
   await expect(dateTextbox).toBeVisible();
   await dateTextbox.click();
 
-  // Sélection des dates
   await page.getByRole("option", { name: date16 }).click();
   await page.getByRole("option", { name: date19 }).click();
 
   await page.getByRole("button", { name: "Valider les dates" }).click();
 
-  // Vérifie le prix unitaire
   await expect(page.getByText("45€")).toBeVisible();
 
-  // Ajoute une quantité
   await page.getByRole("button", { name: "+" }).click();
   await expect(page.getByText("2", { exact: true })).toBeVisible();
 
-  // Vérifie le prix total
   await expect(page.getByText("90€")).toBeVisible();
 
   // Diminue la quantité

@@ -80,7 +80,7 @@ const cart = () => {
             quantity: item.quantity,
             productOptionId: item.selectedOption.id,
           })),
-          userId: Number(data?.getUserInfo?.user?.id) ?? 0,
+          userId: Number(data?.getUserInfo?.id) ?? 0,
         },
       },
     });
@@ -134,6 +134,7 @@ const cart = () => {
               <div className="flex flex-col mt-4 mb-4">
                 <div className="flex flex-row items-center">
                   <DatePicker
+                    placeholderText="Choisir une date"
                     selected={startDate}
                     onChange={onChange}
                     startDate={startDate}

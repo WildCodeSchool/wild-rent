@@ -5,7 +5,7 @@
     "headed-local": "cross-env LOCAL=TRUE npx playwright test --headed"
   },
   "dependencies": {
-    "@playwright/test": "^1.53.2",
+    "@playwright/test": "^1.54.0",
     "axios": "^1.8.3",
     "dotenv": "^16.4.7"
   },

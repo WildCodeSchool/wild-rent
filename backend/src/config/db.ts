@@ -12,7 +12,7 @@ import { User } from "../entities/User";
 import { Tag } from "../entities/Tag";
 import dotenv from "dotenv";
 dotenv.config();
-dotenv.config({ path: ".env.db" });
+//dotenv.config({ path: ".env.db" });
 
 export const dataSource = new DataSource({
   type: "postgres",

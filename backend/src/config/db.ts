@@ -13,7 +13,7 @@ import { Tag } from "../entities/Tag";
 
 export const dataSource = new DataSource({
   type: "postgres",
-  host: "db",
+  host: process.env.CI ? "localhost" : "db",
   username: "admin",
   database: "db_wild_rent",
   password: "password",

@@ -2,13 +2,64 @@ name: client-tests-workflow
 
 on: pull_request
 
+env:
+  CI: true
+
 jobs:
   test-client:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: ${{ vars.POSTGRES_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ vars.POSTGRES_DATABASE }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Create .env
         run: cp .env.example .env
-      - name: Goto frontend and run tests
-        run: cd frontend && npm install && npm run test
+
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h postgres -p 5432; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+
+      - name: Connect to PostgreSQL
+        run: node client.js
+        env:
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: ${{ vars.POSTGRES_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ vars.POSTGRES_DATABASE }}
+
+      - name: Start backend server
+        run: |
+          cd backend
+          npm install
+          npm run start &
+          
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm install
+          npm run start &
+          npm run test

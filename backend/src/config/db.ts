@@ -17,8 +17,8 @@ dotenv.config();
 export const dataSource = new DataSource({
   type: "postgres",
   host: process.env.CI ? "localhost" : "db",
-  username: process.env.POSTGRES_USERNAME,
-  database: process.env.POSTGRES_DATABASE,
+  username: process.env.POSTGRES_USER,
+  database: process.env.POSTGRES_DB,
   password: process.env.POSTGRES_PASSWORD,
   entities: [
     User,

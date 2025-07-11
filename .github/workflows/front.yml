@@ -4,6 +4,9 @@ on: pull_request
 
 env:
   CI: CI
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  POSTGRES_USER: ${{ vars.POSTGRES_USERNAME }}
+  POSTGRES_DB: ${{ vars.POSTGRES_DATABASE }}
 
 jobs:
   test-client:

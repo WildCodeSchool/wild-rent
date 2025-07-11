@@ -37,3 +37,13 @@ export const dataSource = new DataSource({
   logging: ["error", "query"],
 });
 console.log(process.env.CI);
+console.log(
+  "username",
+  process.env.POSTGRES_USERNAME,
+  "database",
+  process.env.POSTGRES_DATABASE,
+  "password",
+  process.env.POSTGRES_PASSWORD,
+  "host",
+  process.env.CI ? "localhost" : "db"
+);

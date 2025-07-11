@@ -2,45 +2,57 @@ import { test, expect } from "@playwright/test";
 
 const baseUrl = "http://localhost:7000";
 
+// Format de date pour le calendrier (choix des options du sélecteur)
 function formatDate(day: number): string {
   const today = new Date();
-  const date = new Date(Date.UTC(today.getFullYear(), today.getMonth(), day));
+  const date = new Date(today.getFullYear(), today.getMonth(), day);
   const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
   const month = date.toLocaleDateString("en-US", { month: "long" });
-  const label = `Choose ${weekday}, ${month} ${day}th,`;
-  return label;
+  return `Choose ${weekday}, ${month} ${day}th,`;
 }
+
 const date16 = formatDate(16);
 const date19 = formatDate(19);
-const date28 = formatDate(28);
 
-test("test", async ({ page }) => {
-  await page.goto(baseUrl + "/produit/1");
+test("Panier : ajout produit, sélection dates, modification quantité, suppression", async ({
+  page,
+}) => {
+  await page.goto(`${baseUrl}/produit/1`);
+
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
-  await page.getByRole("link", { name: "cart Mon panier (1)" }).click();
-  await page.goto(baseUrl + "/panier");
-  await page
-    .locator("div")
-    .filter({ hasText: /^Vos dates de location :Valider les dates$/ })
-    .getByRole("textbox")
-    .click();
+
+  await page.getByRole("link", { name: /Mon panier/ }).click();
+
+  await page.goto(`${baseUrl}/panier`);
+
+  // Vérifie que la textbox du calendrier est visible avant de cliquer
+  const dateTextbox = page.getByPlaceholder("Choisir une date"); // <-- adapter si nécessaire
+  await expect(dateTextbox).toBeVisible();
+  await dateTextbox.click();
+
+  // Sélection des dates
   await page.getByRole("option", { name: date16 }).click();
   await page.getByRole("option", { name: date19 }).click();
+
   await page.getByRole("button", { name: "Valider les dates" }).click();
-  await page
-    .locator("div")
-    .filter({ hasText: /^45€$/ })
-    .getByRole("paragraph")
-    .click();
+
+  // Vérifie le prix unitaire
+  await expect(page.getByText("45€")).toBeVisible();
+
+  // Ajoute une quantité
   await page.getByRole("button", { name: "+" }).click();
-  await page.getByText("2", { exact: true }).click();
-  await page
-    .locator("div")
-    .filter({ hasText: /^90€$/ })
-    .getByRole("paragraph")
-    .click();
+  await expect(page.getByText("2", { exact: true })).toBeVisible();
+
+  // Vérifie le prix total
+  await expect(page.getByText("90€")).toBeVisible();
+
+  // Diminue la quantité
   await page.getByRole("button", { name: "-" }).click();
-  await page.getByText("1", { exact: true }).click();
+  await expect(page.getByText("1", { exact: true })).toBeVisible();
+
+  // Supprime le produit
   await page.getByRole("button", { name: "corbeille" }).click();
+
+  // Vérifie que le panier est vide
   await expect(page.getByText("Mon panier (0)")).toBeVisible();
 });

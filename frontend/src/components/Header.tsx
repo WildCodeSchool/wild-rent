@@ -41,7 +41,7 @@ const Header = () => {
           </Link>
 
           <div className="flex items-center gap-x-4">
-            {data?.whoami ? (
+            {data?.whoami?.email ? (
               <Link
                 className="flex flex-col items-center hover:underline text-green"
                 to={"/moncompte"}

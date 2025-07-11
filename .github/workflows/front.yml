@@ -37,6 +37,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install backend
-        run: cd backend && npm ci && npm run start &&
+        id: backend
+        run: cd backend && npm ci && npm run start
       - name: Goto frontend and run tests
+        if: steps.backend.outcome == 'success'
         run: cd frontend && npm ci && npm run start && npm run test

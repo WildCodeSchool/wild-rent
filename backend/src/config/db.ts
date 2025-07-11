@@ -36,3 +36,4 @@ export const dataSource = new DataSource({
   synchronize: true,
   logging: ["error", "query"],
 });
+console.log(process.env.CI);

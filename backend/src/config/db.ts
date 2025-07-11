@@ -10,7 +10,8 @@ import { Picture } from "../entities/Picture";
 import { Product } from "../entities/Product";
 import { User } from "../entities/User";
 import { Tag } from "../entities/Tag";
-import "dotenv/config";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const dataSource = new DataSource({
   type: "postgres",

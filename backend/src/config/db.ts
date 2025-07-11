@@ -10,8 +10,7 @@ import { Picture } from "../entities/Picture";
 import { Product } from "../entities/Product";
 import { User } from "../entities/User";
 import { Tag } from "../entities/Tag";
-import dotenv from "dotenv";
-dotenv.config();
+import "dotenv/config";
 
 export const dataSource = new DataSource({
   type: "postgres",
@@ -35,3 +34,5 @@ export const dataSource = new DataSource({
   synchronize: true,
   logging: ["error", "query"],
 });
+
+console.log("host:",  process.env.CI ? "localhost" : "db", "username:", process.env.POSTGRES_USER, "database:", process.env.POSTGRES_DB, "password:", process.env.POSTGRES_PASSWORD )

@@ -8,7 +8,7 @@ import { CartContextProvider } from "./context/CartContext";
 
 const client = new ApolloClient({
   uri: "/api",
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({ addTypename: false }),
 });
 
 createRoot(document.getElementById("root")!).render(

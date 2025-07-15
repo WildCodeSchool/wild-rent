@@ -51,29 +51,6 @@ export const GET_PRODUCTS_BY_FILTERS = gql`
       }
       id
     }
-  query GetProductWithFilters(
-    $maxPrice: Float!
-    $minPrice: Float!
-    $categoryId: Float!
-    $tags: [String!]!
-  ) {
-    getProductWithFilters(
-      maxPrice: $maxPrice
-      minPrice: $minPrice
-      categoryId: $categoryId
-      tags: $tags
-    ) {
-      category {
-        title
-      }
-      name
-      price
-      pictures {
-        id
-        url
-      }
-      id
-    }
   }
 `;
 

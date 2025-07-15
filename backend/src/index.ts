@@ -6,7 +6,7 @@ import { dataSource } from "./config/db";
 import { createFixtures } from "./fixtures/fixtures";
 import { getSchema } from "./schema";
 import { ContextType, getUserFromContext } from "./auth";
-import { TempUserResolver } from "./resolvers/TempUserResolver";
+
 
 const start = async () => {
   await dataSource.initialize();

@@ -8,6 +8,8 @@ import {
   Ctx,
   Authorized,
   Int,
+  ObjectType,
+  Field,
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
@@ -22,19 +24,9 @@ import Cookies from "cookies";
 import { Address } from "../entities/Address";
 
 
+
 const baseUrl = "http://localhost:7000/confirm/";
 
-@ObjectType()
-class UserInfo {
-  @Field()
-  isLoggedIn: boolean;
-
-  @Field({ nullable: true })
-  email?: String;
-
-  @Field(() => User, { nullable: true })
-  user?: User;
-}
 
 @ObjectType()
 class PaginatedUsers {
@@ -48,6 +40,7 @@ class PaginatedUsers {
 @Resolver(User)
 export class UserResolver {
   @Query(() => PaginatedUsers)
+  @Authorized()
   async getAllUsers( @Arg("offset") offset: number,
   @Arg("limit") limit: number,  @Arg("role", { nullable: true }) role?: string,  @Arg("search", { nullable: true }) search?: string, ) {
     const query = User.createQueryBuilder("user").leftJoinAndSelect("user.address", "address");
@@ -174,7 +167,7 @@ export class UserResolver {
 
   @Mutation(() => String)
     async deleteUser(@Arg("id") id: number, @Ctx() context: any) {
-       if(context.role !== "ADMIN" && context.id !== id){
+      if(context.user.role !== "ADMIN" && context.user.id !== id){
           throw new Error("Unauthorized")
       }
       const result = await User.delete(id);
@@ -188,8 +181,8 @@ export class UserResolver {
 
     @Mutation(() => User)
     async editUser(@Arg("data") updateUserData: UpdateOrCreateUserInput,  @Ctx() context: any) {
-      console.log("context:", context)
-      if(context.role !== "ADMIN" && context.email !== updateUserData.email){
+      console.log("context:", context.user)
+      if(context.user.role !== "ADMIN" && context.user.email !== updateUserData.email){
           throw new Error("Unauthorized")
       }
       let userToUpdate = await User.findOne({where : {id:updateUserData.id},relations:["address"]} )

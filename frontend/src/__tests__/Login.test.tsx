@@ -5,16 +5,12 @@ import { Login } from "../pages/Login";
 
 // Pour la doc se référer au fichier Register.test.tsx
 
-const loginMutationMock = vi
-  .fn()
-  .mockImplementation(({ variables, onCompleted }) => {
-    console.log(variables);
-    onCompleted?.();
-  });
+const loginMutationMock = vi.fn(({ onCompleted }) => {
+  onCompleted();
+});
 
 const useNavigateMock = vi.fn();
 vi.mock("../generated/graphql-types.ts", () => ({
-  //
   useLoginMutation: () => [loginMutationMock],
 }));
 

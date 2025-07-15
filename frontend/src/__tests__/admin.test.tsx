@@ -38,7 +38,7 @@ describe("AdminNavbar", () => {
   it("displays all navigation links when the menu is open", () => {
     renderNavbar();
     expect(screen.getByText("Accueil")).toBeInTheDocument();
-    expect(screen.getByText("Catégorie")).toBeInTheDocument();
+    expect(screen.getByText("Catégories")).toBeInTheDocument();
     expect(screen.getByText("Article")).toBeInTheDocument();
     expect(screen.getByText("Commandes")).toBeInTheDocument();
     expect(screen.getByText("Inventaire")).toBeInTheDocument();

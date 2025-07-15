@@ -83,3 +83,53 @@ export const UPDATE_PRODUCT_OPTION_QUANTITY = gql`
     }
   }
 `;
+
+export const DELETE_USER = gql`
+  mutation DeleteUser($deleteUserId: Float!) {
+    deleteUser(id: $deleteUserId)
+  }
+`;
+
+export const EDIT_USER = gql`
+  mutation EditUser($data: UpdateOrCreateUserInput!) {
+    editUser(data: $data) {
+      address {
+        city
+        country
+        street
+        zipcode
+      }
+      email
+      created_at
+      first_name
+      id
+      last_name
+      phone_number
+      role
+  }
+  }
+`;
+
+export const ADD_USER = gql`
+  mutation AddUser($data: UpdateOrCreateUserInput!) {
+    addUser(data: $data)
+}
+`;
+
+export const ADD_USER_CONFIRMATION = gql`
+  mutation AddUserConfirmation($password: String!, $randomCode: String!) {
+    addUserConfirmation(password: $password, random_code: $randomCode) {
+      email
+      first_name
+      last_name
+      id
+      role
+      address {
+        city
+        country
+        street
+        zipcode
+      }
+    }
+}
+`;

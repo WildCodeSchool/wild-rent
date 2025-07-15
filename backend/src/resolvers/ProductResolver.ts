@@ -49,7 +49,8 @@ export class ProductResolver {
       queryBuilder.andWhere("tag.label IN (:...tags)", {tags})
     }
 
-    const products= await queryBuilder.getMany()
+    const products= await queryBuilder.distinct(true).getMany()
+
     
     return products;
   }

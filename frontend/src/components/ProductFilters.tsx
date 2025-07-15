@@ -37,11 +37,13 @@ export function ProductFilters({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       tags: [],
-      priceRange: [0, 100],
+      priceRange: [0, 50],
     },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log(data);
+
     refetch({
       categoryId: categoryId,
       minPrice: data.priceRange[0],
@@ -53,7 +55,7 @@ export function ProductFilters({
   function reset() {
     const defaultValues = {
       tags: [],
-      priceRange: [0, 100] as [number, number],
+      priceRange: [0, 50] as [number, number],
     };
 
     form.reset(defaultValues);

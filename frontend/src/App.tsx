@@ -13,6 +13,9 @@ import { AdminLayout } from "./pages/AdminLayout";
 import { AdminArticle } from "./pages/AdminArticle";
 import { AdminHomepage } from "./pages/AdminHomepage";
 import { AccountDetails } from "./pages/AccountDetails";
+import AdminUsers from "./pages/AdminUsers";
+import ConfirmRegistration from "./pages/ConfirmRegistration";
+import AdminPendingUsers from "./pages/AdminPendingUsers";
 
 function App() {
   return (
@@ -28,12 +31,21 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="moncompte" element={<AccountDetails />} />
           <Route path="panier" element={<Cart />} />
-          <Route path="register" element={<Register />} />
-          <Route path="confirm/:code?" element={<ConfirmEmailPage />} />
+          <Route path="enregistrement" element={<Register />} />
+          <Route path="confirmation/:code?" element={<ConfirmEmailPage />} />
+          <Route
+            path="confirmation/enregistrement/:code?"
+            element={<ConfirmRegistration />}
+          />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHomepage />} />
           <Route path="article" element={<AdminArticle />} />
+          <Route path="utilisateurs" element={<AdminUsers />} />
+          <Route
+            path="utilisateurs-en-attente"
+            element={<AdminPendingUsers />}
+          />
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

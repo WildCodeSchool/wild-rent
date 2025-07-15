@@ -25,7 +25,9 @@ export const Register = () => {
         },
       },
       onCompleted: () => {
-        toast.success("Consultez vos emails afin de finaliser votre inscription !")
+        toast.success(
+          "Consultez vos emails afin de finaliser votre inscription !"
+        );
         navigate("/");
       },
       onError: (error) => {
@@ -34,12 +36,13 @@ export const Register = () => {
     });
   };
 
-  const inputRegisterClasses = "w-full px-4 py-2 border text-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400";
+  const inputRegisterClasses =
+    "w-full px-4 py-2 border text-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400";
 
-  const labelRegisterClasses = "block text-gray-600 font-semibold mb-1"
-  
+  const labelRegisterClasses = "block text-gray-600 font-semibold mb-1";
+
   return (
-    <div className="flex justify-center items-center h-screen bg-light-beige">
+    <div className="flex justify-center items-center h-full bg-light-beige">
       <div className="bg-white p-8 rounded-lg shadow-md h-full md:h-auto w-full md:w-auto">
         <h2 className="text-2xl font-semibold text-center text-gray-600 mb-4">
           Inscription

@@ -181,7 +181,6 @@ export class UserResolver {
 
     @Mutation(() => User)
     async editUser(@Arg("data") updateUserData: UpdateOrCreateUserInput,  @Ctx() context: any) {
-      console.log("context:", context.user)
       if(context.user.role !== "ADMIN" && context.user.email !== updateUserData.email){
           throw new Error("Unauthorized")
       }

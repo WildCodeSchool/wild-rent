@@ -39,5 +39,6 @@ export class TempUser extends BaseEntity {
   zipcode: string;
 
   @Column({nullable: true})
+  @Field()
   role: string
 }

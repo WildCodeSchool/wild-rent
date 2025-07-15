@@ -168,3 +168,9 @@ export const DELETE_PRODUCT_BY_ID = gql`
     deleteProductById(id: $id)
   }
 `;
+
+export const DELETE_TEMP_USER = gql`
+  mutation DeleteTempUser($deleteTempUserId: Float!) {
+    deleteTempUser(id: $deleteTempUserId)
+  }
+`;

@@ -20,7 +20,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
-import { useDeleteUserMutation } from "@/generated/graphql-types";
+import {
+  TempUser,
+  useDeleteTempUserMutation,
+  useDeleteUserMutation,
+} from "@/generated/graphql-types";
 import { User } from "@/pages/AdminUsers";
 import { toast } from "react-toastify";
 
@@ -29,11 +33,13 @@ interface UserTableProps {
     accessorKey: string;
     header: string;
   }[];
-  data: User[];
+  data: User[] | TempUser[];
   setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setModeUpdate: React.Dispatch<React.SetStateAction<boolean>>;
   setUserToUpdate: React.Dispatch<React.SetStateAction<User | undefined>>;
+  seeUsersToConfirm: boolean;
   refetchUsers: () => void;
+  refetchTempUsers: () => void;
 }
 
 export function UserTable({
@@ -43,28 +49,43 @@ export function UserTable({
   setModeUpdate,
   setUserToUpdate,
   refetchUsers,
+  refetchTempUsers,
+  seeUsersToConfirm,
 }: UserTableProps) {
   const [deleteUserMutation] = useDeleteUserMutation();
+  const [deleteTempUserMutation] = useDeleteTempUserMutation();
 
   const deteleUser = async (id: number) => {
     try {
-      const response = await deleteUserMutation({
-        variables: { deleteUserId: id },
-      });
-      refetchUsers();
-      if (response.data?.deleteUser) {
-        toast.success("Utilisateur supprimé avec succès");
+      if (!seeUsersToConfirm) {
+        const response = await deleteUserMutation({
+          variables: { deleteUserId: id },
+        });
+        refetchUsers();
+        if (response.data?.deleteUser) {
+          toast.success("Utilisateur supprimé avec succès");
+        } else {
+          toast.error("Une erreur est survenue, veuillez réessayer plus tard");
+        }
+        return response.data;
       } else {
-        toast.error("Une erreur est survenue, veuillez réessayer plus tard");
+        const response = await deleteTempUserMutation({
+          variables: { deleteTempUserId: id },
+        });
+        refetchTempUsers();
+        if (response.data?.deleteTempUser) {
+          toast.success("Utilisateur supprimé avec succès");
+        } else {
+          toast.error("Une erreur est survenue, veuillez réessayer plus tard");
+        }
+        return response.data;
       }
-      return response.data;
     } catch (err) {
       console.error(err);
     }
   };
 
   const openEditForm = (user: User) => {
-    console.log("user:", user);
     setFormOpen(true);
     setModeUpdate(true);
     setUserToUpdate(user);
@@ -105,16 +126,21 @@ export function UserTable({
                 </TableCell>
                 <TableCell>{item.email}</TableCell>
                 <TableCell>{item.phone_number}</TableCell>
-                <TableCell>{formatDate(item.created_at)}</TableCell>
-                <TableCell>
-                  <Button
-                    variant={"ghost"}
-                    className="hover:cursor-pointer"
-                    onClick={() => openEditForm(item)}
-                  >
-                    <MdOutlineModeEdit size={25} className="text-green" />
-                  </Button>
-                </TableCell>
+                {item.__typename === "User" && (
+                  <TableCell>{formatDate(item.created_at)}</TableCell>
+                )}
+                {item.__typename === "User" && (
+                  <TableCell>
+                    <Button
+                      variant={"ghost"}
+                      className="hover:cursor-pointer"
+                      onClick={() => openEditForm(item)}
+                    >
+                      <MdOutlineModeEdit size={25} className="text-green" />
+                    </Button>
+                  </TableCell>
+                )}
+
                 <TableCell>
                   <Dialog>
                     <DialogTrigger>

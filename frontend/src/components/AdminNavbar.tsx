@@ -28,9 +28,7 @@ export const AdminNavbar = () => {
             </div>
             <button
               onClick={() => {
-                setTimeout(() => {
-                  setIsOpen(!isOpen);
-                }, 500);
+                setIsOpen(!isOpen);
               }}
               className="text-light-beige hover:text-green hover:bg-light-beige rounded-full bg-green cursor-pointer hover:border-1 border-1 border-green hidden sm:flex"
             >

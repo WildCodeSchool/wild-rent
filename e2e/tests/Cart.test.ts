@@ -19,6 +19,8 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 }) => {
   await page.goto(`${baseUrl}/produit/1`);
 
+  await page.getByRole('combobox').selectOption('{"id":1,"size":"150 cm","total_quantity":10}');
+
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
 
   await page.getByRole("link", { name: /Mon panier/ }).click();
@@ -35,12 +37,12 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 
   await page.getByRole("button", { name: "Valider les dates" }).click();
 
-  await expect(page.getByText("45€")).toBeVisible();
+  await expect(page.getByText("Total: 45€")).toBeVisible();
 
   await page.getByRole("button", { name: "+" }).click();
   await expect(page.getByText("2", { exact: true })).toBeVisible();
 
-  await expect(page.getByText("90€")).toBeVisible();
+  await expect(page.getByText("Total: 90€")).toBeVisible();
 
   // Diminue la quantité
   await page.getByRole("button", { name: "-" }).click();

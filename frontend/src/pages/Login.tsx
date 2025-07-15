@@ -1,11 +1,11 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useLoginMutation } from "../generated/graphql-types";
-import { GET_USER_INFO } from "../graphql/queries";
+import { WHO_AM_I } from "../graphql/queries";
 import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [login] = useLoginMutation({
-    refetchQueries: [{ query: GET_USER_INFO }],
+    refetchQueries: [{ query: WHO_AM_I }],
   });
 
   const navigate = useNavigate();

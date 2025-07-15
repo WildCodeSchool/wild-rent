@@ -13,6 +13,7 @@ function SectionCategories() {
           {categories.map((category) => (
             <CategoryCard
               id={category.id}
+              key={category.id}
               title={category.title}
               image={category.image}
             />
@@ -22,6 +23,7 @@ function SectionCategories() {
           {categories.map((category) => (
             <CategoryCarousel
               id={category.id}
+              key={category.id}
               title={category.title}
               image={category.image}
             />

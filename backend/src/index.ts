@@ -1,18 +1,11 @@
 import "dotenv/config";
 import "reflect-metadata";
-import * as jwt from "jsonwebtoken";
-import * as cookie from "cookie";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { buildSchema } from "type-graphql";
-import { UserResolver } from "./resolvers/UserResolver";
 import { dataSource } from "./config/db";
-import { CategoryResolver } from "./resolvers/CategoryResolver";
-import { ProductResolver } from "./resolvers/ProductResolver";
-import { ProductOptionResolver } from "./resolvers/ProductOptionResolver";
 import { createFixtures } from "./fixtures/fixtures";
-import { TagResolver } from "./resolvers/TagResolver";
-import { OrderResolver } from "./resolvers/OrderResolver";
+import { getSchema } from "./schema";
+import { ContextType, getUserFromContext } from "./auth";
 import { TempUserResolver } from "./resolvers/TempUserResolver";
 
 const start = async () => {
@@ -22,41 +15,23 @@ const start = async () => {
     await createFixtures();
   }
 
-  const schema = await buildSchema({
-    resolvers: [
-      UserResolver,
-      CategoryResolver,
-      ProductResolver,
-      ProductOptionResolver,
-      TagResolver,
-      OrderResolver,
-      TempUserResolver
-    ],
-  });
+  const schema = await getSchema();
 
-  const server = new ApolloServer({
-    schema,
-  });
+  const server = new ApolloServer({ schema });
 
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
     context: async ({ req, res }) => {
-      if (req.headers.cookie) {
-        const cookies = cookie.parse(req.headers.cookie as string);
-        if (cookies.token !== undefined) {
-          const payload: any = jwt.verify(
-            cookies.token,
-            process.env.JWT_SECRET_KEY as jwt.Secret
-          );
-          if (payload) {
-            return { email: payload.email, role:payload.user_role, id:payload.user_id, res: res };
-          }
-        }
-      }
-      return { res: res };
+      const context: ContextType = {
+        req,
+        res,
+        user: undefined,
+      };
+      const user = await getUserFromContext(context);
+      context.user = user;
+      return context;
     },
   });
-
   console.log(`🚀 Server listening at: ${url}`);
 };
 

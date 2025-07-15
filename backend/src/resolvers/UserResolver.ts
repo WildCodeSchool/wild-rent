@@ -6,19 +6,19 @@ import {
   Resolver,
   Arg,
   Ctx,
-  Field,
-  ObjectType,
+  Authorized,
   Int,
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
 import { UpdateOrCreateUserInput, UserInput } from "../inputs/UserInput";
 import { LoginInput } from "../inputs/LoginInput";
+import { ContextType } from "../auth";
 import { Resend } from "resend";
 import * as argon2 from "argon2";
 import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
-import { Context } from "../types/Context";
+import Cookies from "cookies";
 import { Address } from "../entities/Address";
 
 
@@ -100,7 +100,7 @@ export class UserResolver {
   @Mutation(() => String)
   async login(
     @Arg("data") login_user_data: LoginInput,
-    @Ctx() context: Context
+    @Ctx() context: ContextType
   ) {
     let is_password_correct = false;
     const user = await User.findOneBy({ email: login_user_data.email });
@@ -113,10 +113,17 @@ export class UserResolver {
     if (is_password_correct === true && user !== null) {
       console.log("user:", user)
       const token = jwt.sign(
-        { email: user.email, user_role: user.role, user_id: user.id },
+        // On signe le jwt avec l'id de l'utilisateur qu'on va ensuite récupérer au moment de déchiffrer le token (auth.ts)
+        { id: user.id, email: user.email, user_role: user.role },
         process.env.JWT_SECRET_KEY as jwt.Secret
       );
-      context.res.setHeader("Set-Cookie", `token=${token}; Secure; HttpOnly`);
+      const cookies = new Cookies(context.req, context.res);
+
+      cookies.set("token", token, {
+        secure: false,
+        httpOnly: true,
+        maxAge: 1000 * 60 * 60 * 72,
+      });
 
       return "ok";
     } else {
@@ -124,23 +131,28 @@ export class UserResolver {
     }
   }
 
-  @Mutation(() => String)
-  async logout(@Ctx() context: Context) {
-    context.res.setHeader(
-      "Set-Cookie",
-      `token=; Secure; HttpOnly;expires=${new Date(Date.now()).toUTCString()}`
-    );
-    return "logged out";
+  // Sert pour le front afin de récupérer l'utilisateur courant (via le contexte) sans faire de requête à la BDD
+  @Query(() => User, { nullable: true })
+  async whoami(@Ctx() context: ContextType): Promise<User | null | undefined> {
+    return context.user;
   }
 
-  @Query(() => UserInfo)
-  async getUserInfo(@Ctx() context: Context) {
-    if (context.email) {
-      const user = await User.findOneByOrFail({ email: context.email });
-      return { isLoggedIn: true, email: context.email, user };
+  // Sert pour récupérer les données de l'utilisateur connecté
+  @Query(() => User, { nullable: true })
+  async getUserInfo(@Ctx() context: ContextType): Promise<User | null> {
+    if (context.user) {
+      const user = await User.findOneByOrFail({ email: context.user.email });
+      return user;
     } else {
-      return { isLoggedIn: false };
+      return null;
     }
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() context: ContextType): Promise<boolean> {
+    const cookies = new Cookies(context.req, context.res);
+    cookies.set("token", "", { maxAge: 0 });
+    return true;
   }
 
   @Mutation(() => String)

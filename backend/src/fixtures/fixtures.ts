@@ -72,6 +72,7 @@ async function createUsers() {
       const phone_number = "+336" + randomEightDigit;
       const email = `${normalizeString(full_name)}@wild-rent.com`;
       const hashed_password = await argon2.hash("password");
+      const role = 'USER';
       const created_at = new Date();
       const userAddress = await Address.findOne({ where: { id: i + 1 } });
 
@@ -85,6 +86,7 @@ async function createUsers() {
         email,
         phone_number,
         hashed_password,
+        role,
         created_at,
         address: userAddress,
       });
@@ -162,10 +164,9 @@ async function createProducts() {
         }
       }
 
-       // On utilise 'create' car on a besoin de créer une instance de produit AVANT de pouvoir lui associer les images
+      // On utilise 'create' car on a besoin de créer une instance de produit AVANT de pouvoir lui associer les images
       // Précédemment on sauvegardait en DB la fin, mais, de ce cas précis nous avons besoin de créer le produit afin de pouvoir lui associer une image
       // Création d'une instance du produit sans le sauvegarder immédiatement
-      
       const product = Product.create({
         name,
         description,

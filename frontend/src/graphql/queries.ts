@@ -115,23 +115,29 @@ export const GET_USERS = gql`
 export const GET_USER_INFO = gql`
   query GetUserInfo {
     getUserInfo {
-      isLoggedIn
+      id
+      first_name
+      last_name
       email
-      user {
-        address {
-          street
-          city
-          zipcode
-          country
-        }
-        created_at
-        email
-        first_name
-        id
-        last_name
-        phone_number
-        role
+      phone_number
+      role
+      created_at
+      address {
+        street
+        city
+        zipcode
+        country
       }
+    }
+  }
+`;
+
+export const WHO_AM_I = gql`
+  query Whoami {
+    whoami {
+      id
+      email
+      role
     }
   }
 `;

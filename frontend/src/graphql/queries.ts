@@ -126,7 +126,6 @@ export const GET_TAGS_BY_CATEGORY = gql`
       label
     }
   }
-  }
 `;
 
 export const GET_ALL_ORDERS = gql`

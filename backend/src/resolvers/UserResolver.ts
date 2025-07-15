@@ -25,7 +25,7 @@ import { Address } from "../entities/Address";
 
 
 
-const baseUrl = "http://localhost:7000/confirm/";
+const baseUrl = "http://localhost:7000/confirmation/";
 
 
 @ObjectType()
@@ -74,9 +74,9 @@ export class UserResolver {
       const { data, error } = await resend.emails.send({
         from: "wild-rent@test.anniec.eu",
         to: [new_user_data.email],
-        subject: "Verify Email",
+        subject: "Validation email",
         html: `
-                <p>Please click the link below to confirm your email adress</p>
+                <p>Veuillez cliquer sur le lien suivant pour confirmer votre adresse mail</p>
                 <a href=${baseUrl}${random_code}>
                 ${baseUrl}${random_code}</a>
                 `,
@@ -239,9 +239,9 @@ export class UserResolver {
         to: [new_user_data.email],
         subject: "Verify Email",
         html: `
-                <p>Please click the link below to complete you subscription to Wild Rent</p>
-                <a href=http://localhost:7000/confirm/registration/${random_code}>
-                http://localhost:7000/confirm/registration/${random_code}</a>
+                <p>Veuillez cliquer sur le lien suivant pour compléter votre inscription à Wild Rent</p>
+                <a href=http://localhost:7000/confirmation/enregistrement/${random_code}>
+                http://localhost:7000/confirmation/enregistrement/${random_code}</a>
                 `,
       });
       if (error) {

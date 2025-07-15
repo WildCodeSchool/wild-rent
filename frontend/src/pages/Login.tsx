@@ -76,7 +76,7 @@ export const Login = () => {
 
         <p className="text-center text-gray-600 mt-4">
           Pas encore de compte ?{" "}
-          <a href="/register" className="text-green underline font-semibold">
+          <a href="/enregistrement" className="text-green underline font-semibold">
             Inscrivez-vous ici
           </a>
         </p>

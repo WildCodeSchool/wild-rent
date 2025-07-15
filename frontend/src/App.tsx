@@ -31,10 +31,10 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="moncompte" element={<AccountDetails />} />
           <Route path="panier" element={<Cart />} />
-          <Route path="register" element={<Register />} />
-          <Route path="confirm/:code?" element={<ConfirmEmailPage />} />
+          <Route path="enregistrement" element={<Register />} />
+          <Route path="confirmation/:code?" element={<ConfirmEmailPage />} />
           <Route
-            path="confirm/registration/:code?"
+            path="confirmation/enregistrement/:code?"
             element={<ConfirmRegistration />}
           />
         </Route>

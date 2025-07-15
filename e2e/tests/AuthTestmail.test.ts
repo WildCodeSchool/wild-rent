@@ -30,7 +30,7 @@ test("register and login", async ({ page }) => {
 
   await expect(page.getByText("Consultez vos emails afin de")).toBeVisible();
 
-  /* // Retrouve le dernier email envoyé à l'adresse testmail
+  // Retrouve le dernier email envoyé à l'adresse testmail
   let link = "";
   const res = await axios.get("https://api.testmail.app/api/json", {
     params: {
@@ -45,9 +45,9 @@ test("register and login", async ({ page }) => {
   if (res.data.emails && res.data.emails.length > 0) {
     const email = res.data.emails[0];
     link = email.text.split("\n")[2];
-  } */
+  }
 
-  /* // Navigue jusqu'à l'URL et clique sur le bouton de création de compte
+  // Navigue jusqu'à l'URL et clique sur le bouton de création de compte
   await page.goto(link);
   await page.getByRole("button", { name: "Créer votre compte" }).click();
 
@@ -65,5 +65,5 @@ test("register and login", async ({ page }) => {
 
   await expect(
     page.getByRole("link", { name: "user icon Mon compte" })
-  ).toBeVisible(); */
+  ).toBeVisible();
 });

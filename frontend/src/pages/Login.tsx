@@ -24,13 +24,13 @@ export const Login = () => {
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     console.log("data", data);
     login({
-      variables: { data: { email: data.email, password: data.password } }, 
-      onCompleted: () => navigate("/"), 
+      variables: { data: { email: data.email, password: data.password } },
+      onCompleted: () => navigate("/"),
     });
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
+    <div className="flex justify-center items-center h-full bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md h-full md:h-auto w-full md:w-auto flex justify-center items-center flex-col">
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">
           Se connecter
@@ -61,9 +61,7 @@ export const Login = () => {
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
             {errors.password && (
-              <span className="text-red-500 text-sm">
-                Mot de passe requis
-              </span>
+              <span className="text-red-500 text-sm">Mot de passe requis</span>
             )}
           </div>
 
@@ -78,7 +76,7 @@ export const Login = () => {
 
         <p className="text-center text-gray-600 mt-4">
           Pas encore de compte ?{" "}
-          <a href="/register" className="text-green underline font-semibold">
+          <a href="/enregistrement" className="text-green underline font-semibold">
             Inscrivez-vous ici
           </a>
         </p>

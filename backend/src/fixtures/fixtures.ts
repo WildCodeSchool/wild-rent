@@ -136,14 +136,13 @@ async function createProducts() {
   try {
     const pictures: Picture[] = [];
     const productOptions: ProductOption[] = [];
-    const tags: Tag[] = [];
-
-
+   
     // La variable productsDatas viens de l'import productsDatas.ts
     for (const { title, name, price, urls, tagLabels, options } of productsDatas) {
       const category = await getCategoryByTitle(title);
       const description = faker.lorem.sentence();
       const created_at = new Date();
+      const tags: Tag[] = [];
 
        // On créé ou récupère les entitées Tags à partir des labels
       if (tagLabels && tagLabels.length > 0) {

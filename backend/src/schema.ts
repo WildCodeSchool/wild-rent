@@ -6,6 +6,7 @@ import { ProductOptionResolver } from "./resolvers/ProductOptionResolver";
 import { TagResolver } from "./resolvers/TagResolver";
 import { authChecker } from "./auth";
 import { OrderResolver } from "./resolvers/OrderResolver";
+import { TempUserResolver } from "./resolvers/TempUserResolver";
 
 export async function getSchema() {
   const schema = await buildSchema({
@@ -16,6 +17,7 @@ export async function getSchema() {
       ProductOptionResolver,
       OrderResolver,
       TagResolver,
+      TempUserResolver
     ],
     authChecker,
   });

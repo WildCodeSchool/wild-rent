@@ -32,3 +32,5 @@ export const ItemCardPreview = ({ product }: { product: ProductType }) => {
     </div>
   );
 };
+
+// todo le voir pas implémenter

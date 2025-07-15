@@ -106,14 +106,14 @@ export const EDIT_USER = gql`
       last_name
       phone_number
       role
-  }
+    }
   }
 `;
 
 export const ADD_USER = gql`
   mutation AddUser($data: UpdateOrCreateUserInput!) {
     addUser(data: $data)
-}
+  }
 `;
 
 export const ADD_USER_CONFIRMATION = gql`
@@ -131,5 +131,40 @@ export const ADD_USER_CONFIRMATION = gql`
         zipcode
       }
     }
-}
+  }
+`;
+
+export const MODIFY_PRODUCT = gql`
+  mutation ModifyProduct($data: ProductInput!) {
+    modifyProductById(data: $data) {
+      id
+      name
+      description
+      price
+      pictures {
+        id
+        url
+      }
+      product_options {
+        id
+        size
+        total_quantity
+      }
+      created_at
+      category {
+        id
+        title
+      }
+      tags {
+        label
+        id
+      }
+    }
+  }
+`;
+
+export const DELETE_PRODUCT_BY_ID = gql`
+  mutation DeleteProductById($id: Float!) {
+    deleteProductById(id: $id)
+  }
 `;

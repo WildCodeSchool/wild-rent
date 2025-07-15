@@ -2,26 +2,44 @@ import { useEffect, useRef, useState } from "react";
 import { FieldError, useForm, useFieldArray } from "react-hook-form";
 import {
   useCreateProductMutation,
+  useDeleteProductByIdMutation,
   useGetAllCategoriesQuery,
+  useModifyProductMutation,
 } from "../generated/graphql-types";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { ItemCardPreview, ProductType } from "./ItemCardPreview";
+import { DeleteButton } from "./ui/deleteButton";
 
 type ProductFormValues = {
-  title: string;
+  id?: number;
+  name: string;
   description: string;
   price: number;
   category: string;
   pictures: { url: string }[];
   product_options: { size: string; total_quantity: number }[];
+  tags: { id: string; label: string }[];
+};
+
+type ArticleFormProps = {
+  createOrUpdate: "create" | "update";
+  // formId permet d’identifier le bon formulaire afin d’afficher l’image dans la bonne instance
+  formId: string;
+  previewDefault?: boolean;
+  productDefault?: ProductFormValues;
+  onDelete?: () => void;
+  onAdd?: () => void;
 };
 
 export const ArticleForm = ({
   createOrUpdate,
-}: {
-  createOrUpdate: "create" | "update";
-}) => {
+  formId,
+  previewDefault = false,
+  productDefault,
+  onDelete,
+  onAdd,
+}: ArticleFormProps) => {
   const {
     control,
     register,
@@ -37,18 +55,27 @@ export const ArticleForm = ({
     },
   });
   const { error, loading, data } = useGetAllCategoriesQuery();
+  const [
+    modifyProductMutation,
+    { error: errorMutation, loading: loadingMutation, data: dataMutation },
+  ] = useModifyProductMutation();
   const [createProductMutation] = useCreateProductMutation();
+  const [modifyProduct, setModifyProduct] = useState<
+    ProductFormValues | undefined
+  >(productDefault);
   const [selectedSize, setSelectedSize] = useState<
     { index: number; value: string }[]
   >([{ index: 0, value: "" }]);
   const [isEnable, setIsEnable] = useState(true);
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
-  const [preview, setPreview] = useState(false);
-
+  const [preview, setPreview] = useState(previewDefault);
+  const [
+    deleteProductByIdMutation,
+    { data: dataDelete, loading: loadingDelete, error: errorDelete },
+  ] = useDeleteProductByIdMutation();
   const watchValues = watch();
   const previewProduct: ProductType = {
     id: 0,
-    name: watchValues.title,
+    name: watchValues.name,
     price: watchValues.price,
     category: {
       title: "",
@@ -112,8 +139,33 @@ export const ArticleForm = ({
     }
   }, []);
 
+  useEffect(() => {
+    if (createOrUpdate === "update" && productDefault) {
+      reset({
+        name: productDefault.name,
+        description: productDefault.description,
+        price: productDefault.price,
+        category: productDefault.category,
+        pictures: productDefault.pictures?.length
+          ? productDefault.pictures
+          : [{ url: "" }],
+        product_options: productDefault.product_options?.length
+          ? productDefault.product_options
+          : [{ size: "", total_quantity: 1 }],
+      });
+
+      // Initialise selectedSize pour empêcher doublons
+      const sizes = productDefault.product_options.map((opt, i) => ({
+        index: i,
+        value: opt.size,
+      }));
+      setSelectedSize(sizes);
+    }
+    setModifyProduct(productDefault);
+  }, [productDefault, createOrUpdate, reset]);
+
   const onSubmit = async (formData: ProductFormValues) => {
-    const formattedOptions = formData.product_options.map(
+    formData.product_options.map(
       (opt: { size: string; total_quantity: any }) => ({
         size: opt.size,
         total_quantity: parseInt(opt.total_quantity),
@@ -121,14 +173,19 @@ export const ArticleForm = ({
     );
 
     const input = {
-      name: formData.title,
+      name: formData.name,
       description: formData.description,
       price: parseFloat(formData.price.toString()),
-      pictures: formData.pictures,
       category: {
         id: parseInt(formData.category),
       },
-      product_options: formattedOptions,
+      pictures: formData.pictures.map(({ url }) => ({ url })),
+      product_options: formData.product_options.map(
+        ({ size, total_quantity }) => ({
+          size,
+          total_quantity: parseInt(total_quantity.toString()),
+        })
+      ),
     };
 
     console.log(input);
@@ -141,10 +198,33 @@ export const ArticleForm = ({
         console.log(result);
         toast.success("Article publié! 💪");
         reset();
-        setPreviewImages([]);
+        onAdd?.();
       } catch (error) {
         console.log(error);
         toast.error("Erreur lors de la publication");
+      }
+    } else if (createOrUpdate === "update") {
+      try {
+        const result = await modifyProductMutation({
+          variables: { data: { ...input, id: modifyProduct?.id } },
+        });
+
+        if (result.data) {
+          const newProduct = {
+            ...result.data.modifyProductById,
+            category: result.data.modifyProductById.category.id.toString(),
+            tags: result.data.modifyProductById.tags.map((tag) => ({
+              id: tag.id.toString(),
+              label: tag.label,
+            })),
+          };
+          setModifyProduct(newProduct);
+        }
+
+        toast.success("Article modifié! 💪");
+      } catch (error) {
+        console.log(error);
+        toast.error("Erreur lors de la modifcation d'un article");
       }
     }
   };
@@ -158,36 +238,70 @@ export const ArticleForm = ({
     }
   };
 
+  const handleDelete = async (id: number) => {
+    try {
+      await deleteProductByIdMutation({ variables: { id: id } });
+      toast.success("🗑️ Article supprimé avec succès !");
+      setModifyProduct(undefined);
+      setSelectedSize([{ index: 0, value: "" }]);
+      reset({
+        name: "",
+        description: "",
+        price: 0,
+        category: "",
+        pictures: [{ url: "" }],
+        product_options: [{ size: "", total_quantity: 1 }],
+        tags: [],
+      });
+      onDelete?.();
+    } catch (error) {
+      console.log(error);
+      toast.error("⚠️ Échec de la suppression");
+    }
+  };
+
   if (error) return <p>Error, something went wrong</p>;
   if (loading) return <p>Loading ...</p>;
+  if (loadingMutation) return <p>Modification en cours...</p>;
+  if (errorMutation) return <p>Erreur : {errorMutation.message}</p>;
+  if (loadingDelete) return <p>Loading ...</p>;
+  if (errorDelete) return <p>Erreur : {errorDelete.message}</p>;
 
   return (
     <div className="relative flex justify-between mb-20">
       <div className="w-100 md:w-140">
-        <div className="hidden md:block">
-          <input
-            type="checkbox"
-            onChange={() => {
-              setPreview(!preview);
-            }}
-          />
-          <label className="ml-2">Preview</label>
+        <div className="mb-4 hidden lg:block">
+          <label className="flex items-center gap-2 font-semibold text-sm">
+            Preview
+            <span className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={preview}
+                onChange={() => setPreview(!preview)}
+                className="sr-only peer"
+              />
+              <div className="w-14 h-8 bg-gray-300 peer-checked:bg-green rounded-full transition-colors duration-300"></div>
+              <span className="absolute left-1 top-1 w-6 h-6 bg-white rounded-full transition-transform duration-300 transform peer-checked:translate-x-6 flex items-center justify-center text-sm">
+                {preview ? "👁️‍🗨️" : "❌"}
+              </span>
+            </span>
+          </label>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           {/* Title */}
           <div>
-            <label htmlFor="title" className="block font-semibold mb-1">
+            <label htmlFor="name" className="block font-semibold mb-1">
               Titre
             </label>
             <input
-              id="title"
+              id="name"
               type="text"
-              {...register("title", { required: "Le titre est requis" })}
-              className="border p-2 rounded w-full"
+              {...register("name", { required: "Le titre est requis" })}
+              className="border p-2 rounded w-full bg-white"
             />
-            {errors.title && (
+            {errors.name && (
               <p className="text-red-500">
-                {(errors.title as FieldError).message}
+                {(errors.name as FieldError).message}
               </p>
             )}
           </div>
@@ -202,7 +316,7 @@ export const ArticleForm = ({
               {...register("category", {
                 required: "Veuillez sélectionner une catégorie",
               })}
-              className="border p-2 rounded w-full"
+              className="border p-2 rounded w-full bg-white"
             >
               <option value="">-- Sélectionnez une catégorie --</option>
               {data?.getAllCategories.map((category) => (
@@ -219,10 +333,10 @@ export const ArticleForm = ({
           </div>
 
           {/* Images */}
-          <div className="mt-4">
+          <div className="mt-4  ">
             <label className="block font-semibold mb-1">Images</label>
 
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 border rounded-xl p-4 shadow-sm gap-4">
               {pictureFields.map((field, index) => (
                 <div
                   key={field.id}
@@ -231,11 +345,10 @@ export const ArticleForm = ({
                   {getValues(`pictures.${index}.url`) ? (
                     <img
                       src={
-                        previewImages[index]
-                          ? previewImages[index]
-                          : getValues(`pictures.${index}.url`)
+                        watch(`pictures.${index}.url`) ||
+                        "/assets/images/default-image.webp"
                       }
-                      alt={`Preview ${index}`}
+                      alt={`Image ${index}`}
                       className="w-45 h-45 object-cover rounded shadow"
                     />
                   ) : (
@@ -244,7 +357,7 @@ export const ArticleForm = ({
                         type="button"
                         onClick={() =>
                           document
-                            .getElementById(`file-upload-${index}`)
+                            .getElementById(`file-upload-${formId}-${index}`)
                             ?.click()
                         }
                         className="hover:bg-green border-green border-1 hover:text-white px-4 py-2 rounded bg-light-beige text-green transition mt-4 cursor-pointer"
@@ -253,7 +366,7 @@ export const ArticleForm = ({
                       </button>
 
                       <input
-                        id={`file-upload-${index}`}
+                        id={`file-upload-${formId}-${index}`}
                         type="file"
                         accept="image/*"
                         className="hidden"
@@ -274,20 +387,13 @@ export const ArticleForm = ({
                               return;
                             }
 
-                            // 1. Créer une preview locale
+                            // 1. Créer un lien temporaire pour prévisualisation
                             const previewUrl = URL.createObjectURL(file);
 
-                            // 2. Stocker localement dans previewImages
-                            setPreviewImages((prev) => {
-                              const updated = [...prev];
-                              updated[index] = previewUrl;
-                              return updated;
-                            });
-
-                            // 3. Mettre la valeur RHF en parallèle (pour GraphQL)
+                            // 2. Mettre à jour directement dans le form (preview locale)
                             setValue(`pictures.${index}.url`, previewUrl);
 
-                            // 4. Upload réel du fichier
+                            // 3. Upload réel
                             const formData = new FormData();
                             formData.append("file", file);
 
@@ -361,7 +467,7 @@ export const ArticleForm = ({
                     {...register(`product_options.${index}.size`, {
                       required: "Veuillez sélectionner une taille",
                     })}
-                    className="border rounded p-2 w-full"
+                    className="border rounded p-2 w-full bg-white"
                     onChange={(e) => {
                       const newValue = e.target.value;
                       const oldSize = selectedSize.find(
@@ -405,7 +511,7 @@ export const ArticleForm = ({
                       required: "Quantité requise",
                       min: { value: 1, message: "Minimum 1" },
                     })}
-                    className="border rounded p-2 w-full"
+                    className="border rounded p-2 w-full bg-white"
                   />
                   {errors.product_options?.[index]?.total_quantity && (
                     <p className="text-red-500 text-sm mt-1">
@@ -424,7 +530,7 @@ export const ArticleForm = ({
                         prev.filter((el) => el.index !== index)
                       );
                     }}
-                    className="text-red-500 font-bold text-xl cursor-pointer border-2 h-6 w-6 rounded-full transition mt-6 flex items-center justify-center pb-1.5 hover:animate-bounce"
+                    className="text-red-500 font-bold text-xl cursor-pointer border-2 h-6 w-6 rounded-full transition mt-6 flex items-center justify-center pt-1 hover:animate-pulse"
                     title="Supprimer"
                   >
                     ×
@@ -465,7 +571,7 @@ export const ArticleForm = ({
                 required: "Le prix est requis",
                 min: { value: 0, message: "Le prix ne peut pas être négatif" },
               })}
-              className="border p-2 rounded w-full"
+              className="border p-2 rounded w-full bg-white"
             />
             {errors.price && (
               <p className="text-red-500">
@@ -491,7 +597,7 @@ export const ArticleForm = ({
                   message: "La description ne doit pas dépasser 450 caractères",
                 },
               })}
-              className="border p-2 rounded w-full overflow-hidden resize-none"
+              className="border p-2 rounded w-full overflow-hidden resize-none bg-white"
               maxLength={450}
               onInput={handleResizeTextarea}
               ref={(e) => {
@@ -512,11 +618,21 @@ export const ArticleForm = ({
           >
             Envoyer
           </button>
+          {createOrUpdate === "update" && (
+            <DeleteButton
+              style={{ marginTop: "1rem" }}
+              onSuccess={() => {
+                if (modifyProduct && modifyProduct.id) {
+                  handleDelete(modifyProduct.id);
+                }
+              }}
+            />
+          )}
         </form>
       </div>
 
       {preview && (
-        <div className="hidden md:block w-2xl relative">
+        <div className="hidden lg:block w-2xl relative">
           <div
             className="sticky top-[calc(50vh-150px)] "
             style={{ height: 300 }}

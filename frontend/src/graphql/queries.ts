@@ -90,26 +90,31 @@ export const GET_PRODUCT_BY_ID = gql`
 `;
 
 export const GET_USERS = gql`
-  query GetAllUsers($offset: Float!, $limit: Float!, $role: String, $search: String) {
-  getAllUsers(offset: $offset, limit: $limit,  role: $role, search: $search) {
-    totalUsersLength
-    users {
-      address {
-        city
-        country
-        street
-        zipcode
+  query GetAllUsers(
+    $offset: Float!
+    $limit: Float!
+    $role: String
+    $search: String
+  ) {
+    getAllUsers(offset: $offset, limit: $limit, role: $role, search: $search) {
+      totalUsersLength
+      users {
+        address {
+          city
+          country
+          street
+          zipcode
+        }
+        created_at
+        email
+        first_name
+        id
+        last_name
+        phone_number
+        role
       }
-      created_at
-      email
-      first_name
-      id
-      last_name
-      phone_number
-      role
     }
   }
-}
 `;
 
 export const GET_USER_INFO = gql`
@@ -212,5 +217,34 @@ export const GET_ALL_TEMP_USERS = gql`
       last_name
       phone_number
     }
-}
+  }
+`;
+
+export const SEARCH_PRODUCTS_BY_OPTIONS = gql`
+  query SearchProductsByOptions($options: ProductSearchOptions!) {
+    searchProductsByOptions(options: $options) {
+      name
+      category {
+        title
+        id
+        image
+      }
+      description
+      id
+      pictures {
+        url
+        id
+      }
+      price
+      product_options {
+        size
+        id
+        total_quantity
+      }
+      tags {
+        id
+        label
+      }
+    }
+  }
 `;

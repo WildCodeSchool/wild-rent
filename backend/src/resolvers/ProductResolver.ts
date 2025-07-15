@@ -1,9 +1,11 @@
-import { ProductInput } from "../inputs/ProductInput";
+import { ProductInput, ProductSearchOptions } from "../inputs/ProductInput";
 import { Product } from "../entities/Product";
 import { Resolver, Query, Arg, Mutation } from "type-graphql";
 import { Picture } from "../entities/Picture";
 import { ProductOption } from "../entities/ProductOption";
 import { Category } from "../entities/Category";
+import { FindManyOptions, Raw } from "typeorm";
+import { merge } from "../assets/utils";
 
 @Resolver(Product)
 export class ProductResolver {
@@ -13,6 +15,33 @@ export class ProductResolver {
       where: { id: id },
     });
     return product;
+  }
+
+  @Query(() => [Product])
+  async searchProductsByOptions(
+    @Arg("options")
+    options: ProductSearchOptions
+  ) {
+    let findOptions: FindManyOptions = {
+      where: {
+        name: Raw(
+          (alias) => `unaccent(${alias}) ILIKE unaccent('%${options.name}%')`
+        ),
+      },
+    };
+    if (options.categoryId) {
+      findOptions.where = {
+        ...findOptions.where,
+        category: { id: options.categoryId },
+      };
+    }
+    if (options.productOption) {
+      findOptions.where = {
+        ...findOptions.where,
+        product_options: { size: options.productOption },
+      };
+    }
+    return await Product.find(findOptions);
   }
 
   @Query(() => [Product])
@@ -31,27 +60,26 @@ export class ProductResolver {
   }
 
   @Query(() => [Product])
-  async getProductWithFilters( @Arg("categoryId") categoryId: number,
-  @Arg("minPrice") minPrice: number,
-  @Arg("maxPrice") maxPrice: number,
-  @Arg("tags", () => [String]) tags: string[]
-)
-  {
+  async getProductWithFilters(
+    @Arg("categoryId") categoryId: number,
+    @Arg("minPrice") minPrice: number,
+    @Arg("maxPrice") maxPrice: number,
+    @Arg("tags", () => [String]) tags: string[]
+  ) {
     const queryBuilder = Product.createQueryBuilder("product")
-    .leftJoinAndSelect("product.category", "category")
-    .leftJoinAndSelect("product.tags", "tag")
-    .leftJoinAndSelect("product.pictures", "pictures")
-    .where("product.categoryId = :categoryId", {categoryId: categoryId})
-    .andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
-    .andWhere("product.price >= :minPrice", { minPrice: minPrice })
+      .leftJoinAndSelect("product.category", "category")
+      .leftJoinAndSelect("product.tags", "tag")
+      .leftJoinAndSelect("product.pictures", "pictures")
+      .where("product.categoryId = :categoryId", { categoryId: categoryId })
+      .andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
+      .andWhere("product.price >= :minPrice", { minPrice: minPrice });
 
-    if(tags && tags.length >0){
-      queryBuilder.andWhere("tag.label IN (:...tags)", {tags})
+    if (tags && tags.length > 0) {
+      queryBuilder.andWhere("tag.label IN (:...tags)", { tags });
     }
 
-    const products= await queryBuilder.distinct(true).getMany()
+    const products = await queryBuilder.distinct(true).getMany();
 
-    
     return products;
   }
 
@@ -80,5 +108,37 @@ export class ProductResolver {
     });
 
     return await newProduct.save();
+  }
+
+  @Mutation(() => Product)
+  async modifyProductById(@Arg("data") data: ProductInput) {
+    let productToUpdate = await Product.findOneOrFail({
+      where: { id: data.id },
+      relations: ["category", "pictures", "product_options", "tags"],
+    });
+
+    console.log("found product", productToUpdate);
+
+    productToUpdate = merge(productToUpdate, data);
+
+    console.log("change product", merge(productToUpdate, data));
+
+    await productToUpdate.save();
+
+    const finalProduct = await Product.findOneOrFail({
+      where: { id: data.id },
+      relations: ["category", "pictures", "product_options", "tags"],
+    });
+    console.log("finalProduct", finalProduct);
+    return finalProduct;
+  }
+
+  @Mutation(() => String)
+  async deleteProductById(@Arg("id") id: number) {
+    let productToDelete = await Product.findOneOrFail({ where: { id: id } });
+
+    await productToDelete.remove();
+
+    return "Product has been deleted";
   }
 }

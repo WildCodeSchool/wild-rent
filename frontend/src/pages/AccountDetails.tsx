@@ -116,13 +116,48 @@ export const AccountDetails = () => {
                 <div className="font-semibold text-green-900">
                   Mon adresse de facturation
                 </div>
-                <div className="mt-2 space-y-1">
-                  <div>{user?.address.street}</div>
-                  <div>
-                    {user?.address.zipcode} {user?.address.city}
+                {user?.address ? (
+                  <div className="mt-2 space-y-1">
+                    <div>{user?.address.street}</div>
+                    <div>
+                      {user?.address.zipcode} {user?.address.city}
+                    </div>
+                    <div>{user?.address.country}</div>
                   </div>
-                  <div>{user?.address.country}</div>
-                </div>
+                ) : (
+                  <form className="mt-2 space-y-2 w-3/4 max-w-md">
+                    <input
+                      type="text"
+                      placeholder="Rue"
+                      className="border rounded w-full p-2"
+                      name="street"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Code postal"
+                      className="border rounded w-full p-2"
+                      name="zipcode"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Ville"
+                      className="border rounded w-full p-2"
+                      name="city"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Pays"
+                      className="border rounded w-full p-2"
+                      name="country"
+                    />
+                    <button
+                      type="submit"
+                      className="bg-green-700 text-white px-4 py-2 rounded"
+                    >
+                      Enregistrer l'adresse
+                    </button>
+                  </form>
+                )}
               </section>
             </>
           )}

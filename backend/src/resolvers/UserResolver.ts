@@ -23,10 +23,7 @@ import * as jwt from "jsonwebtoken";
 import Cookies from "cookies";
 import { Address } from "../entities/Address";
 
-
-
 const baseUrl = "http://localhost:7000/confirmation/";
-
 
 @ObjectType()
 class PaginatedUsers {
@@ -41,19 +38,33 @@ class PaginatedUsers {
 export class UserResolver {
   @Query(() => PaginatedUsers)
   @Authorized()
-  async getAllUsers( @Arg("offset") offset: number,
-  @Arg("limit") limit: number,  @Arg("role", { nullable: true }) role?: string,  @Arg("search", { nullable: true }) search?: string, ) {
-    const query = User.createQueryBuilder("user").leftJoinAndSelect("user.address", "address");
-    if (role){
-      query.andWhere("user.role = :role", {role})
+  async getAllUsers(
+    @Arg("offset") offset: number,
+    @Arg("limit") limit: number,
+    @Arg("role", { nullable: true }) role?: string,
+    @Arg("search", { nullable: true }) search?: string
+  ) {
+    const query = User.createQueryBuilder("user").leftJoinAndSelect(
+      "user.address",
+      "address"
+    );
+    if (role) {
+      query.andWhere("user.role = :role", { role });
     }
-    if (search){
-    query.andWhere("user.first_name ILIKE :search OR user.last_name ILIKE :search OR user.email ILIKE :search", { search: `%${search}%`})
+    if (search) {
+      query.andWhere(
+        "user.first_name ILIKE :search OR user.last_name ILIKE :search OR user.email ILIKE :search",
+        { search: `%${search}%` }
+      );
     }
-    const totalUsersLength = await query.getCount()
-    const users = await query.orderBy("user.id", "ASC").skip(offset).take(limit).getMany()
+    const totalUsersLength = await query.getCount();
+    const users = await query
+      .orderBy("user.id", "ASC")
+      .skip(offset)
+      .take(limit)
+      .getMany();
 
-    return {users: users, totalUsersLength: totalUsersLength};
+    return { users: users, totalUsersLength: totalUsersLength };
   }
 
   @Mutation(() => String)
@@ -165,57 +176,70 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-    async deleteUser(@Arg("id") id: number, @Ctx() context: any) {
-      if(context.user.role !== "ADMIN" && context.user.id !== id){
-          throw new Error("Unauthorized")
-      }
-      const result = await User.delete(id);
-      if (result.affected === 1) {
-        return "L'utilisateur a bien été supprimé";
-      } else {
-        throw new Error("L'utilisateur n'a pas été trouvé");
-      }
+  async deleteUser(@Arg("id") id: number, @Ctx() context: any) {
+    if (context.user.role !== "ADMIN" && context.user.id !== id) {
+      throw new Error("Unauthorized");
+    }
+    const result = await User.delete(id);
+    if (result.affected === 1) {
+      return "L'utilisateur a bien été supprimé";
+    } else {
+      throw new Error("L'utilisateur n'a pas été trouvé");
+    }
+  }
+
+  @Mutation(() => User)
+  async editUser(
+    @Arg("data") updateUserData: UpdateOrCreateUserInput,
+    @Ctx() context: any
+  ) {
+    if (
+      context.user.role !== "ADMIN" &&
+      context.user.email !== updateUserData.email
+    ) {
+      throw new Error("Unauthorized");
+    }
+    let userToUpdate = await User.findOne({
+      where: { id: updateUserData.id },
+      relations: ["address"],
+    });
+    if (!userToUpdate) {
+      throw new Error("User not found");
     }
 
+    // Modifie les champs users
+    userToUpdate.first_name = updateUserData.first_name;
+    userToUpdate.last_name = updateUserData.last_name;
+    userToUpdate.email = updateUserData.email;
+    userToUpdate.phone_number = updateUserData.phone_number;
+    userToUpdate.created_at = userToUpdate.created_at;
+    userToUpdate.role = updateUserData.role;
 
-    @Mutation(() => User)
-    async editUser(@Arg("data") updateUserData: UpdateOrCreateUserInput,  @Ctx() context: any) {
-      if(context.user.role !== "ADMIN" && context.user.email !== updateUserData.email){
-          throw new Error("Unauthorized")
-      }
-      let userToUpdate = await User.findOne({where : {id:updateUserData.id},relations:["address"]} )
-      if(!userToUpdate){
-        throw new Error("User not found")
-      }
-
-      // Modifie les champs users
-      userToUpdate.first_name=updateUserData.first_name;
-      userToUpdate.last_name = updateUserData.last_name;
-      userToUpdate.email = updateUserData.email;
-      userToUpdate.phone_number = updateUserData.phone_number;
-      userToUpdate.created_at = userToUpdate.created_at;
-      userToUpdate.role = updateUserData.role
-
-      // Modifie l'adresse
-      if(userToUpdate.address){
-        userToUpdate.address.street = updateUserData.street
-        userToUpdate.address.city = updateUserData.city
-        userToUpdate.address.zipcode = updateUserData.zipcode
-        userToUpdate.address.country = "France"
-        await userToUpdate.address.save()
-      } else {
-        const newAddress = Address.create({street:updateUserData.street, city: updateUserData.city, zipcode: updateUserData.zipcode, country: "France"})
-        await newAddress.save()
-        userToUpdate.address = newAddress
-      }
-
-      await userToUpdate.save()
-
-      return userToUpdate
+    // Modifie l'adresse
+    if (userToUpdate.address) {
+      userToUpdate.address.street = updateUserData.street;
+      userToUpdate.address.city = updateUserData.city;
+      userToUpdate.address.zipcode = updateUserData.zipcode;
+      userToUpdate.address.country = "France";
+      await userToUpdate.address.save();
+    } else {
+      const newAddress = Address.create({
+        street: updateUserData.street,
+        city: updateUserData.city,
+        zipcode: updateUserData.zipcode,
+        country: "France",
+      });
+      await newAddress.save();
+      userToUpdate.address = newAddress;
     }
 
-    @Mutation(() => String)
-    async addUser(@Arg("data") new_user_data: UpdateOrCreateUserInput) {
+    await userToUpdate.save();
+
+    return userToUpdate;
+  }
+
+  @Mutation(() => String)
+  async addUser(@Arg("data") new_user_data: UpdateOrCreateUserInput) {
     const random_code = uuidv4();
     const result = TempUser.save({
       first_name: new_user_data.first_name,
@@ -226,7 +250,7 @@ export class UserResolver {
       city: new_user_data.city,
       zipcode: new_user_data.zipcode,
       random_code: random_code,
-      role: new_user_data.role
+      role: new_user_data.role,
     });
 
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -252,18 +276,24 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  async addUserConfirmation( @Arg("random_code") random_code: string,
-  @Arg("password") password: string,
-) {
+  async addUserConfirmation(
+    @Arg("random_code") random_code: string,
+    @Arg("password") password: string
+  ) {
     const tempUser = await TempUser.findOneByOrFail({
       random_code: random_code,
     });
-    
-    const hashed_password= await argon2.hash(password)
 
-    const newAddress = Address.create({street:tempUser.street, city: tempUser.city, zipcode: tempUser.zipcode, country: "France"})
-    
-    await newAddress.save()
+    const hashed_password = await argon2.hash(password);
+
+    const newAddress = Address.create({
+      street: tempUser.street,
+      city: tempUser.city,
+      zipcode: tempUser.zipcode,
+      country: "France",
+    });
+
+    await newAddress.save();
 
     const userResult = await User.save({
       first_name: tempUser.first_name,
@@ -272,12 +302,11 @@ export class UserResolver {
       phone_number: tempUser.phone_number,
       hashed_password: hashed_password,
       created_at: new Date(),
-      address: newAddress, 
-      role: tempUser.role
+      address: newAddress,
+      role: tempUser.role,
     });
     await tempUser.remove();
 
-    return userResult
+    return userResult;
   }
-  
 }

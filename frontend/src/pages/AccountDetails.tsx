@@ -9,13 +9,15 @@ import { useNavigate } from "react-router-dom";
 
 export const AccountDetails = () => {
   const navigate = useNavigate();
-  const { loading, error, data } = useGetUserInfoQuery();
+  const { loading, error, data } = useGetUserInfoQuery({
+    fetchPolicy: "no-cache",
+  });
   const user = data?.getUserInfo;
   const date = new Date(user?.created_at);
   const formattedCreatedAt = date.toLocaleDateString("fr");
 
   const [logout] = useLogoutMutation({
-    refetchQueries: [{ query: WHO_AM_I }],
+    refetchQueries: [{ query: WHO_AM_I, fetchPolicy: "no-cache" }],
   });
 
   const [showPasswordForm, setShowPasswordForm] = useState(false);

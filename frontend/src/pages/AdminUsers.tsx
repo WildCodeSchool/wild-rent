@@ -26,7 +26,7 @@ import AdminUserForm from "@/components/adminUserForm";
 export type User = GetAllUsersQuery["getAllUsers"]["users"][number];
 
 const AdminUsers = () => {
-  const [seeUsersToConfirm, setSeeUsersToConfirm] = useState(false);
+  const [seeTempUsers, setSeeTempUsers] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [offset, setOffset] = useState(0);
   const [search, setSearch] = useState<string | undefined>(undefined);
@@ -49,6 +49,8 @@ const AdminUsers = () => {
   const users = data?.getAllUsers?.users ?? [];
   const totalUsersLength = data?.getAllUsers.totalUsersLength;
   const tempUsers = tempUsersData?.getAllTempUsers ?? [];
+
+  const usersToShow = seeTempUsers ? tempUsers : users;
 
   const columns = [
     {
@@ -77,7 +79,7 @@ const AdminUsers = () => {
     },
   ];
 
-  if (!seeUsersToConfirm) {
+  if (!seeTempUsers) {
     columns.push({
       accessorKey: "created_at",
       header: "Créé le",
@@ -108,20 +110,20 @@ const AdminUsers = () => {
   return (
     <div className="flex flex-col p-2 lg:mp-4 gap-4 w-full relative">
       <h1 className="font-bold text-lg md:text-xl lg:text-2xl">
-        Utilisateurs {seeUsersToConfirm && "en attente de validation"}
+        Utilisateurs {seeTempUsers && "en attente de validation"}
       </h1>
-      {seeUsersToConfirm && (
+      {seeTempUsers && (
         <div className="w-full">
           <Button
             variant={"ghost"}
             className="flex items-center gap-2 text-gray-600 hover:cursor-pointer"
-            onClick={() => setSeeUsersToConfirm(false)}
+            onClick={() => setSeeTempUsers(false)}
           >
             <FaArrowLeftLong /> <p>Revenir à la liste des utilisateurs</p>
           </Button>
         </div>
       )}
-      {!formOpen && !seeUsersToConfirm && (
+      {!formOpen && !seeTempUsers && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex relative items-center ">
@@ -162,7 +164,7 @@ const AdminUsers = () => {
             <Button
               variant={"outline"}
               className="text-green flex gap-2 items-center"
-              onClick={() => setSeeUsersToConfirm(true)}
+              onClick={() => setSeeTempUsers(true)}
             >
               <FaUserClock />
               En attente de validation ( {tempUsers.length} )
@@ -181,19 +183,19 @@ const AdminUsers = () => {
         </div>
       )}
       {!formOpen ? (
-        (users && users.length > 0) || (tempUsers && tempUsers.length > 0) ? (
+        usersToShow && usersToShow.length > 0 ? (
           <>
             <UserTable
               columns={columns}
-              data={seeUsersToConfirm ? tempUsers : users}
+              data={usersToShow}
               setFormOpen={setFormOpen}
               setModeUpdate={setModeUpdate}
               setUserToUpdate={setUserToUpdate}
               refetchUsers={refetch}
               refetchTempUsers={tempUserRefetch}
-              seeUsersToConfirm={seeUsersToConfirm}
+              seeTempUsers={seeTempUsers}
             />
-            {!seeUsersToConfirm && (
+            {!seeTempUsers && (
               <div className="flex items-center justify-center gap-2">
                 <button
                   className="bg-white rounded-md border-gray-300 text-gray-600 disabled:text-gray-300 disabled:hover:bg-white  hover:bg-gray-200 hover:cursor-pointer disabled:cursor-auto border py-2 px-2 text-center"

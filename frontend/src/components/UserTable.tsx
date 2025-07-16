@@ -37,7 +37,7 @@ interface UserTableProps {
   setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setModeUpdate: React.Dispatch<React.SetStateAction<boolean>>;
   setUserToUpdate: React.Dispatch<React.SetStateAction<User | undefined>>;
-  seeUsersToConfirm: boolean;
+  seeTempUsers: boolean;
   refetchUsers: () => void;
   refetchTempUsers: () => void;
 }
@@ -50,14 +50,14 @@ export function UserTable({
   setUserToUpdate,
   refetchUsers,
   refetchTempUsers,
-  seeUsersToConfirm,
+  seeTempUsers,
 }: UserTableProps) {
   const [deleteUserMutation] = useDeleteUserMutation();
   const [deleteTempUserMutation] = useDeleteTempUserMutation();
 
   const deteleUser = async (id: number) => {
     try {
-      if (!seeUsersToConfirm) {
+      if (!seeTempUsers) {
         const response = await deleteUserMutation({
           variables: { deleteUserId: id },
         });
@@ -135,6 +135,7 @@ export function UserTable({
                       variant={"ghost"}
                       className="hover:cursor-pointer"
                       onClick={() => openEditForm(item)}
+                      aria-label={`Edit user ${item.id}`}
                     >
                       <MdOutlineModeEdit size={25} className="text-green" />
                     </Button>
@@ -143,7 +144,7 @@ export function UserTable({
 
                 <TableCell>
                   <Dialog>
-                    <DialogTrigger>
+                    <DialogTrigger aria-label={`Delete user ${item.id}`}>
                       <RiDeleteBin6Line size={20} className="text-red-600" />
                     </DialogTrigger>
                     <DialogContent className="flex flex-col items-center gap-5">

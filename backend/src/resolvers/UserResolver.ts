@@ -15,7 +15,7 @@ import {
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
 import {
-  CreateNewAddress,
+  CreateNewAddressInput,
   UpdateOrCreateUserInput,
   UserInput,
 } from "../inputs/UserInput";
@@ -360,7 +360,7 @@ export class UserResolver {
   @Mutation(() => Address)
   @UseMiddleware(IsCurrentUserOrAdmin)
   async createNewAddress(
-    @Arg("data") new_address: CreateNewAddress
+    @Arg("data") new_address: CreateNewAddressInput
   ): Promise<Address> {
     try {
       const user = await User.findOne({

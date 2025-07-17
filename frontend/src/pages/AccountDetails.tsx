@@ -1,20 +1,62 @@
 import { ChangePasswordForm } from "@/components/ChangePasswordForm";
 import {
+  CreateNewAddressInput,
+  useCreateNewAddressMutation,
   useGetUserInfoQuery,
   useLogoutMutation,
+  useWhoamiQuery,
 } from "../generated/graphql-types";
 import { WHO_AM_I } from "@/graphql/queries";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { SubmitHandler, useForm } from "react-hook-form";
 
 export const AccountDetails = () => {
   const navigate = useNavigate();
-  const { loading, error, data } = useGetUserInfoQuery({
+  const {
+    loading,
+    error,
+    data,
+    refetch: refetchUserInfo,
+  } = useGetUserInfoQuery({
     fetchPolicy: "no-cache",
   });
+
+  const whoami = useWhoamiQuery();
+  const userId = whoami.data?.whoami?.id;
+
   const user = data?.getUserInfo;
   const date = new Date(user?.created_at);
   const formattedCreatedAt = date.toLocaleDateString("fr");
+
+  const [createNewAddressMutation] = useCreateNewAddressMutation();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateNewAddressInput>();
+  const onSubmit: SubmitHandler<CreateNewAddressInput> = async (data) => {
+    await createNewAddressMutation({
+      variables: {
+        data: {
+          userId: userId,
+          street: data.street,
+          city: data.city,
+          zipcode: data.zipcode,
+          country: data.country,
+        },
+      },
+      onCompleted: async () => {
+        toast.success("Vous avez ajouté une nouvelle adresse de facturation !");
+        await refetchUserInfo();
+      },
+      onError: (error) => {
+        console.log("error", error);
+      },
+    });
+  };
 
   const [logout] = useLogoutMutation({
     refetchQueries: [{ query: WHO_AM_I, fetchPolicy: "no-cache" }],
@@ -77,9 +119,11 @@ export const AccountDetails = () => {
           ) : (
             <>
               <section>
-                <div className="flex items-center justify-between font-semibold text-green-900">
+                <div className="flex items-center gap-2 font-semibold text-green-900">
                   <h2>Mes coordonnées</h2>
-                  <button className="text-gray-600 text-base">✎</button>
+                  <button className="text-xl text-gray-600 hover:text-green-800 cursor-pointer">
+                    ✎
+                  </button>
                 </div>
                 <div className="mt-2 space-y-2">
                   <div>
@@ -106,15 +150,20 @@ export const AccountDetails = () => {
               </section>
 
               <section>
-                <div className="flex items-center justify-between font-semibold text-green-900">
+              <div className="flex items-center gap-2 font-semibold text-green-900">
                   <h2>Modifier mon mot de passe</h2>
-                  <button onClick={() => setShowPasswordForm(true)}>✎</button>
+                  <button onClick={() => setShowPasswordForm(true)} className="text-xl text-gray-600 hover:text-green-800 cursor-pointer">
+                    ✎
+                  </button>
                 </div>
               </section>
 
               <section>
-                <div className="font-semibold text-green-900">
-                  Mon adresse de facturation
+              <div className="flex items-center gap-2 font-semibold text-green-900">
+                  <h2>Mon adresse de facturation</h2>
+                  <button className="text-xl text-gray-600 hover:text-green-800 cursor-pointer">
+                    ✎
+                  </button>
                 </div>
                 {user?.address ? (
                   <div className="mt-2 space-y-1">
@@ -125,34 +174,61 @@ export const AccountDetails = () => {
                     <div>{user?.address.country}</div>
                   </div>
                 ) : (
-                  <form className="mt-2 space-y-2 w-3/4 max-w-md">
+                  <form
+                    onSubmit={handleSubmit(onSubmit)}
+                    className="mt-2 space-y-2 w-3/4 max-w-md"
+                  >
                     <input
                       type="text"
                       placeholder="Rue"
+                      {...register("street", { required: true })}
                       className="border rounded w-full p-2"
                       name="street"
                     />
-                    <input
-                      type="text"
-                      placeholder="Code postal"
-                      className="border rounded w-full p-2"
-                      name="zipcode"
-                    />
+                    {errors.street && (
+                      <span className="text-red-500 text-sm">
+                        Ce champ est requis
+                      </span>
+                    )}
                     <input
                       type="text"
                       placeholder="Ville"
+                      {...register("city", { required: true })}
                       className="border rounded w-full p-2"
                       name="city"
                     />
+                    {errors.city && (
+                      <span className="text-red-500 text-sm">
+                        Ce champ est requis
+                      </span>
+                    )}
+                    <input
+                      type="text"
+                      placeholder="Code postal"
+                      {...register("zipcode", { required: true })}
+                      className="border rounded w-full p-2"
+                      name="zipcode"
+                    />
+                    {errors.zipcode && (
+                      <span className="text-red-500 text-sm">
+                        Ce champ est requis
+                      </span>
+                    )}
                     <input
                       type="text"
                       placeholder="Pays"
+                      {...register("country", { required: true })}
                       className="border rounded w-full p-2"
                       name="country"
                     />
+                    {errors.country && (
+                      <span className="text-red-500 text-sm">
+                        Ce champ est requis
+                      </span>
+                    )}
                     <button
                       type="submit"
-                      className="bg-green-700 text-white px-4 py-2 rounded"
+                      className="bg-green-700 text-white px-4 py-2 rounded cursor-pointer"
                     >
                       Enregistrer l'adresse
                     </button>

@@ -21,9 +21,9 @@ export class UserInput implements Partial<User> {
 
 @InputType()
 export class UpdateOrCreateUserInput {
-  @Field({nullable:true})
+  @Field({ nullable: true })
   id: number;
-  
+
   @Field()
   first_name: string;
 
@@ -48,18 +48,18 @@ export class UpdateOrCreateUserInput {
   @Field()
   role: string;
 
-  @Field({nullable:true})
+  @Field({ nullable: true })
   created_at: Date;
 }
 
 @InputType()
-export class CreateNewAddress {
-  @Field()
+export class CreateNewAddressInput {
+  @Field({ nullable: true })
   userId: number;
 
   @Field()
   street: string;
-  
+
   @Field()
   city: string;
 

@@ -180,7 +180,7 @@ export const DELETE_TEMP_USER = gql`
 `;
 
 export const CREATE_NEW_ADDRESS = gql`
-  mutation CreateNewAddress($data: CreateNewAddress!) {
+  mutation CreateNewAddress($data: CreateNewAddressInput!) {
     createNewAddress(data: $data) {
       street
       city

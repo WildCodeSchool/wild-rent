@@ -38,10 +38,12 @@ export default function AdminUserForm({
   modeUpdate,
   userToUpdate,
   setFormOpen,
+  refetchTempUsers,
 }: {
   modeUpdate: boolean;
   userToUpdate: User | undefined;
   setFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  refetchTempUsers: () => void;
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -102,6 +104,7 @@ export default function AdminUserForm({
             },
           },
         });
+        refetchTempUsers();
         if (newUserResult) {
           toast.success(
             "Utilisateur ajouté avec succès, en attente de création de mot de passe"

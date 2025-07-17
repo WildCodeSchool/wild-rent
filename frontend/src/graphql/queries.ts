@@ -216,6 +216,7 @@ export const GET_ALL_TEMP_USERS = gql`
       id
       last_name
       phone_number
+      role
     }
   }
 `;

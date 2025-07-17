@@ -43,7 +43,7 @@ function App() {
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
           <Route
-            path="utilisateurs-en-attente"
+            path="utilisateurs/en-attente"
             element={<AdminPendingUsers />}
           />
         </Route>

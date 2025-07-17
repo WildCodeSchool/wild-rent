@@ -17,6 +17,7 @@ import {
 import { RiSearchLine } from "react-icons/ri";
 import { FiPlusCircle } from "react-icons/fi";
 import { SlArrowLeft, SlArrowRight } from "react-icons/sl";
+import { FaArrowLeftLong, FaUserClock } from "react-icons/fa6";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -25,6 +26,7 @@ import AdminUserForm from "@/components/adminUserForm";
 export type User = GetAllUsersQuery["getAllUsers"]["users"][number];
 
 const AdminUsers = () => {
+  const [seeTempUsers, setSeeTempUsers] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [offset, setOffset] = useState(0);
   const [search, setSearch] = useState<string | undefined>(undefined);
@@ -41,14 +43,14 @@ const AdminUsers = () => {
     variables: { offset, limit, role: selectedRole, search: debouncedSearch },
   });
 
-  const { data: tempUsersData } = useGetTempUsersQuery();
+  const { data: tempUsersData, refetch: tempUserRefetch } =
+    useGetTempUsersQuery();
 
   const users = data?.getAllUsers?.users ?? [];
   const totalUsersLength = data?.getAllUsers.totalUsersLength;
   const tempUsers = tempUsersData?.getAllTempUsers ?? [];
 
-  const allUsers = [...tempUsers, ...users];
-  console.log(allUsers);
+  const usersToShow = seeTempUsers ? tempUsers : users;
 
   const columns = [
     {
@@ -75,11 +77,14 @@ const AdminUsers = () => {
       accessorKey: "phone_number",
       header: "Téléphone",
     },
-    {
+  ];
+
+  if (!seeTempUsers) {
+    columns.push({
       accessorKey: "created_at",
       header: "Créé le",
-    },
-  ];
+    });
+  }
 
   const fetchNextPage = () => {
     setCurrentPage(currentPage + 1);
@@ -104,8 +109,21 @@ const AdminUsers = () => {
 
   return (
     <div className="flex flex-col p-2 lg:mp-4 gap-4 w-full relative">
-      <h1 className="font-bold text-lg md:text-xl lg:text-2xl">Utilisateurs</h1>
-      {!formOpen && (
+      <h1 className="font-bold text-lg md:text-xl lg:text-2xl">
+        Utilisateurs {seeTempUsers && "en attente de validation"}
+      </h1>
+      {seeTempUsers && (
+        <div className="w-full">
+          <Button
+            variant={"ghost"}
+            className="flex items-center gap-2 text-gray-600 hover:cursor-pointer"
+            onClick={() => setSeeTempUsers(false)}
+          >
+            <FaArrowLeftLong /> <p>Revenir à la liste des utilisateurs</p>
+          </Button>
+        </div>
+      )}
+      {!formOpen && !seeTempUsers && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex relative items-center ">
@@ -142,46 +160,60 @@ const AdminUsers = () => {
             </Select>
           </div>
 
-          <Button
-            onClick={() => {
-              setFormOpen(true);
-              setModeUpdate(false);
-            }}
-            className="bg-green flex items-center hover:bg-green/70 hover:cursor-pointer"
-          >
-            <FiPlusCircle />
-            <p className="translate-y-[1px]">Créer un utilisateur</p>
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant={"outline"}
+              className="text-green flex gap-2 items-center"
+              onClick={() => setSeeTempUsers(true)}
+            >
+              <FaUserClock />
+              En attente de validation ( {tempUsers.length} )
+            </Button>
+            <Button
+              onClick={() => {
+                setFormOpen(true);
+                setModeUpdate(false);
+              }}
+              className="bg-green flex items-center hover:bg-green/70 hover:cursor-pointer"
+            >
+              <FiPlusCircle />
+              <p className="translate-y-[1px]">Créer un utilisateur</p>
+            </Button>
+          </div>
         </div>
       )}
       {!formOpen ? (
-        users && users.length > 0 ? (
+        usersToShow && usersToShow.length > 0 ? (
           <>
             <UserTable
               columns={columns}
-              data={users}
+              data={usersToShow}
               setFormOpen={setFormOpen}
               setModeUpdate={setModeUpdate}
               setUserToUpdate={setUserToUpdate}
               refetchUsers={refetch}
+              refetchTempUsers={tempUserRefetch}
+              seeTempUsers={seeTempUsers}
             />
-            <div className="flex items-center justify-center gap-2">
-              <button
-                className="bg-white rounded-md border-gray-300 text-gray-600 disabled:text-gray-300 disabled:hover:bg-white  hover:bg-gray-200 hover:cursor-pointer disabled:cursor-auto border py-2 px-2 text-center"
-                disabled={currentPage === 1}
-                onClick={() => fetchPreviousPage()}
-              >
-                <SlArrowLeft size={15} />
-              </button>
-              <p>{`Page ${currentPage} de ${totalPages}`}</p>
-              <button
-                className="bg-white rounded-md border-gray-300 text-gray-600 disabled:text-gray-300 disabled:hover:bg-white  hover:bg-gray-200 hover:cursor-pointer disabled:cursor-auto border py-2 px-2 text-center"
-                disabled={currentPage === totalPages}
-                onClick={() => fetchNextPage()}
-              >
-                <SlArrowRight size={15} />
-              </button>
-            </div>
+            {!seeTempUsers && (
+              <div className="flex items-center justify-center gap-2">
+                <button
+                  className="bg-white rounded-md border-gray-300 text-gray-600 disabled:text-gray-300 disabled:hover:bg-white  hover:bg-gray-200 hover:cursor-pointer disabled:cursor-auto border py-2 px-2 text-center"
+                  disabled={currentPage === 1}
+                  onClick={() => fetchPreviousPage()}
+                >
+                  <SlArrowLeft size={15} />
+                </button>
+                <p>{`Page ${currentPage} de ${totalPages}`}</p>
+                <button
+                  className="bg-white rounded-md border-gray-300 text-gray-600 disabled:text-gray-300 disabled:hover:bg-white  hover:bg-gray-200 hover:cursor-pointer disabled:cursor-auto border py-2 px-2 text-center"
+                  disabled={currentPage === totalPages}
+                  onClick={() => fetchNextPage()}
+                >
+                  <SlArrowRight size={15} />
+                </button>
+              </div>
+            )}
           </>
         ) : (
           <p>Aucun utilisateur trouvé</p>
@@ -191,6 +223,7 @@ const AdminUsers = () => {
           modeUpdate={modeUpdate}
           userToUpdate={userToUpdate}
           setFormOpen={setFormOpen}
+          refetchTempUsers={tempUserRefetch}
         />
       )}
     </div>

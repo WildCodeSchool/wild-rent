@@ -10,10 +10,15 @@ import {
   Int,
   ObjectType,
   Field,
+  UseMiddleware,
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
-import { UpdateOrCreateUserInput, UserInput } from "../inputs/UserInput";
+import {
+  CreateNewAddress,
+  UpdateOrCreateUserInput,
+  UserInput,
+} from "../inputs/UserInput";
 import { LoginInput } from "../inputs/LoginInput";
 import { ContextType } from "../auth";
 import { Resend } from "resend";
@@ -22,6 +27,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
 import Cookies from "cookies";
 import { Address } from "../entities/Address";
+import { IsCurrentUserOrAdmin } from "../middleware/AuthChecker";
 
 const baseUrl = "http://localhost:7000/confirmation/";
 
@@ -32,6 +38,42 @@ class PaginatedUsers {
 
   @Field(() => Int)
   totalUsersLength: number;
+}
+
+@ObjectType()
+class WhoAmI {
+  @Field(() => Int)
+  id: number;
+
+  @Field()
+  email: string;
+
+  @Field()
+  role: string;
+}
+
+@ObjectType()
+class GetUserInfo {
+  @Field()
+  first_name: string;
+
+  @Field()
+  last_name: string;
+
+  @Field()
+  email: string;
+
+  @Field()
+  role: string;
+
+  @Field()
+  phone_number: string;
+
+  @Field()
+  created_at: string;
+
+  @Field(() => Address, { nullable: true })
+  address: Address;
 }
 
 @Resolver(User)
@@ -135,16 +177,20 @@ export class UserResolver {
   }
 
   // Sert pour le front afin de récupérer l'utilisateur courant (via le contexte) sans faire de requête à la BDD
-  @Query(() => User, { nullable: true })
+  @Query(() => WhoAmI, { nullable: true })
   async whoami(@Ctx() context: ContextType): Promise<User | null | undefined> {
     return context.user;
   }
 
   // Sert pour récupérer les données de l'utilisateur connecté
-  @Query(() => User, { nullable: true })
+  @Query(() => GetUserInfo, { nullable: true })
   async getUserInfo(@Ctx() context: ContextType): Promise<User | null> {
     if (context.user) {
-      const user = await User.findOneByOrFail({ email: context.user.email });
+      // On utilise ici findOne afin de pouvoir accéder à Option et récupérer la relation
+      const user = await User.findOne({
+        where: { email: context.user.email },
+        relations: ["address"],
+      });
       return user;
     } else {
       return null;
@@ -308,5 +354,39 @@ export class UserResolver {
     await tempUser.remove();
 
     return userResult;
+  }
+
+  // Mutation pour enregistrer une adresse de facturation dans les détails du compte
+  @Mutation(() => Address)
+  @UseMiddleware(IsCurrentUserOrAdmin)
+  async createNewAddress(
+    @Arg("data") new_address: CreateNewAddress
+  ): Promise<Address> {
+    try {
+      const user = await User.findOne({
+        where: { id: new_address.userId },
+        relations: ["address"],
+      });
+
+      if (!user) {
+        throw new Error("Utilisateur introuvable");
+      }
+
+      const newAddress = Address.create({
+        street: new_address.street,
+        city: new_address.city,
+        zipcode: new_address.zipcode,
+        country: new_address.country,
+      });
+
+      user.address = newAddress;
+
+      await User.save(user);
+
+      return newAddress;
+    } catch (error) {
+      console.error("Erreur lors de la création d'adresse :", error);
+      throw new Error("Impossible de créer l'adresse de facturation.");
+    }
   }
 }

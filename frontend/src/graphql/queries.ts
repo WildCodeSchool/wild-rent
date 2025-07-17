@@ -124,7 +124,6 @@ export const GET_USERS = gql`
 export const GET_USER_INFO = gql`
   query GetUserInfo {
     getUserInfo {
-      id
       first_name
       last_name
       email

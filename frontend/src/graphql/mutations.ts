@@ -178,3 +178,14 @@ export const DELETE_TEMP_USER = gql`
     deleteTempUser(id: $deleteTempUserId)
   }
 `;
+
+export const CREATE_NEW_ADDRESS = gql`
+  mutation CreateNewAddress($data: CreateNewAddress!) {
+    createNewAddress(data: $data) {
+      street
+      city
+      zipcode
+      country
+    }
+  }
+`;

@@ -5,7 +5,7 @@ const PrivacyPolicy = () => {
         Politique de confidentialité – Wild Rent
       </h1>
       <br />
-      <h2>1. Introduction</h2>
+      <h2 className="font-bold">1. Introduction</h2>
       <br />
       <p>
         Bienvenue sur Wild Rent, votre plateforme de location de matériel de
@@ -17,7 +17,7 @@ const PrivacyPolicy = () => {
         – UE 2016/679).
       </p>
       <br />
-      <h2>2. Responsable du traitement</h2>
+      <h2 className="font-bold">2. Responsable du traitement</h2>
       <br />
       <p>
         Le responsable du traitement des données est : Wild Rent – Projet fictif
@@ -25,7 +25,7 @@ const PrivacyPolicy = () => {
         Paris
       </p>
       <br />
-      <h2>3. Données personnelles collectées</h2>
+      <h2 className="font-bold">3. Données personnelles collectées</h2>
       <br />
       <p>
         Dans le cadre de votre utilisation de notre site, nous sommes
@@ -42,7 +42,7 @@ const PrivacyPolicy = () => {
         <br />
       </p>
       <br />
-      <h2>4. Finalités du traitement</h2>
+      <h2 className="font-bold">4. Finalités du traitement</h2>
       <br />
       <p>
         Vos données sont collectées pour les finalités suivantes : Gestion des
@@ -52,7 +52,7 @@ const PrivacyPolicy = () => {
         (facturation, comptabilité)
       </p>
       <br />
-      <h2>5. Base légale du traitement</h2>
+      <h2 className="font-bold">5. Base légale du traitement</h2>
       <br />
       <p>
         Le traitement de vos données repose sur : <br />
@@ -63,7 +63,7 @@ const PrivacyPolicy = () => {
         <br />- Notre intérêt légitime à améliorer nos services (article 6.1.f)
       </p>
       <br />
-      <h2>6. Destinataires des données</h2>
+      <h2 className="font-bold">6. Destinataires des données</h2>
       <br />
       <p>
         Vos données peuvent être transmises à des prestataires de services
@@ -72,7 +72,7 @@ const PrivacyPolicy = () => {
         Nous ne revendons ni ne louons vos données personnelles.
       </p>
       <br />
-      <h2>7. Durée de conservation</h2>
+      <h2 className="font-bold">7. Durée de conservation</h2>
       <br />
       <p>
         Les données sont conservées pendant la durée strictement nécessaire aux
@@ -82,7 +82,7 @@ const PrivacyPolicy = () => {
         13 mois maximum
       </p>
       <br />
-      <h2>8. Vos droits</h2>
+      <h2 className="font-bold">8. Vos droits</h2>
       <br />
       <p>
         Conformément au RGPD, vous disposez des droits suivants : <br />
@@ -97,7 +97,7 @@ const PrivacyPolicy = () => {
         CNIL.
       </p>
       <br />
-      <h2>9. Sécurité</h2>
+      <h2 className="font-bold">9. Sécurité</h2>
       <br />
       <p>
         Wild Rent met en œuvre des mesures techniques et organisationnelles
@@ -105,7 +105,7 @@ const PrivacyPolicy = () => {
         données.
       </p>
       <br />
-      <h2>10. Cookies</h2>
+      <h2 className="font-bold">10. Cookies</h2>
       <br />
       <p>
         Notre site utilise des cookies pour améliorer votre expérience
@@ -114,7 +114,7 @@ const PrivacyPolicy = () => {
         vos préférences à tout moment.
       </p>
       <br />
-      <h2>11. Modification de la politique</h2>
+      <h2 className="font-bold">11. Modification de la politique</h2>
       <br />
       <p>
         Cette politique peut être modifiée à tout moment. En cas de changement

@@ -183,18 +183,17 @@ export class UserResolver {
   }
 
   // Sert pour récupérer les données de l'utilisateur connecté
-  @Query(() => GetUserInfo, { nullable: true })
-  async getUserInfo(@Ctx() context: ContextType): Promise<User | null> {
-    if (context.user) {
+  @Query(() => GetUserInfo)
+  async getUserInfo(@Ctx() context: ContextType): Promise<User> {
+    if (!context.user) {
+      throw new Error("Vous devez être authentifié");
+    }
       // On utilise ici findOne afin de pouvoir accéder à Option et récupérer la relation
       const user = await User.findOne({
         where: { email: context.user.email },
         relations: ["address"],
-      });
+      }) as User;
       return user;
-    } else {
-      return null;
-    }
   }
 
   @Mutation(() => Boolean)

@@ -10,18 +10,16 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 type AddressFormProps = {
-  userInfo: {
-    address: {
-      street: string;
-      zipcode: string;
-      city: string;
-      country: string;
-    };
+  userAddress: {
+    street: string;
+    zipcode: string;
+    city: string;
+    country: string;
   };
   setShowAddressForm: Dispatch<SetStateAction<boolean>>;
 };
 
-function AddressForm({ userInfo, setShowAddressForm }: AddressFormProps) {
+function AddressForm({ userAddress, setShowAddressForm }: AddressFormProps) {
   const whoami = useWhoamiQuery();
   const userId = whoami.data?.whoami?.id;
   const {
@@ -30,10 +28,10 @@ function AddressForm({ userInfo, setShowAddressForm }: AddressFormProps) {
     formState: { errors },
   } = useForm<CreateNewAddressInput>({
     defaultValues: {
-      street: userInfo.address.street,
-      zipcode: userInfo.address.zipcode,
-      city: userInfo.address.city,
-      country: userInfo.address.country,
+      street: userAddress.street,
+      zipcode: userAddress.zipcode,
+      city: userAddress.city,
+      country: userAddress.country,
     },
   });
 

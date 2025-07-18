@@ -109,7 +109,7 @@ export const AccountDetails = () => {
                 </div>
                 {!userInfo.getUserInfo.address || showAddressForm ? (
                   <AddressForm
-                    userInfo={userInfo.getUserInfo}
+                    userAddress={userInfo.getUserInfo.address}
                     setShowAddressForm={setShowAddressForm}
                   />
                 ) : (

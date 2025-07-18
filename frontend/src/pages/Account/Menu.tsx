@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 
 type MenuProps = {
-  setShowPasswordForm: Dispatch<SetStateAction<boolean>>; // Todo regarder les types proposés à d'autres endroits du code
+  setShowPasswordForm: Dispatch<SetStateAction<boolean>>;
 };
 
 function Menu({ setShowPasswordForm }: MenuProps) {

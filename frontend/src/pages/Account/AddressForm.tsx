@@ -5,17 +5,37 @@ import {
 } from "@/generated/graphql-types";
 import { GET_USER_INFO } from "@/graphql/queries";
 import { client } from "@/main";
+import { Dispatch, SetStateAction } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-function AddressForm() {
+type AddressFormProps = {
+  userInfo: {
+    address: {
+      street: string;
+      zipcode: string;
+      city: string;
+      country: string;
+    };
+  };
+  setShowAddressForm: Dispatch<SetStateAction<boolean>>;
+};
+
+function AddressForm({ userInfo, setShowAddressForm }: AddressFormProps) {
   const whoami = useWhoamiQuery();
   const userId = whoami.data?.whoami?.id;
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateNewAddressInput>();
+  } = useForm<CreateNewAddressInput>({
+    defaultValues: {
+      street: userInfo.address.street,
+      zipcode: userInfo.address.zipcode,
+      city: userInfo.address.city,
+      country: userInfo.address.country,
+    },
+  });
 
   const [createNewAddressMutation] = useCreateNewAddressMutation();
 
@@ -33,6 +53,7 @@ function AddressForm() {
       onCompleted: async () => {
         toast.success("Vous avez ajouté une nouvelle adresse de facturation !");
         await client.refetchQueries({ include: [GET_USER_INFO] });
+        setShowAddressForm(false);
       },
       onError: (error) => {
         console.log("error", error);

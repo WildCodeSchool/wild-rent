@@ -136,7 +136,7 @@ export function ProductFilters({
             <Button
               type="button"
               variant={"outline"}
-              className="text-base cursor-pointer w-full"
+              className="text-base cursor-pointer w-full text-sm md:text-base"
               onClick={() => reset()}
             >
               Réinitialiser
@@ -145,7 +145,7 @@ export function ProductFilters({
           <div className="w-1/2">
             <Button
               type="submit"
-              className="bg-green hover:bg-green/60 text-base cursor-pointer w-full"
+              className="bg-green hover:bg-green/60 text-base cursor-pointer w-full text-sm md:text-base"
             >
               Appliquer
             </Button>

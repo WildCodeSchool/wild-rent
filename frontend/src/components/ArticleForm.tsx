@@ -139,8 +139,6 @@ export const ArticleForm = ({
 
   useEffect(() => {
     if (createOrUpdate === "update" && productDefault) {
-      console.log("%c⧭", "color: #00e600", productDefault);
-
       const tagIdsFromTags =
         productDefault.tags?.map((tag) => tag.id.toString()) || [];
 
@@ -178,10 +176,10 @@ export const ArticleForm = ({
       })
     );
 
-    if (formData.tags) {
-      formData.tag_ids = formData.tags.map((tag) => {
-        tag.id;
-      });
+    if ((formData as any).tags) {
+      formData.tag_ids = (formData as any).tags.map((tag: any) =>
+        tag.id.toString()
+      );
     }
 
     const input = {
@@ -200,6 +198,8 @@ export const ArticleForm = ({
       ),
       tag_ids: formData.tag_ids.map((id) => parseInt(id)),
     };
+
+    console.log("%c⧭", "color: #aa00ff", input);
 
     if (createOrUpdate === "create") {
       try {

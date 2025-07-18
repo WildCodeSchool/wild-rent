@@ -4,7 +4,7 @@ import { Resolver, Query, Arg, Mutation } from "type-graphql";
 import { Picture } from "../entities/Picture";
 import { ProductOption } from "../entities/ProductOption";
 import { Category } from "../entities/Category";
-import { FindManyOptions, Raw } from "typeorm";
+import { FindManyOptions, In, Raw } from "typeorm";
 import { merge } from "../assets/utils";
 import { Tag } from "../entities/Tag";
 
@@ -129,6 +129,10 @@ export class ProductResolver {
 
     productToUpdate = merge(productToUpdate, data);
 
+    if (data.tag_ids) {
+      const newTags = await Tag.findBy({ id: In(data.tag_ids) });
+      productToUpdate.tags = newTags;
+    }
     console.log("change product", merge(productToUpdate, data));
 
     await productToUpdate.save();

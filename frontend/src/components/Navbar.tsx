@@ -19,7 +19,7 @@ const Navbar = () => {
               title: category.title,
               image: category.image,
             }}
-            className="text-white font-bold hover:underline hidden sm:flex gap-x-6"
+            className="text-white font-bold hover:underline hidden sm:flex gap-x-6 text-sm md:text-base"
           >
             {category.title}
           </Link>
@@ -29,13 +29,13 @@ const Navbar = () => {
           onSubmit={(e) => {
             e.preventDefault();
           }}
-          className="relative w-full max-w-xs sm:max-w-sm"
+          className="relative w-full max-w-sm sm:max-w-[150px] md:max-w-[180px] lg:max-w-[200px] ml-4"
         >
           <div className="flex items-center bg-white rounded px-4 py-2 shadow-md">
             <input
               type="text"
               placeholder="Rechercher"
-              className="outline-none bg-transparent placeholder-gray-500 text-gray-700 w-full"
+              className="outline-none bg-transparent placeholder-gray-500 text-gray-700 w-full text-base sm:text-sm"
             />
             <button className="cursor-pointer">
               <img

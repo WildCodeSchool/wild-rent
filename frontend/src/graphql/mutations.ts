@@ -7,9 +7,9 @@ export const REGISTER = gql`
 `;
 
 export const LOGIN = gql`
-  mutation Login($data: LoginInput!) {
-    login(data: $data)
-  }
+ mutation Login($data: LoginInput!) {
+  login(data: $data) 
+}
 `;
 
 export const LOGOUT = gql`

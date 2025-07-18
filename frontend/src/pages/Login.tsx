@@ -2,13 +2,18 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useLoginMutation } from "../generated/graphql-types";
 import { WHO_AM_I } from "../graphql/queries";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "@/hooks/useUser";
 
 export const Login = () => {
+  const { refetchUser } = useUser();
+  const navigate = useNavigate();
   const [login] = useLoginMutation({
     refetchQueries: [{ query: WHO_AM_I }],
+    onCompleted() {
+      refetchUser({ fetchPolicy: "no-cache" });
+      navigate("/");
+    },
   });
-
-  const navigate = useNavigate();
 
   type Inputs = {
     email: string;
@@ -21,11 +26,9 @@ export const Login = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log("data", data);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     login({
       variables: { data: { email: data.email, password: data.password } },
-      onCompleted: () => navigate("/"),
     });
   };
 
@@ -76,7 +79,10 @@ export const Login = () => {
 
         <p className="text-center text-gray-600 mt-4">
           Pas encore de compte ?{" "}
-          <a href="/enregistrement" className="text-green underline font-semibold">
+          <a
+            href="/enregistrement"
+            className="text-green underline font-semibold"
+          >
             Inscrivez-vous ici
           </a>
         </p>

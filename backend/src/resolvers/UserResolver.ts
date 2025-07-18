@@ -104,14 +104,13 @@ export class UserResolver {
       );
     }
     if (is_password_correct === true && user !== null) {
-      console.log("user:", user)
       const token = jwt.sign(
         // On signe le jwt avec l'id de l'utilisateur qu'on va ensuite récupérer au moment de déchiffrer le token (auth.ts)
         { id: user.id, email: user.email, user_role: user.role },
         process.env.JWT_SECRET_KEY as jwt.Secret
       );
-      const cookies = new Cookies(context.req, context.res);
 
+      const cookies = new Cookies(context.req, context.res);
       cookies.set("token", token, {
         secure: false,
         httpOnly: true,

@@ -164,8 +164,6 @@ export const ArticleForm = ({
       setSelectedSize(sizes);
     }
     setModifyProduct(productDefault);
-
-    console.log("modifyProduct", modifyProduct);
   }, [productDefault, createOrUpdate, reset]);
 
   const onSubmit = async (formData: ProductFormValues) => {
@@ -199,19 +197,18 @@ export const ArticleForm = ({
       tag_ids: formData.tag_ids.map((id) => parseInt(id)),
     };
 
-    console.log("%c⧭", "color: #aa00ff", input);
-
     if (createOrUpdate === "create") {
       try {
         const result = await createProductMutation({
           variables: { data: input },
         });
-        console.log(result);
-        toast.success("Article publié! 💪");
-        reset();
-        onAdd?.();
+        if (result.data) {
+          toast.success("Article publié! 💪");
+          reset();
+          onAdd?.();
+        }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error("Erreur lors de la publication");
       }
     } else if (createOrUpdate === "update") {
@@ -233,7 +230,7 @@ export const ArticleForm = ({
 
         toast.success("Article modifié! 💪");
       } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error("Erreur lors de la modifcation d'un article");
       }
     }
@@ -265,7 +262,7 @@ export const ArticleForm = ({
       });
       onDelete?.();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("⚠️ Échec de la suppression");
     }
   };

@@ -133,6 +133,7 @@ export class ProductResolver {
       const newTags = await Tag.findBy({ id: In(data.tag_ids) });
       productToUpdate.tags = newTags;
     }
+
     console.log("change product", merge(productToUpdate, data));
 
     await productToUpdate.save();

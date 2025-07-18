@@ -85,6 +85,10 @@ export const GET_PRODUCT_BY_ID = gql`
         id
         total_quantity
       }
+      tags {
+        id
+        label
+      }
     }
   }
 `;
@@ -147,11 +151,33 @@ export const WHO_AM_I = gql`
   }
 `;
 
+export const GET_ALL_TAGS = gql`
+  query GetAllTags {
+    getAllTags {
+      id
+      label
+    }
+  }
+`;
+
 export const GET_TAGS_BY_CATEGORY = gql`
   query GetTagsByCategory($category: Float!) {
     getTagsByCategory(category: $category) {
       id
       label
+    }
+  }
+`;
+
+export const GET_ALL_CATEGORIES_AND_ALL_TAGS = gql`
+  query GetAllCategoriesAndTags {
+    getAllTags {
+      id
+      label
+    }
+    getAllCategories {
+      id
+      title
     }
   }
 `;

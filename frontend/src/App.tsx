@@ -19,6 +19,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
 import AdminOrder from "./pages/AdminOrder";
+import AdminCategory from "./pages/AdminCategory";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
             element={<AdminPendingUsers />}
           /> */}
           <Route path="commandes" element={<AdminOrder />} />
+          <Route path="categories" element={<AdminCategory />} />
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

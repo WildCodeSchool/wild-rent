@@ -3,7 +3,6 @@ import { useLoginMutation } from "../generated/graphql-types";
 import { WHO_AM_I } from "../graphql/queries";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/hooks/useUser";
-import { client } from "@/main";
 
 export const Login = () => {
   const { refetchUser } = useUser();
@@ -28,14 +27,9 @@ export const Login = () => {
   } = useForm<Inputs>();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log("data:", data);
-    const userResponse = await login({
+    login({
       variables: { data: { email: data.email, password: data.password } },
     });
-    // if (userResponse.data?.login) {
-    //   client.refetchQueries({ include: [WHO_AM_I] });
-    // }
-    // navigate("/");
   };
 
   return (

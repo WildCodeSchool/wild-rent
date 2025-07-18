@@ -12,7 +12,7 @@ import Cart from "./pages/Cart";
 import { AdminLayout } from "./pages/AdminLayout";
 import { AdminArticle } from "./pages/AdminArticle";
 import { AdminHomepage } from "./pages/AdminHomepage";
-import { AccountDetails } from "./pages/AccountDetails";
+import { AccountDetails } from "./pages/Account/AccountDetails";
 import AdminUsers from "./pages/AdminUsers";
 import ConfirmRegistration from "./pages/ConfirmRegistration";
 import AdminPendingUsers from "./pages/AdminPendingUsers";

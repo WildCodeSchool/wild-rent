@@ -30,11 +30,11 @@ export function PriceRangeSlider({ values, onChange }: PriceRangeSliderProps) {
       <div className="flex items-center justify-between">
         <div className="rounded-md border px-3 py-2">
           <div className="text-xs text-muted-foreground">Min</div>
-          <div className="font-medium">{`$${values[0]}`}</div>
+          <div className="font-medium">{`€${values[0]}`}</div>
         </div>
         <div className="rounded-md border px-3 py-2">
           <div className="text-xs text-muted-foreground">Max</div>
-          <div className="font-medium">{`$${values[1]}`}</div>
+          <div className="font-medium">{`€${values[1]}`}</div>
         </div>
       </div>
     </div>

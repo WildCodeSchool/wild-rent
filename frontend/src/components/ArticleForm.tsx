@@ -3,7 +3,7 @@ import { FieldError, useForm, useFieldArray } from "react-hook-form";
 import {
   useCreateProductMutation,
   useDeleteProductByIdMutation,
-  useGetAllCategoriesQuery,
+  useGetAllCategoriesAndTagsQuery,
   useModifyProductMutation,
 } from "../generated/graphql-types";
 import { toast } from "react-toastify";
@@ -19,7 +19,7 @@ type ProductFormValues = {
   category: string;
   pictures: { url: string }[];
   product_options: { size: string; total_quantity: number }[];
-  tags: { id: string; label: string }[];
+  tag_ids: string[];
 };
 
 type ArticleFormProps = {
@@ -54,15 +54,13 @@ export const ArticleForm = ({
       product_options: [{ size: "", total_quantity: 1 }],
     },
   });
-  const { error, loading, data } = useGetAllCategoriesQuery();
+  const { error, loading, data } = useGetAllCategoriesAndTagsQuery();
   const [
     modifyProductMutation,
     { error: errorMutation, loading: loadingMutation, data: dataMutation },
   ] = useModifyProductMutation();
   const [createProductMutation] = useCreateProductMutation();
-  const [modifyProduct, setModifyProduct] = useState<
-    ProductFormValues | undefined
-  >(productDefault);
+  const [modifyProduct, setModifyProduct] = useState(productDefault);
   const [selectedSize, setSelectedSize] = useState<
     { index: number; value: string }[]
   >([{ index: 0, value: "" }]);
@@ -141,6 +139,11 @@ export const ArticleForm = ({
 
   useEffect(() => {
     if (createOrUpdate === "update" && productDefault) {
+      console.log("%c⧭", "color: #00e600", productDefault);
+
+      const tagIdsFromTags =
+        productDefault.tags?.map((tag) => tag.id.toString()) || [];
+
       reset({
         name: productDefault.name,
         description: productDefault.description,
@@ -152,6 +155,7 @@ export const ArticleForm = ({
         product_options: productDefault.product_options?.length
           ? productDefault.product_options
           : [{ size: "", total_quantity: 1 }],
+        tag_ids: tagIdsFromTags,
       });
 
       // Initialise selectedSize pour empêcher doublons
@@ -162,6 +166,8 @@ export const ArticleForm = ({
       setSelectedSize(sizes);
     }
     setModifyProduct(productDefault);
+
+    console.log("modifyProduct", modifyProduct);
   }, [productDefault, createOrUpdate, reset]);
 
   const onSubmit = async (formData: ProductFormValues) => {
@@ -171,6 +177,12 @@ export const ArticleForm = ({
         total_quantity: parseInt(opt.total_quantity),
       })
     );
+
+    if (formData.tags) {
+      formData.tag_ids = formData.tags.map((tag) => {
+        tag.id;
+      });
+    }
 
     const input = {
       name: formData.name,
@@ -186,9 +198,8 @@ export const ArticleForm = ({
           total_quantity: parseInt(total_quantity.toString()),
         })
       ),
+      tag_ids: formData.tag_ids.map((id) => parseInt(id)),
     };
-
-    console.log(input);
 
     if (createOrUpdate === "create") {
       try {
@@ -213,10 +224,9 @@ export const ArticleForm = ({
           const newProduct = {
             ...result.data.modifyProductById,
             category: result.data.modifyProductById.category.id.toString(),
-            tags: result.data.modifyProductById.tags.map((tag) => ({
-              id: tag.id.toString(),
-              label: tag.label,
-            })),
+            tag_ids: result.data.modifyProductById.tags.map((tag) =>
+              tag.id.toString()
+            ),
           };
           setModifyProduct(newProduct);
         }
@@ -251,7 +261,7 @@ export const ArticleForm = ({
         category: "",
         pictures: [{ url: "" }],
         product_options: [{ size: "", total_quantity: 1 }],
-        tags: [],
+        tag_ids: [],
       });
       onDelete?.();
     } catch (error) {
@@ -555,6 +565,26 @@ export const ArticleForm = ({
             >
               Ajouter une taille
             </button>
+          </div>
+
+          {/* Tags */}
+          <div>
+            <fieldset className="block font-semibold mb-1 mt-3 border rounded p-2">
+              <legend className="p-2">Tags</legend>
+              <div className="flex flex-wrap gap-5">
+                {data?.getAllTags.map((tag) => (
+                  <div key={tag.id} className="flex gap-2">
+                    <input
+                      type="checkbox"
+                      value={tag.id}
+                      id={`tag-${tag.id}`}
+                      {...register("tag_ids")}
+                    />
+                    <label htmlFor={`tag-${tag.id}`}>{tag.label}</label>
+                  </div>
+                ))}
+              </div>
+            </fieldset>
           </div>
 
           {/* Prix */}

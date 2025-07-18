@@ -46,6 +46,10 @@ export const CREATE_PRODUCT = gql`
         id
         url
       }
+      tags {
+        id
+        label
+      }
     }
   }
 `;

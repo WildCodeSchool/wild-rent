@@ -25,6 +25,9 @@ export class ProductInput {
 
   @Field(() => CategoryInput, { nullable: true })
   category?: CategoryInput;
+
+  @Field(() => [Number], { nullable: true })
+  tag_ids?: number[];
 }
 
 @InputType()

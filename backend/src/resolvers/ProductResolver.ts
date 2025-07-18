@@ -6,6 +6,7 @@ import { ProductOption } from "../entities/ProductOption";
 import { Category } from "../entities/Category";
 import { FindManyOptions, Raw } from "typeorm";
 import { merge } from "../assets/utils";
+import { Tag } from "../entities/Tag";
 
 @Resolver(Product)
 export class ProductResolver {
@@ -98,6 +99,12 @@ export class ProductResolver {
 
     const category = await Category.findOneByOrFail({ id: data.category?.id });
 
+    const tags = data.tag_ids
+      ? await Promise.all(
+          data.tag_ids.map((id) => Tag.findOneByOrFail({ id: id }))
+        )
+      : [];
+
     const newProduct = await Product.create({
       name: data.name,
       description: data.description,
@@ -105,6 +112,7 @@ export class ProductResolver {
       pictures: pictures,
       product_options: productOptions,
       category: category,
+      tags: tags,
     });
 
     return await newProduct.save();

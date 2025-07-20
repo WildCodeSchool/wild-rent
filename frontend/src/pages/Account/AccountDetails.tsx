@@ -109,8 +109,8 @@ export const AccountDetails = () => {
                 </div>
                 {!userInfo.getUserInfo.address || showAddressForm ? (
                   <AddressForm
-                    userAddress={userInfo.getUserInfo.address}
                     setShowAddressForm={setShowAddressForm}
+                    userAddress={userInfo.getUserInfo.address}
                   />
                 ) : (
                   <div className="mt-2 space-y-1">

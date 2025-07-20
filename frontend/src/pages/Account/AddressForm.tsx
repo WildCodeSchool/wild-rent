@@ -10,12 +10,12 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 type AddressFormProps = {
-  userAddress: {
+  userAddress?: {
     street: string;
     zipcode: string;
     city: string;
     country: string;
-  };
+  } | null;
   setShowAddressForm: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -28,10 +28,10 @@ function AddressForm({ userAddress, setShowAddressForm }: AddressFormProps) {
     formState: { errors },
   } = useForm<CreateNewAddressInput>({
     defaultValues: {
-      street: userAddress.street,
-      zipcode: userAddress.zipcode,
-      city: userAddress.city,
-      country: userAddress.country,
+      street: userAddress?.street || "",
+      zipcode: userAddress?.zipcode || "",
+      city: userAddress?.city || "",
+      country: userAddress?.country || "",
     },
   });
 

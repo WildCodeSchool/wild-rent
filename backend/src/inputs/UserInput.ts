@@ -51,21 +51,3 @@ export class UpdateOrCreateUserInput {
   @Field({ nullable: true })
   created_at: Date;
 }
-
-@InputType()
-export class CreateOrUpdateAddressInput {
-  @Field({ nullable: true })
-  userId: number;
-
-  @Field()
-  street: string;
-
-  @Field()
-  city: string;
-
-  @Field()
-  zipcode: string;
-
-  @Field()
-  country: string;
-}

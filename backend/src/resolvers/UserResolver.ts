@@ -14,11 +14,7 @@ import {
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
-import {
-  CreateOrUpdateAddressInput,
-  UpdateOrCreateUserInput,
-  UserInput,
-} from "../inputs/UserInput";
+import { UpdateOrCreateUserInput, UserInput } from "../inputs/UserInput";
 import { LoginInput } from "../inputs/LoginInput";
 import { ContextType } from "../auth";
 import { Resend } from "resend";
@@ -28,6 +24,7 @@ import * as jwt from "jsonwebtoken";
 import Cookies from "cookies";
 import { Address } from "../entities/Address";
 import { IsCurrentUserOrAdmin } from "../middleware/AuthChecker";
+import { CreateOrUpdateAddressInput } from "../inputs/AddressInput";
 
 const baseUrl = "http://localhost:7000/confirmation/";
 

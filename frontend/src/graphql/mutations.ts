@@ -179,9 +179,9 @@ export const DELETE_TEMP_USER = gql`
   }
 `;
 
-export const CREATE_NEW_ADDRESS = gql`
-  mutation CreateNewAddress($data: CreateNewAddressInput!) {
-    createNewAddress(data: $data) {
+export const CREATE_OR_UPDATE_ADDRESS = gql`
+  mutation CreateOrUpdateAddress($data: CreateOrUpdateAddressInput!) {
+    createOrUpdateAddress(data: $data) {
       street
       city
       zipcode

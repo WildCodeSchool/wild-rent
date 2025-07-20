@@ -53,7 +53,7 @@ export class UpdateOrCreateUserInput {
 }
 
 @InputType()
-export class CreateNewAddressInput {
+export class CreateOrUpdateAddressInput {
   @Field({ nullable: true })
   userId: number;
 

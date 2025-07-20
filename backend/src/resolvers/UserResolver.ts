@@ -15,7 +15,7 @@ import {
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
 import {
-  CreateNewAddressInput,
+  CreateOrUpdateAddressInput,
   UpdateOrCreateUserInput,
   UserInput,
 } from "../inputs/UserInput";
@@ -188,12 +188,12 @@ export class UserResolver {
     if (!context.user) {
       throw new Error("Vous devez être authentifié");
     }
-      // On utilise ici findOne afin de pouvoir accéder à Option et récupérer la relation
-      const user = await User.findOne({
-        where: { email: context.user.email },
-        relations: ["address"],
-      }) as User;
-      return user;
+    // On utilise ici findOne afin de pouvoir accéder à Option et récupérer la relation
+    const user = (await User.findOne({
+      where: { email: context.user.email },
+      relations: ["address"],
+    })) as User;
+    return user;
   }
 
   @Mutation(() => Boolean)
@@ -358,12 +358,12 @@ export class UserResolver {
   // Mutation pour enregistrer une adresse de facturation dans les détails du compte
   @Mutation(() => Address)
   @UseMiddleware(IsCurrentUserOrAdmin)
-  async createNewAddress(
-    @Arg("data") new_address: CreateNewAddressInput
+  async createOrUpdateAddress(
+    @Arg("data") createOrUpdateAddress: CreateOrUpdateAddressInput
   ): Promise<Address> {
     try {
       const user = await User.findOne({
-        where: { id: new_address.userId },
+        where: { id: createOrUpdateAddress.userId },
         relations: ["address"],
       });
 
@@ -371,18 +371,27 @@ export class UserResolver {
         throw new Error("Utilisateur introuvable");
       }
 
-      const newAddress = Address.create({
-        street: new_address.street,
-        city: new_address.city,
-        zipcode: new_address.zipcode,
-        country: new_address.country,
-      });
+      if (user.address) {
+        user.address.street = createOrUpdateAddress.street;
+        user.address.city = createOrUpdateAddress.city;
+        user.address.zipcode = createOrUpdateAddress.zipcode;
+        user.address.country = createOrUpdateAddress.country;
 
-      user.address = newAddress;
+        await Address.save(user.address);
+        return user.address;
+      } else {
+        const newAddress = Address.create({
+          street: createOrUpdateAddress.street,
+          city: createOrUpdateAddress.city,
+          zipcode: createOrUpdateAddress.zipcode,
+          country: createOrUpdateAddress.country,
+        });
 
-      await User.save(user);
+        user.address = newAddress;
+        await User.save(user);
 
-      return newAddress;
+        return newAddress;
+      }
     } catch (error) {
       console.error("Erreur lors de la création d'adresse :", error);
       throw new Error("Impossible de créer l'adresse de facturation.");

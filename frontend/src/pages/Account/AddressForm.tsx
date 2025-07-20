@@ -1,6 +1,6 @@
 import {
-  CreateNewAddressInput,
-  useCreateNewAddressMutation,
+  CreateOrUpdateAddressInput,
+  useCreateOrUpdateAddressMutation,
   useWhoamiQuery,
 } from "@/generated/graphql-types";
 import { GET_USER_INFO } from "@/graphql/queries";
@@ -26,7 +26,7 @@ function AddressForm({ userAddress, setShowAddressForm }: AddressFormProps) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateNewAddressInput>({
+  } = useForm<CreateOrUpdateAddressInput>({
     defaultValues: {
       street: userAddress?.street || "",
       zipcode: userAddress?.zipcode || "",
@@ -35,10 +35,10 @@ function AddressForm({ userAddress, setShowAddressForm }: AddressFormProps) {
     },
   });
 
-  const [createNewAddressMutation] = useCreateNewAddressMutation();
+  const [createOrUpdateAddress] = useCreateOrUpdateAddressMutation();
 
-  const onSubmit: SubmitHandler<CreateNewAddressInput> = async (data) => {
-    await createNewAddressMutation({
+  const onSubmit: SubmitHandler<CreateOrUpdateAddressInput> = async (data) => {
+    await createOrUpdateAddress({
       variables: {
         data: {
           userId: userId,
@@ -49,7 +49,7 @@ function AddressForm({ userAddress, setShowAddressForm }: AddressFormProps) {
         },
       },
       onCompleted: async () => {
-        toast.success("Vous avez ajouté une nouvelle adresse de facturation !");
+        toast.success("Votre adresse de facturation a été enregistrée avec succès.");
         await client.refetchQueries({ include: [GET_USER_INFO] });
         setShowAddressForm(false);
       },

@@ -4,11 +4,15 @@ import { Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 
 type MenuProps = {
-  setShowPasswordForm: Dispatch<SetStateAction<boolean>>;
+  setShowForms: Dispatch<SetStateAction<boolean>>[];
 };
 
-function Menu({ setShowPasswordForm }: MenuProps) {
+function Menu({ setShowForms }: MenuProps) {
   const navigate = useNavigate();
+
+  const resetForms = () => {
+    setShowForms.forEach((setForm) => setForm(false));
+  };
 
   const [logout] = useLogoutMutation({
     refetchQueries: [{ query: WHO_AM_I, fetchPolicy: "no-cache" }],
@@ -25,7 +29,9 @@ function Menu({ setShowPasswordForm }: MenuProps) {
       <div
         className="text-green-900 cursor-pointer"
         onClick={() => {
-          setShowPasswordForm(false);
+          {
+            resetForms();
+          }
           navigate("/moncompte");
         }}
       >

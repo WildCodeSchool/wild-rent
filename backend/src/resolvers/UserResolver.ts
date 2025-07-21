@@ -14,7 +14,11 @@ import {
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
-import { UpdateOrCreateUserInput, UserInput } from "../inputs/UserInput";
+import {
+  UpdateOrCreateUserInput,
+  UpdateUserInput,
+  UserInput,
+} from "../inputs/UserInput";
 import { LoginInput } from "../inputs/LoginInput";
 import { ContextType } from "../auth";
 import { Resend } from "resend";
@@ -71,6 +75,21 @@ class GetUserInfo {
 
   @Field(() => Address, { nullable: true })
   address: Address;
+}
+
+@ObjectType()
+class UserInfo {
+  @Field()
+  first_name: string;
+
+  @Field()
+  last_name: string;
+
+  @Field()
+  email: string;
+
+  @Field()
+  phone_number: string;
 }
 
 @Resolver(User)
@@ -393,5 +412,22 @@ export class UserResolver {
       console.error("Erreur lors de la création d'adresse :", error);
       throw new Error("Impossible de créer l'adresse de facturation.");
     }
+  }
+
+  @Mutation(() => UserInfo)
+  @UseMiddleware(IsCurrentUserOrAdmin)
+  async updateUser(
+    @Arg("data") updateUser: UpdateUserInput
+  ): Promise<UserInfo> {
+    let user = await User.findOneByOrFail({ id: updateUser.userId });
+
+    user.first_name = updateUser.first_name;
+    user.last_name = updateUser.last_name;
+    user.email = updateUser.email;
+    user.phone_number = updateUser.phone_number;
+
+    await user.save();
+
+    return user;
   }
 }

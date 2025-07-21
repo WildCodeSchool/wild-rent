@@ -5,7 +5,7 @@ import {
 } from "@/generated/graphql-types";
 import { GET_USER_INFO } from "@/graphql/queries";
 import { client } from "@/main";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, JSX, SetStateAction } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -19,9 +19,13 @@ type AddressFormProps = {
   setShowAddressForm: Dispatch<SetStateAction<boolean>>;
 };
 
-function AddressForm({ userAddress, setShowAddressForm }: AddressFormProps) {
+function AddressForm({
+  userAddress,
+  setShowAddressForm,
+}: AddressFormProps): JSX.Element {
   const whoami = useWhoamiQuery();
   const userId = whoami.data?.whoami?.id;
+
   const {
     register,
     handleSubmit,
@@ -49,12 +53,14 @@ function AddressForm({ userAddress, setShowAddressForm }: AddressFormProps) {
         },
       },
       onCompleted: async () => {
-        toast.success("Votre adresse de facturation a été enregistrée avec succès.");
+        toast.success(
+          "Votre adresse de facturation a été enregistrée avec succès."
+        );
         await client.refetchQueries({ include: [GET_USER_INFO] });
         setShowAddressForm(false);
       },
       onError: (error) => {
-        console.log("error", error);
+        console.error("error", error);
       },
     });
   };
@@ -62,53 +68,61 @@ function AddressForm({ userAddress, setShowAddressForm }: AddressFormProps) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mt-2 space-y-2 w-3/4 max-w-md"
+      className="space-y-4 mt-4 max-w-md"
     >
-      <input
-        type="text"
-        placeholder="Rue"
-        {...register("street", { required: true })}
-        className="border rounded w-full p-2"
-        name="street"
-      />
-      {errors.street && (
-        <span className="text-red-500 text-sm">Ce champ est requis</span>
-      )}
-      <input
-        type="text"
-        placeholder="Ville"
-        {...register("city", { required: true })}
-        className="border rounded w-full p-2"
-        name="city"
-      />
-      {errors.city && (
-        <span className="text-red-500 text-sm">Ce champ est requis</span>
-      )}
-      <input
-        type="text"
-        placeholder="Code postal"
-        {...register("zipcode", { required: true })}
-        className="border rounded w-full p-2"
-        name="zipcode"
-      />
-      {errors.zipcode && (
-        <span className="text-red-500 text-sm">Ce champ est requis</span>
-      )}
-      <input
-        type="text"
-        placeholder="Pays"
-        {...register("country", { required: true })}
-        className="border rounded w-full p-2"
-        name="country"
-      />
-      {errors.country && (
-        <span className="text-red-500 text-sm">Ce champ est requis</span>
-      )}
+      <div>
+        <label className="block text-sm text-gray-600">Rue</label>
+        <input
+          type="text"
+          {...register("street", { required: true })}
+          className="w-full border rounded px-3 py-2"
+        />
+        {errors.street && (
+          <span className="text-red-500 text-sm">Ce champ est requis</span>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm text-gray-600">Ville</label>
+        <input
+          type="text"
+          {...register("city", { required: true })}
+          className="w-full border rounded px-3 py-2"
+        />
+        {errors.city && (
+          <span className="text-red-500 text-sm">Ce champ est requis</span>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm text-gray-600">Code postal</label>
+        <input
+          type="text"
+          {...register("zipcode", { required: true })}
+          className="w-full border rounded px-3 py-2"
+        />
+        {errors.zipcode && (
+          <span className="text-red-500 text-sm">Ce champ est requis</span>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm text-gray-600">Pays</label>
+        <input
+          type="text"
+          {...register("country", { required: true })}
+          className="w-full border rounded px-3 py-2"
+        />
+        {errors.country && (
+          <span className="text-red-500 text-sm">Ce champ est requis</span>
+        )}
+      </div>
+
       <button
         type="submit"
-        className="bg-green-700 text-white px-4 py-2 rounded cursor-pointer"
+        className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 cursor-pointer"
       >
-        Enregistrer l'adresse
+        Valider
       </button>
     </form>
   );

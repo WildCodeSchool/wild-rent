@@ -35,7 +35,7 @@ function Menu({ setShowForms }: MenuProps) {
           navigate("/moncompte");
         }}
       >
-        Mes informations personnelles
+        Mes informations
       </div>
       <div
         className="text-green-900 cursor-pointer"

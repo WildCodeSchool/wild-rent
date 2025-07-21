@@ -7,9 +7,9 @@ export const REGISTER = gql`
 `;
 
 export const LOGIN = gql`
- mutation Login($data: LoginInput!) {
-  login(data: $data) 
-}
+  mutation Login($data: LoginInput!) {
+    login(data: $data)
+  }
 `;
 
 export const LOGOUT = gql`
@@ -186,6 +186,17 @@ export const CREATE_OR_UPDATE_ADDRESS = gql`
       city
       zipcode
       country
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($data: UpdateUserInput!) {
+    updateUser(data: $data) {
+      first_name
+      last_name
+      email
+      phone_number
     }
   }
 `;

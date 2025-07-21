@@ -20,6 +20,24 @@ export class UserInput implements Partial<User> {
 }
 
 @InputType()
+export class UpdateUserInput {
+  @Field({ nullable: true })
+  userId: number;
+
+  @Field()
+  first_name: string;
+
+  @Field()
+  last_name: string;
+
+  @Field()
+  email: string;
+
+  @Field()
+  phone_number: string;
+}
+
+@InputType()
 export class UpdateOrCreateUserInput {
   @Field({ nullable: true })
   id: number;

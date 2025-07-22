@@ -15,6 +15,7 @@ import {
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
 import {
+  ChangePasswordInput,
   UpdateOrCreateUserInput,
   UpdateUserInput,
   UserInput,
@@ -429,5 +430,35 @@ export class UserResolver {
     await user.save();
 
     return user;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(IsCurrentUserOrAdmin)
+  async changePassword(
+    @Arg("data") data: ChangePasswordInput,
+    @Ctx() context: ContextType
+  ): Promise<boolean> {
+    const user = await User.findOneByOrFail({ id: context.user?.id });
+
+    const isPasswordValid = await argon2.verify(
+      user.hashed_password,
+      data.old_password
+    );
+
+    if (isPasswordValid && data.new_password === data.password_confirmation) {
+      user.hashed_password = await argon2.hash(data.new_password);
+      await user.save();
+      return true;
+    }
+
+    if (!isPasswordValid) {
+      throw new Error("Ancien mot de passe incorrect");
+    }
+
+    if (data.new_password !== data.password_confirmation) {
+      throw new Error("Les mots de passe ne correspondent pas");
+    }
+
+    return false;
   }
 }

@@ -69,3 +69,15 @@ export class UpdateOrCreateUserInput {
   @Field({ nullable: true })
   created_at: Date;
 }
+
+@InputType()
+export class ChangePasswordInput {
+  @Field()
+  old_password: string;
+
+  @Field()
+  new_password: string;
+
+  @Field()
+  password_confirmation: string;
+}

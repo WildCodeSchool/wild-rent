@@ -98,11 +98,11 @@ function AddressForm({
         <label className="block text-sm text-gray-600">Code postal</label>
         <input
           type="text"
-          {...register("zipcode", { required: true })}
+          {...register("zipcode", { required: true,  minLength: 5, pattern: /^\d{5}$/ })}
           className="w-full border rounded px-3 py-2"
         />
         {errors.zipcode && (
-          <span className="text-red-500 text-sm">Ce champ est requis</span>
+          <span className="text-red-500 text-sm">Veuillez rentrer un code postal valide (ex. : 75011)</span>
         )}
       </div>
 

@@ -1,7 +1,6 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import { Register } from "./pages/Register";
-import { Login } from "./pages/Login";
 import Home from "./pages/Home";
 import ProductsByCategories from "./pages/ProductsByCategories";
 import ProductDetails from "./pages/ProductDetails";
@@ -18,6 +17,7 @@ import ConfirmRegistration from "./pages/ConfirmRegistration";
 import AdminPendingUsers from "./pages/AdminPendingUsers";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
+import Login from "./pages/Login";
 
 function App() {
   return (

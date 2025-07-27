@@ -118,7 +118,11 @@ export const AccountDetails = () => {
                 )}
               </div>
 
-              {showPasswordForm && <PasswordForm />}
+              {showPasswordForm && (
+                <PasswordForm
+                  setShowPasswordForm={setShowPasswordForm}
+                />
+              )}
             </section>
 
             <section>

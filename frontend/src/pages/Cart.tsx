@@ -4,21 +4,20 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
   useCreateNewOrderMutation,
-  useGetUserInfoQuery,
   useUpdateProductOptionQuantityMutation,
 } from "../generated/graphql-types";
+import { useUser } from "@/hooks/useUser";
 
-const cart = () => {
+const Cart = () => {
   const [createOrderMutation] = useCreateNewOrderMutation();
   const [updateProductOptionQuantityMutation] =
     useUpdateProductOptionQuantityMutation();
+  const { user } = useUser();
   const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [duration, setDuration] = useState<number>(0);
   const [datesValidated, setDatesValidated] = useState(false);
-
-  const { loading, error, data } = useGetUserInfoQuery();
 
   const total = items
     .map((item: any) => item.price * item.quantity * duration)
@@ -80,7 +79,7 @@ const cart = () => {
             quantity: item.quantity,
             productOptionId: item.selectedOption.id,
           })),
-          userId: Number(data?.getUserInfo?.id) ?? 0,
+          userId: user?.id ?? 0,
         },
       },
     });
@@ -107,15 +106,6 @@ const cart = () => {
     localStorage.removeItem("rentalDuration");
     window.location.reload();
   };
-
-  if (loading) return <p>Loading...</p>;
-  if (error)
-    return (
-      <>
-        <h2>An error occured</h2>
-        <p>Error : {error.message}</p>
-      </>
-    );
 
   return (
     <>
@@ -253,4 +243,4 @@ const cart = () => {
   );
 };
 
-export default cart;
+export default Cart;

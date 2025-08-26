@@ -3,8 +3,9 @@ import { useLoginMutation } from "../generated/graphql-types";
 import { WHO_AM_I } from "../graphql/queries";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/hooks/useUser";
+import { JSX } from "react";
 
-export const Login = () => {
+function Login(): JSX.Element {
   const { refetchUser } = useUser();
   const navigate = useNavigate();
   const [login] = useLoginMutation({
@@ -15,7 +16,7 @@ export const Login = () => {
     },
   });
 
-  type Inputs = {
+  type LoginData = {
     email: string;
     password: string;
   };
@@ -24,9 +25,9 @@ export const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<LoginData>();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<LoginData> = async (data) => {
     login({
       variables: { data: { email: data.email, password: data.password } },
     });
@@ -44,8 +45,8 @@ export const Login = () => {
             <label className="block text-gray-600">Email</label>
             <input
               type="email"
-              placeholder="Email"
               defaultValue="jonsnow@wild-rent.com"
+              placeholder="Email"
               {...register("email", { required: true })}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 "
             />
@@ -58,8 +59,8 @@ export const Login = () => {
             <label className="block text-gray-600">Mot de passe</label>
             <input
               type="password"
-              placeholder="Mot de passe"
               defaultValue="password"
+              placeholder="Mot de passe"
               {...register("password", { required: true })}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
@@ -90,3 +91,5 @@ export const Login = () => {
     </div>
   );
 };
+
+export default Login;

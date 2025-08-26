@@ -10,10 +10,16 @@ import {
   Int,
   ObjectType,
   Field,
+  UseMiddleware,
 } from "type-graphql";
 import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
-import { UpdateOrCreateUserInput, UserInput } from "../inputs/UserInput";
+import {
+  ChangePasswordInput,
+  UpdateOrCreateUserInput,
+  UpdateUserInput,
+  UserInput,
+} from "../inputs/UserInput";
 import { LoginInput } from "../inputs/LoginInput";
 import { ContextType } from "../auth";
 import { Resend } from "resend";
@@ -22,11 +28,10 @@ import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
 import Cookies from "cookies";
 import { Address } from "../entities/Address";
-
-
+import { IsCurrentUserOrAdmin } from "../middleware/AuthChecker";
+import { CreateOrUpdateAddressInput } from "../inputs/AddressInput";
 
 const baseUrl = "http://localhost:7000/confirmation/";
-
 
 @ObjectType()
 class PaginatedUsers {
@@ -37,23 +42,88 @@ class PaginatedUsers {
   totalUsersLength: number;
 }
 
+@ObjectType()
+class WhoAmI {
+  @Field(() => Int)
+  id: number;
+
+  @Field()
+  email: string;
+
+  @Field()
+  role: string;
+}
+
+@ObjectType()
+class GetUserInfo {
+  @Field()
+  first_name: string;
+
+  @Field()
+  last_name: string;
+
+  @Field()
+  email: string;
+
+  @Field()
+  role: string;
+
+  @Field()
+  phone_number: string;
+
+  @Field()
+  created_at: string;
+
+  @Field(() => Address, { nullable: true })
+  address: Address;
+}
+
+@ObjectType()
+class UserInfo {
+  @Field()
+  first_name: string;
+
+  @Field()
+  last_name: string;
+
+  @Field()
+  email: string;
+
+  @Field()
+  phone_number: string;
+}
+
 @Resolver(User)
 export class UserResolver {
   @Query(() => PaginatedUsers)
   @Authorized()
-  async getAllUsers( @Arg("offset") offset: number,
-  @Arg("limit") limit: number,  @Arg("role", { nullable: true }) role?: string,  @Arg("search", { nullable: true }) search?: string, ) {
-    const query = User.createQueryBuilder("user").leftJoinAndSelect("user.address", "address");
-    if (role){
-      query.andWhere("user.role = :role", {role})
+  async getAllUsers(
+    @Arg("offset") offset: number,
+    @Arg("limit") limit: number,
+    @Arg("role", { nullable: true }) role?: string,
+    @Arg("search", { nullable: true }) search?: string
+  ) {
+    const query = User.createQueryBuilder("user").leftJoinAndSelect(
+      "user.address",
+      "address"
+    );
+    if (role) {
+      query.andWhere("user.role = :role", { role });
     }
-    if (search){
-    query.andWhere("user.first_name ILIKE :search OR user.last_name ILIKE :search OR user.email ILIKE :search", { search: `%${search}%`})
+    if (search) {
+      query.andWhere(
+        "user.first_name ILIKE :search OR user.last_name ILIKE :search OR user.email ILIKE :search",
+        { search: `%${search}%` }
+      );
     }
-    const totalUsersLength = await query.getCount()
-    const users = await query.orderBy("user.id", "ASC").skip(offset).take(limit).getMany()
+    const totalUsersLength = await query.getCount();
+    const users = await query
+      .orderBy("user.id", "ASC")
+      .skip(offset)
+      .take(limit)
+      .getMany();
 
-    return {users: users, totalUsersLength: totalUsersLength};
+    return { users: users, totalUsersLength: totalUsersLength };
   }
 
   @Mutation(() => String)
@@ -124,20 +194,23 @@ export class UserResolver {
   }
 
   // Sert pour le front afin de récupérer l'utilisateur courant (via le contexte) sans faire de requête à la BDD
-  @Query(() => User, { nullable: true })
+  @Query(() => WhoAmI, { nullable: true })
   async whoami(@Ctx() context: ContextType): Promise<User | null | undefined> {
     return context.user;
   }
 
   // Sert pour récupérer les données de l'utilisateur connecté
-  @Query(() => User, { nullable: true })
-  async getUserInfo(@Ctx() context: ContextType): Promise<User | null> {
-    if (context.user) {
-      const user = await User.findOneByOrFail({ email: context.user.email });
-      return user;
-    } else {
-      return null;
+  @Query(() => GetUserInfo)
+  async getUserInfo(@Ctx() context: ContextType): Promise<User> {
+    if (!context.user) {
+      throw new Error("Vous devez être authentifié");
     }
+    // On utilise ici findOne afin de pouvoir accéder à Option et récupérer la relation
+    const user = (await User.findOne({
+      where: { email: context.user.email },
+      relations: ["address"],
+    })) as User;
+    return user;
   }
 
   @Mutation(() => Boolean)
@@ -165,57 +238,70 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-    async deleteUser(@Arg("id") id: number, @Ctx() context: any) {
-      if(context.user.role !== "ADMIN" && context.user.id !== id){
-          throw new Error("Unauthorized")
-      }
-      const result = await User.delete(id);
-      if (result.affected === 1) {
-        return "L'utilisateur a bien été supprimé";
-      } else {
-        throw new Error("L'utilisateur n'a pas été trouvé");
-      }
+  async deleteUser(@Arg("id") id: number, @Ctx() context: any) {
+    if (context.user.role !== "ADMIN" && context.user.id !== id) {
+      throw new Error("Unauthorized");
+    }
+    const result = await User.delete(id);
+    if (result.affected === 1) {
+      return "L'utilisateur a bien été supprimé";
+    } else {
+      throw new Error("L'utilisateur n'a pas été trouvé");
+    }
+  }
+
+  @Mutation(() => User)
+  async editUser(
+    @Arg("data") updateUserData: UpdateOrCreateUserInput,
+    @Ctx() context: any
+  ) {
+    if (
+      context.user.role !== "ADMIN" &&
+      context.user.email !== updateUserData.email
+    ) {
+      throw new Error("Unauthorized");
+    }
+    let userToUpdate = await User.findOne({
+      where: { id: updateUserData.id },
+      relations: ["address"],
+    });
+    if (!userToUpdate) {
+      throw new Error("User not found");
     }
 
+    // Modifie les champs users
+    userToUpdate.first_name = updateUserData.first_name;
+    userToUpdate.last_name = updateUserData.last_name;
+    userToUpdate.email = updateUserData.email;
+    userToUpdate.phone_number = updateUserData.phone_number;
+    userToUpdate.created_at = userToUpdate.created_at;
+    userToUpdate.role = updateUserData.role;
 
-    @Mutation(() => User)
-    async editUser(@Arg("data") updateUserData: UpdateOrCreateUserInput,  @Ctx() context: any) {
-      if(context.user.role !== "ADMIN" && context.user.email !== updateUserData.email){
-          throw new Error("Unauthorized")
-      }
-      let userToUpdate = await User.findOne({where : {id:updateUserData.id},relations:["address"]} )
-      if(!userToUpdate){
-        throw new Error("User not found")
-      }
-
-      // Modifie les champs users
-      userToUpdate.first_name=updateUserData.first_name;
-      userToUpdate.last_name = updateUserData.last_name;
-      userToUpdate.email = updateUserData.email;
-      userToUpdate.phone_number = updateUserData.phone_number;
-      userToUpdate.created_at = userToUpdate.created_at;
-      userToUpdate.role = updateUserData.role
-
-      // Modifie l'adresse
-      if(userToUpdate.address){
-        userToUpdate.address.street = updateUserData.street
-        userToUpdate.address.city = updateUserData.city
-        userToUpdate.address.zipcode = updateUserData.zipcode
-        userToUpdate.address.country = "France"
-        await userToUpdate.address.save()
-      } else {
-        const newAddress = Address.create({street:updateUserData.street, city: updateUserData.city, zipcode: updateUserData.zipcode, country: "France"})
-        await newAddress.save()
-        userToUpdate.address = newAddress
-      }
-
-      await userToUpdate.save()
-
-      return userToUpdate
+    // Modifie l'adresse
+    if (userToUpdate.address) {
+      userToUpdate.address.street = updateUserData.street;
+      userToUpdate.address.city = updateUserData.city;
+      userToUpdate.address.zipcode = updateUserData.zipcode;
+      userToUpdate.address.country = "France";
+      await userToUpdate.address.save();
+    } else {
+      const newAddress = Address.create({
+        street: updateUserData.street,
+        city: updateUserData.city,
+        zipcode: updateUserData.zipcode,
+        country: "France",
+      });
+      await newAddress.save();
+      userToUpdate.address = newAddress;
     }
 
-    @Mutation(() => String)
-    async addUser(@Arg("data") new_user_data: UpdateOrCreateUserInput) {
+    await userToUpdate.save();
+
+    return userToUpdate;
+  }
+
+  @Mutation(() => String)
+  async addUser(@Arg("data") new_user_data: UpdateOrCreateUserInput) {
     const random_code = uuidv4();
     const result = TempUser.save({
       first_name: new_user_data.first_name,
@@ -226,7 +312,7 @@ export class UserResolver {
       city: new_user_data.city,
       zipcode: new_user_data.zipcode,
       random_code: random_code,
-      role: new_user_data.role
+      role: new_user_data.role,
     });
 
     const resend = new Resend(process.env.RESEND_API_KEY);
@@ -252,18 +338,24 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  async addUserConfirmation( @Arg("random_code") random_code: string,
-  @Arg("password") password: string,
-) {
+  async addUserConfirmation(
+    @Arg("random_code") random_code: string,
+    @Arg("password") password: string
+  ) {
     const tempUser = await TempUser.findOneByOrFail({
       random_code: random_code,
     });
-    
-    const hashed_password= await argon2.hash(password)
 
-    const newAddress = Address.create({street:tempUser.street, city: tempUser.city, zipcode: tempUser.zipcode, country: "France"})
-    
-    await newAddress.save()
+    const hashed_password = await argon2.hash(password);
+
+    const newAddress = Address.create({
+      street: tempUser.street,
+      city: tempUser.city,
+      zipcode: tempUser.zipcode,
+      country: "France",
+    });
+
+    await newAddress.save();
 
     const userResult = await User.save({
       first_name: tempUser.first_name,
@@ -272,12 +364,101 @@ export class UserResolver {
       phone_number: tempUser.phone_number,
       hashed_password: hashed_password,
       created_at: new Date(),
-      address: newAddress, 
-      role: tempUser.role
+      address: newAddress,
+      role: tempUser.role,
     });
     await tempUser.remove();
 
-    return userResult
+    return userResult;
   }
-  
+
+  // Mutation pour enregistrer une adresse de facturation dans les détails du compte
+  @Mutation(() => Address)
+  @UseMiddleware(IsCurrentUserOrAdmin)
+  async createOrUpdateAddress(
+    @Arg("data") createOrUpdateAddress: CreateOrUpdateAddressInput
+  ): Promise<Address> {
+    try {
+      const user = await User.findOne({
+        where: { id: createOrUpdateAddress.userId },
+        relations: ["address"],
+      });
+
+      if (!user) {
+        throw new Error("Utilisateur introuvable");
+      }
+
+      if (user.address) {
+        user.address.street = createOrUpdateAddress.street;
+        user.address.city = createOrUpdateAddress.city;
+        user.address.zipcode = createOrUpdateAddress.zipcode;
+        user.address.country = createOrUpdateAddress.country;
+
+        await Address.save(user.address);
+        return user.address;
+      } else {
+        const newAddress = Address.create({
+          street: createOrUpdateAddress.street,
+          city: createOrUpdateAddress.city,
+          zipcode: createOrUpdateAddress.zipcode,
+          country: createOrUpdateAddress.country,
+        });
+
+        user.address = newAddress;
+        await User.save(user);
+
+        return newAddress;
+      }
+    } catch (error) {
+      console.error("Erreur lors de la création d'adresse :", error);
+      throw new Error("Impossible de créer l'adresse de facturation.");
+    }
+  }
+
+  @Mutation(() => UserInfo)
+  @UseMiddleware(IsCurrentUserOrAdmin)
+  async updateUser(
+    @Arg("data") updateUser: UpdateUserInput
+  ): Promise<UserInfo> {
+    let user = await User.findOneByOrFail({ id: updateUser.userId });
+
+    user.first_name = updateUser.first_name;
+    user.last_name = updateUser.last_name;
+    user.email = updateUser.email;
+    user.phone_number = updateUser.phone_number;
+
+    await user.save();
+
+    return user;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(IsCurrentUserOrAdmin)
+  async changePassword(
+    @Arg("data") data: ChangePasswordInput,
+    @Ctx() context: ContextType
+  ): Promise<boolean> {
+    const user = await User.findOneByOrFail({ id: context.user?.id });
+
+    const isPasswordValid = await argon2.verify(
+      user.hashed_password,
+      data.old_password
+    );
+
+    if (isPasswordValid && data.new_password === data.password_confirmation) {
+      user.hashed_password = await argon2.hash(data.new_password);
+      await user.save();
+      return true;
+    }
+
+    if (!isPasswordValid) {
+      throw new Error("Ancien mot de passe incorrect");
+    }
+
+    if (data.new_password !== data.password_confirmation) {
+      throw new Error("Les mots de passe ne correspondent pas");
+    }
+
+    return false;
+  }
 }

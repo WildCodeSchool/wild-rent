@@ -50,12 +50,12 @@ const ConfirmRegistration = () => {
         navigate("/login");
       } else {
         toast.error(
-          "Votre enregistrement n'a pas pu être finalisé, veuillez contacter notre service client"
+          "Votre enregistrement n'a pas pu être finalisé, veuillez contacter notre service client."
         );
       }
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Failed to submit the form. Please try again.");
+      toast.error("Il y a eu une erreur lors de la soumission du formulaire. Veuillez réessayer.");
     }
   };
 

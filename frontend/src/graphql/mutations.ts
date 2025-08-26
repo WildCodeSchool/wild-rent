@@ -7,9 +7,9 @@ export const REGISTER = gql`
 `;
 
 export const LOGIN = gql`
- mutation Login($data: LoginInput!) {
-  login(data: $data) 
-}
+  mutation Login($data: LoginInput!) {
+    login(data: $data)
+  }
 `;
 
 export const LOGOUT = gql`
@@ -176,5 +176,33 @@ export const DELETE_PRODUCT_BY_ID = gql`
 export const DELETE_TEMP_USER = gql`
   mutation DeleteTempUser($deleteTempUserId: Float!) {
     deleteTempUser(id: $deleteTempUserId)
+  }
+`;
+
+export const CREATE_OR_UPDATE_ADDRESS = gql`
+  mutation CreateOrUpdateAddress($data: CreateOrUpdateAddressInput!) {
+    createOrUpdateAddress(data: $data) {
+      street
+      city
+      zipcode
+      country
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  mutation UpdateUser($data: UpdateUserInput!) {
+    updateUser(data: $data) {
+      first_name
+      last_name
+      email
+      phone_number
+    }
+  }
+`;
+
+export const CHANGE_PASSWORD = gql`
+  mutation ChangePassword($data: ChangePasswordInput!) {
+    changePassword(data: $data)
   }
 `;

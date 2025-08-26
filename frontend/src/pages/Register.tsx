@@ -13,7 +13,6 @@ export const Register = () => {
     formState: { errors },
   } = useForm<UserInput>();
   const onSubmit: SubmitHandler<UserInput> = (data) => {
-    console.log("data", data);
     registerMutation({
       variables: {
         data: {

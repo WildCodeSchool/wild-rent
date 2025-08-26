@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import { expect, test, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { Login } from "../pages/Login";
+import Login from "../pages/Login";
 import { UserProvider } from "@/context/UserContext";
 
 // Pour la doc se référer au fichier Register.test.tsx

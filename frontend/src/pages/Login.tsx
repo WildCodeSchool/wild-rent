@@ -46,6 +46,7 @@ function Login(): JSX.Element {
             <input
               type="email"
               defaultValue="jonsnow@wild-rent.com"
+              placeholder="Email"
               {...register("email", { required: true })}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 "
             />
@@ -59,6 +60,7 @@ function Login(): JSX.Element {
             <input
               type="password"
               defaultValue="password"
+              placeholder="Mot de passe"
               {...register("password", { required: true })}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             />

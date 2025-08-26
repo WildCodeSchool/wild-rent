@@ -19,7 +19,9 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 }) => {
   await page.goto(`${baseUrl}/produit/1`);
 
-  //await page.getByRole("combobox").selectOption('{"id":1,"size":"150 cm"}');
+  await page
+    .getByRole("combobox")
+    .selectOption('{"id":1,"size":"150 cm","total_quantity":10}');
 
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
 
@@ -32,8 +34,8 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
   await expect(dateTextbox).toBeVisible();
   await dateTextbox.click();
 
-  await page.getByRole("option", { name: date16 }).click();
-  await page.getByRole("option", { name: date19 }).click();
+  await page.getByRole("gridcell", { name: date16 }).click();
+  await page.getByRole("gridcell", { name: date19 }).click();
 
   await page.getByRole("button", { name: "Valider les dates" }).click();
 

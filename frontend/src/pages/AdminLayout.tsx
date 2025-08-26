@@ -3,11 +3,13 @@ import { AdminNavbar } from "../components/AdminNavbar";
 
 export const AdminLayout = () => {
   return (
-    <div className="grid grid-cols-[auto_1fr] h-screen">
-      <AdminNavbar />
-      <main className="overflow-auto p-4 bg-gray-50">
-        <Outlet />
-      </main>
+    <div className="py-5">
+      <div className="grid grid-cols-[auto_1fr] h-full">
+        <AdminNavbar />
+        <main className="overflow-auto p-4 bg-gray-50">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 };

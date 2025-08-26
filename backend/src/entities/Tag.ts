@@ -25,7 +25,7 @@ export class Tag extends BaseEntity {
   @ManyToOne(() => Category, (category) => category.tags)
   category: Category;
 
-  @Field(()=>[Product])
+  @Field(() => [Product])
   @ManyToMany(() => Product, (product) => product.tags)
   products: Product[];
 }

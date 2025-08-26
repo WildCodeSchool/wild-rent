@@ -1,3 +1,4 @@
+import { normalizeString } from "@/assets/utils";
 import { Link } from "react-router-dom";
 
 export interface categoryProps {
@@ -6,11 +7,19 @@ export interface categoryProps {
   image?: string;
 }
 
-const imageBasePath = "/assets/images/categories/"
+const imageBasePath = "/assets/images/categories/";
 
-function CategoryCard({ title, image }: categoryProps) {
+function CategoryCard({ title, id, image }: categoryProps) {
   return (
-    <Link to={`products/category/${title}`} className="drop-shadow-sm">
+    <Link
+      to={`/products/category/${normalizeString(title)}`}
+      className="drop-shadow-sm"
+      state={{
+        id: id,
+        title: title,
+        image: image,
+      }}
+    >
       <div className="drop-shadow-md">
         <div className="relative z-10 w-[280px] overflow-hidden p-2 px-4 py-6 text-center rounded-md font-title font-semibold text-xl">
           <img

@@ -10,6 +10,8 @@ services:
       interval: 1s
       timeout: 2s
       retries: 100
+    volumes:
+      - db-data:/var/lib/postgresql/data
   adminer:
     image: adminer
     depends_on:

@@ -6,11 +6,8 @@ const Footer = () => {
       <Link to={"/contact"} className="text-white hover:underline m-6">
         Contact
       </Link>
-      <Link
-        to={"/conditionsdutilisation"}
-        className="text-white hover:underline"
-      >
-        Conditions d'utilisation
+      <Link to={"/RGPD"} className="text-white hover:underline">
+        RGPD
       </Link>
       <Link to={"/mentionslegales"} className="text-white hover:underline">
         Mentions légales

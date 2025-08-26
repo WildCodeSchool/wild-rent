@@ -26,9 +26,14 @@ export class ProductOption extends BaseEntity {
   total_quantity: number;
 
   @Field(() => Product)
-  @ManyToOne(() => Product, (product) => product.product_options)
+  @ManyToOne(() => Product, (product) => product.product_options, {
+    onDelete: "CASCADE",
+  })
   product: Product;
 
-  @OneToMany(() => ProductInOrder, (product_in_order) => product_in_order.productOption)
+  @OneToMany(
+    () => ProductInOrder,
+    (product_in_order) => product_in_order.productOption
+  )
   orders: ProductInOrder[];
 }

@@ -1,17 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useGetProductByIdQuery } from "../generated/graphql-types";
 import { useContext, useState } from "react";
-import "react-datepicker/dist/react-datepicker.css";
 import { cartContext } from "../context/CartContext";
-
-export const calculateDuration = (start: Date | null, end: Date | null) => {
-  if (start && end) {
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  } else {
-    return 0;
-  }
-};
 
 const ProductDetails = () => {
   const { id }: any = useParams();
@@ -107,9 +97,9 @@ const ProductDetails = () => {
               Niveau: Intermédiaire
             </div>
           </div>
-          <div className="flex mt-3 md:flex-col md:mt-0 justify-evenly">
+          <div className="flex mt-3 md:flex-col justify-evenly  ">
             {/* Pricing and CTA */}
-            <div className="mb-0 bg-gray-100 p-3 rounded-lg shadow-sm md:mb-4">
+            <div className=" bg-gray-100 p-3 rounded-lg shadow-sm">
               <div className="text-xl font-bold">{products?.price}€ / jour</div>
             </div>
 
@@ -121,7 +111,7 @@ const ProductDetails = () => {
                 };
                 addItemToCart(productWithOptions);
               }}
-              className="h-15 mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
+              className="h-15 md:mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
             >
               Ajouter au panier
             </button>

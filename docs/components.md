@@ -26,4 +26,4 @@ Tailwind
 
 Meilisearch (recherche)
 
-Stripe (paiement)
+Stripe  (paiement)

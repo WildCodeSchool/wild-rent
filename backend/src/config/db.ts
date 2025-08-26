@@ -10,13 +10,18 @@ import { Picture } from "../entities/Picture";
 import { Product } from "../entities/Product";
 import { User } from "../entities/User";
 import { Tag } from "../entities/Tag";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const dataSource = new DataSource({
   type: "postgres",
-  host: "db",
+  host: process.env.CI ? "localhost" : "db",
   username: "admin",
-  database: "db_wild_rent",
   password: "password",
+  database: "db_wild_rent",
+  /* username: process.env.POSTGRES_USER,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD, */
   entities: [
     User,
     ProductInOrder,
@@ -28,8 +33,10 @@ export const dataSource = new DataSource({
     Category,
     Picture,
     Product,
-    Tag
+    Tag,
   ],
   synchronize: true,
   logging: ["error", "query"],
 });
+
+console.log("host:",  process.env.CI ? "localhost" : "db", "username:", process.env.POSTGRES_USER, "database:", process.env.POSTGRES_DB, "password:", process.env.POSTGRES_PASSWORD )

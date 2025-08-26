@@ -7,9 +7,9 @@ export const REGISTER = gql`
 `;
 
 export const LOGIN = gql`
-  mutation Login($data: LoginInput!) {
-    login(data: $data)
-  }
+ mutation Login($data: LoginInput!) {
+  login(data: $data) 
+}
 `;
 
 export const LOGOUT = gql`
@@ -46,6 +46,10 @@ export const CREATE_PRODUCT = gql`
         id
         url
       }
+      tags {
+        id
+        label
+      }
     }
   }
 `;
@@ -81,5 +85,96 @@ export const UPDATE_PRODUCT_OPTION_QUANTITY = gql`
       id
       total_quantity
     }
+  }
+`;
+
+export const DELETE_USER = gql`
+  mutation DeleteUser($deleteUserId: Float!) {
+    deleteUser(id: $deleteUserId)
+  }
+`;
+
+export const EDIT_USER = gql`
+  mutation EditUser($data: UpdateOrCreateUserInput!) {
+    editUser(data: $data) {
+      address {
+        city
+        country
+        street
+        zipcode
+      }
+      email
+      created_at
+      first_name
+      id
+      last_name
+      phone_number
+      role
+    }
+  }
+`;
+
+export const ADD_USER = gql`
+  mutation AddUser($data: UpdateOrCreateUserInput!) {
+    addUser(data: $data)
+  }
+`;
+
+export const ADD_USER_CONFIRMATION = gql`
+  mutation AddUserConfirmation($password: String!, $randomCode: String!) {
+    addUserConfirmation(password: $password, random_code: $randomCode) {
+      email
+      first_name
+      last_name
+      id
+      role
+      address {
+        city
+        country
+        street
+        zipcode
+      }
+    }
+  }
+`;
+
+export const MODIFY_PRODUCT = gql`
+  mutation ModifyProduct($data: ProductInput!) {
+    modifyProductById(data: $data) {
+      id
+      name
+      description
+      price
+      pictures {
+        id
+        url
+      }
+      product_options {
+        id
+        size
+        total_quantity
+      }
+      created_at
+      category {
+        id
+        title
+      }
+      tags {
+        label
+        id
+      }
+    }
+  }
+`;
+
+export const DELETE_PRODUCT_BY_ID = gql`
+  mutation DeleteProductById($id: Float!) {
+    deleteProductById(id: $id)
+  }
+`;
+
+export const DELETE_TEMP_USER = gql`
+  mutation DeleteTempUser($deleteTempUserId: Float!) {
+    deleteTempUser(id: $deleteTempUserId)
   }
 `;

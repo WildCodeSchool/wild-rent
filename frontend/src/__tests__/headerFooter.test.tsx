@@ -5,20 +5,19 @@ import { vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import {
   useGetAllCategoriesQuery,
-  useGetUserInfoQuery,
+  useWhoamiQuery,
 } from "../generated/graphql-types";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
 // Créer un spy sur les fonctions
 vi.mock("../generated/graphql-types", () => ({
-  useGetUserInfoQuery: vi.fn(),
+  useWhoamiQuery: vi.fn(),
   useGetAllCategoriesQuery: vi.fn(),
 }));
 
-// Permet d'utiliser la fonction mockReturnValue sans avoir d'erreurs typescript
-const userMock = useGetUserInfoQuery as any;
 const categoriesMock = useGetAllCategoriesQuery as any;
+const whoamiMock = useWhoamiQuery as any;
 
 // Simule la réponse de la fonction
 categoriesMock.mockReturnValue({
@@ -48,13 +47,12 @@ describe("Header", () => {
   });
 
   it("should display header when user is not connected", async () => {
-    userMock.mockReturnValue({
+    whoamiMock.mockReturnValue({
       loading: false,
       error: undefined,
       data: {
-        getUserInfo: {
+        whoami: {
           email: null,
-          isLoggedIn: false,
         },
       },
     });
@@ -70,13 +68,12 @@ describe("Header", () => {
   });
 
   it("should display header when user is connected", async () => {
-    userMock.mockReturnValue({
+    whoamiMock.mockReturnValue({
       loading: false,
       error: undefined,
       data: {
-        getUserInfo: {
+        whoami: {
           email: "email@gmail.com",
-          isLoggedIn: true,
         },
       },
     });
@@ -92,16 +89,17 @@ describe("Header", () => {
   });
 
   it("should display error when server is down", async () => {
-    userMock.mockReturnValue({
+    whoamiMock.mockReturnValue({
       loading: false,
       error: {
         message: "Server down",
       },
       data: undefined,
     });
+
     render(<Header />);
 
-    expect(userMock.data).toBeUndefined();
+    expect(whoamiMock.data).toBeUndefined();
     expect(await screen.findByText("An error occured")).toBeInTheDocument();
   });
 });

@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
-import { useGetUserInfoQuery } from "../generated/graphql-types";
+import { useWhoamiQuery } from "../generated/graphql-types";
 import { useContext } from "react";
 import { cartContext } from "../context/CartContext";
 
 const Header = () => {
-  const { loading, error, data } = useGetUserInfoQuery();
+  const { loading, error, data } = useWhoamiQuery();
+
   const { items } = useContext(cartContext);
 
   if (loading) return <p>Loading...</p>;
@@ -18,7 +19,7 @@ const Header = () => {
     );
   if (data) {
     return (
-      <>
+      <header>
         <div className="bg-light-beige flex items-center justify-between px-4 md:px-8 py-3">
           <div className="md:hidden">
             <img
@@ -40,7 +41,7 @@ const Header = () => {
           </Link>
 
           <div className="flex items-center gap-x-4">
-            {data.getUserInfo.isLoggedIn ? (
+            {data?.whoami?.email ? (
               <Link
                 className="flex flex-col items-center hover:underline text-green"
                 to={"/moncompte"}
@@ -84,7 +85,7 @@ const Header = () => {
           </div>
         </div>
         <Navbar />
-      </>
+      </header>
     );
   }
 };

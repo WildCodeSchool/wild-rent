@@ -1,11 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
-import {
-  BaseEntity,
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @ObjectType()
 @Entity()
@@ -27,5 +21,5 @@ export class Address extends BaseEntity {
 
   @Field()
   @Column()
-  country: string;  
+  country: string;
 }

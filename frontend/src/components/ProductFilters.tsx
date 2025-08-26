@@ -37,11 +37,13 @@ export function ProductFilters({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       tags: [],
-      priceRange: [0, 100],
+      priceRange: [0, 50],
     },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log(data);
+
     refetch({
       categoryId: categoryId,
       minPrice: data.priceRange[0],
@@ -53,7 +55,7 @@ export function ProductFilters({
   function reset() {
     const defaultValues = {
       tags: [],
-      priceRange: [0, 100] as [number, number],
+      priceRange: [0, 50] as [number, number],
     };
 
     form.reset(defaultValues);
@@ -134,7 +136,7 @@ export function ProductFilters({
             <Button
               type="button"
               variant={"outline"}
-              className="text-base cursor-pointer w-full"
+              className="text-base cursor-pointer w-full text-sm md:text-base"
               onClick={() => reset()}
             >
               Réinitialiser
@@ -143,7 +145,7 @@ export function ProductFilters({
           <div className="w-1/2">
             <Button
               type="submit"
-              className="bg-green hover:bg-green/60 text-base cursor-pointer w-full"
+              className="bg-green hover:bg-green/60 text-base cursor-pointer w-full text-sm md:text-base"
             >
               Appliquer
             </Button>

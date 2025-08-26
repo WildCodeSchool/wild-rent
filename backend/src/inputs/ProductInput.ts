@@ -25,4 +25,19 @@ export class ProductInput {
 
   @Field(() => CategoryInput, { nullable: true })
   category?: CategoryInput;
+
+  @Field(() => [Number], { nullable: true })
+  tag_ids?: number[];
+}
+
+@InputType()
+export class ProductSearchOptions {
+  @Field()
+  name: string;
+
+  @Field({ nullable: true })
+  categoryId?: string;
+
+  @Field({ nullable: true })
+  productOption?: string;
 }

@@ -8,7 +8,7 @@ import {
   useUpdateProductOptionQuantityMutation,
 } from "../generated/graphql-types";
 
-const cart = () => {
+const Cart = () => {
   const [createOrderMutation] = useCreateNewOrderMutation();
   const [updateProductOptionQuantityMutation] =
     useUpdateProductOptionQuantityMutation();
@@ -253,4 +253,4 @@ const cart = () => {
   );
 };
 
-export default cart;
+export default Cart;

@@ -220,13 +220,6 @@ export class UserResolver {
     return true;
   }
 
-  @Mutation(() => Boolean)
-  async logout(@Ctx() context: ContextType): Promise<boolean> {
-    const cookies = new Cookies(context.req, context.res);
-    cookies.set("token", "", { maxAge: 0 });
-    return true;
-  }
-
   @Mutation(() => String)
   async confirmEmail(@Arg("code_by_user") code_by_user: string) {
     const tempUser = await TempUser.findOneByOrFail({

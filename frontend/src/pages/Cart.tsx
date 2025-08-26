@@ -4,8 +4,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
   useCreateNewOrderMutation,
-  useGetUserInfoQuery,
   useUpdateProductOptionQuantityMutation,
+  useWhoamiQuery,
 } from "../generated/graphql-types";
 
 const Cart = () => {
@@ -18,7 +18,7 @@ const Cart = () => {
   const [duration, setDuration] = useState<number>(0);
   const [datesValidated, setDatesValidated] = useState(false);
 
-  const { loading, error, data } = useGetUserInfoQuery();
+  const { loading, error, data } = useWhoamiQuery();
 
   const total = items
     .map((item: any) => item.price * item.quantity * duration)
@@ -80,7 +80,7 @@ const Cart = () => {
             quantity: item.quantity,
             productOptionId: item.selectedOption.id,
           })),
-          userId: Number(data?.getUserInfo?.id) ?? 0,
+          userId: Number(data?.whoami?.id) ?? 0,
         },
       },
     });

@@ -111,7 +111,8 @@ const ProductDetails = () => {
                 };
                 addItemToCart(productWithOptions);
               }}
-              className="h-15 md:mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition"
+              disabled={selectedOption === null}
+              className="h-15 md:mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition disabled:bg-green/50 px-2"
             >
               Ajouter au panier
             </button>

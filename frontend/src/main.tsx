@@ -4,18 +4,25 @@ import "./index.css";
 import App from "./App.tsx";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
+import { CartContextProvider } from "./context/CartContext";
+import { UserProvider } from "./context/UserContext.tsx";
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   uri: "/api",
   cache: new InMemoryCache(),
+  credentials: "same-origin",
 });
 
 createRoot(document.getElementById("root")!).render(
   <ApolloProvider client={client}>
-    <StrictMode>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </StrictMode>
+    <UserProvider>
+      <CartContextProvider>
+        <StrictMode>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </StrictMode>
+      </CartContextProvider>
+    </UserProvider>
   </ApolloProvider>
 );

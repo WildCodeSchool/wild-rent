@@ -39,14 +39,6 @@ Our team consists of five developers, working together to build a user-friendly 
 
 Tailwind
 
-React Hook Form
-
 Meilisearch (recherche)
 
-Stripe
-
-### Pour lancer le projet
-
-```bash
-TODO
-```
+Stripe (paiement)

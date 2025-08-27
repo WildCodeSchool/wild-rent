@@ -1,0 +1,93 @@
+import { Link } from "react-router-dom";
+import Navbar from "./Navbar";
+import { useWhoamiQuery } from "../generated/graphql-types";
+import { useContext } from "react";
+import { cartContext } from "../context/CartContext";
+
+const Header = () => {
+  const { loading, error, data } = useWhoamiQuery();
+
+  const { items } = useContext(cartContext);
+
+  if (loading) return <p>Loading...</p>;
+  if (error)
+    return (
+      <>
+        <h2>An error occured</h2>
+        <p>Error : {error.message}</p>
+      </>
+    );
+  if (data) {
+    return (
+      <header>
+        <div className="bg-light-beige flex items-center justify-between px-4 md:px-8 py-3">
+          <div className="md:hidden">
+            <img
+              src="/assets/images/icons/burger-bar.png"
+              alt="burger menu"
+              className="w-10 h-10 md:w-8 md:h-8"
+            />
+          </div>
+
+          <Link to={"/"} className="flex items-center gap-x-2 md:flex-1">
+            <img
+              src="/assets/images/icons/logo.png"
+              alt="Wild Rent logo"
+              className="w-10 h-10 md:w-12 md:h-12"
+            />
+            <h1 className="text-lg md:text-2xl font-bold text-gray-800">
+              Wild Rent
+            </h1>
+          </Link>
+
+          <div className="flex items-center gap-x-4">
+            {data?.whoami?.email ? (
+              <Link
+                className="flex flex-col items-center hover:underline text-green"
+                to={"/moncompte"}
+              >
+                <img
+                  src="/assets/images/icons/user-icon.png"
+                  alt="user icon"
+                  className="w-6 h-6 md:w-8 md:h-8"
+                />
+                <span className="text-sm text-green">Mon compte</span>
+              </Link>
+            ) : (
+              <Link
+                className="flex flex-col items-center hover:underline text-green"
+                to={"/login"}
+              >
+                <img
+                  src="/assets/images/icons/user-icon.png"
+                  alt="user icon"
+                  className="w-6 h-6 md:w-8 md:h-8"
+                />
+                <span className=" text-sm text-green">Connexion</span>
+              </Link>
+            )}
+            <Link
+              className="flex flex-col items-center hover:underline text-green"
+              to={"/panier"}
+            >
+              <img
+                src="/assets/images/icons/cart.png"
+                alt="cart"
+                className="w-6 h-6 md:w-8 md:h-8"
+              />
+              <div className="flex items-center gap-x-1">
+                <span className="hidden md:block text-sm text-green">
+                  Mon panier
+                </span>
+                <span> ({items.length})</span>
+              </div>
+            </Link>
+          </div>
+        </div>
+        <Navbar />
+      </header>
+    );
+  }
+};
+
+export default Header;

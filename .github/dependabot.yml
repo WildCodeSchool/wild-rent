@@ -12,3 +12,5 @@ updates:
     allow:
       - dependency-name: "playwright"
       - dependency-name: "@playwright/test"
+    ignore:
+      - dependency-name: "npm"

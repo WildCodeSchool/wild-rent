@@ -136,7 +136,7 @@ export function SearchArticle({ isReload, onReload }: SearchArticleProps) {
               category: selectedProduct.category.id,
               pictures: selectedProduct.pictures,
               product_options: selectedProduct.product_options,
-              tags: selectedProduct.tags,
+              tag_ids: selectedProduct.tags.map((el) => el.id),
             }}
             onDelete={() => {
               setSelectedProduct(null);

@@ -6,12 +6,12 @@ import { UserProvider } from "@/context/UserContext";
 
 // Pour la doc se référer au fichier Register.test.tsx
 
-const loginMutationMock = vi.fn(async (variables: any) => {});
+const loginMutationMock = vi.fn(async () => {});
 
 const useNavigateMock = vi.fn();
 vi.mock("../generated/graphql-types.ts", () => ({
   useLoginMutation: (options?: any) => {
-    const mockMutationFn = async (variables: any) => {
+    const mockMutationFn = async () => {
       if (options?.onCompleted) {
         options.onCompleted();
       }

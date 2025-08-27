@@ -22,6 +22,19 @@ type ProductFormValues = {
   tag_ids: string[];
 };
 
+type tempProductBackend = {
+  id?: number;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  pictures: { url: string }[];
+  product_options: { size: string; total_quantity: number }[];
+  tags: {
+    id: number;
+  }[];
+};
+
 type ArticleFormProps = {
   createOrUpdate: "create" | "update";
   // formId permet d’identifier le bon formulaire afin d’afficher l’image dans la bonne instance
@@ -57,7 +70,7 @@ export const ArticleForm = ({
   const { error, loading, data } = useGetAllCategoriesAndTagsQuery();
   const [
     modifyProductMutation,
-    { error: errorMutation, loading: loadingMutation, data: dataMutation },
+    { error: errorMutation, loading: loadingMutation },
   ] = useModifyProductMutation();
   const [createProductMutation] = useCreateProductMutation();
   const [modifyProduct, setModifyProduct] = useState(productDefault);
@@ -68,7 +81,7 @@ export const ArticleForm = ({
   const [preview, setPreview] = useState(previewDefault);
   const [
     deleteProductByIdMutation,
-    { data: dataDelete, loading: loadingDelete, error: errorDelete },
+    { loading: loadingDelete, error: errorDelete },
   ] = useDeleteProductByIdMutation();
   const watchValues = watch();
   const previewProduct: ProductType = {
@@ -140,7 +153,9 @@ export const ArticleForm = ({
   useEffect(() => {
     if (createOrUpdate === "update" && productDefault) {
       const tagIdsFromTags =
-        productDefault.tags?.map((tag) => tag.id.toString()) || [];
+        (productDefault as unknown as tempProductBackend).tags?.map((tag) =>
+          tag.id.toString()
+        ) || [];
 
       reset({
         name: productDefault.name,
@@ -343,7 +358,7 @@ export const ArticleForm = ({
           <div className="mt-4  ">
             <label className="block font-semibold mb-1">Images</label>
 
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 border rounded-xl p-4 shadow-sm gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 border rounded-xl p-4 shadow-sm gap-4">
               {pictureFields.map((field, index) => (
                 <div
                   key={field.id}

@@ -2,24 +2,17 @@ import { useContext, useEffect, useState } from "react";
 import { cartContext } from "../context/CartContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  useCreateNewOrderMutation,
-  useUpdateProductOptionQuantityMutation,
-} from "../generated/graphql-types";
+import { useCreateNewOrderMutation } from "../generated/graphql-types";
 import { useUser } from "@/hooks/useUser";
 
 const Cart = () => {
   const [createOrderMutation] = useCreateNewOrderMutation();
-  const [updateProductOptionQuantityMutation] =
-    useUpdateProductOptionQuantityMutation();
   const { user } = useUser();
   const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [duration, setDuration] = useState<number>(0);
   const [datesValidated, setDatesValidated] = useState(false);
-
-  const { loading, error, data } = useGetUserInfoQuery();
 
   const total = items
     .map((item: any) => item.price * item.quantity * duration)
@@ -88,20 +81,8 @@ const Cart = () => {
     console.log("Création de la commande...");
   };
 
-  const updateProductOptionQuantity = () => {
-    updateProductOptionQuantityMutation({
-      variables: {
-        data: items.map((item: any) => ({
-          id: item.selectedOption.id,
-          total_quantity: item.selectedOption.total_quantity - item.quantity,
-        })),
-      },
-    });
-  };
-
   const handleSubmit = () => {
     createOrder();
-    updateProductOptionQuantity();
     localStorage.removeItem("cart");
     localStorage.removeItem("rentalStartDate");
     localStorage.removeItem("rentalEndDate");

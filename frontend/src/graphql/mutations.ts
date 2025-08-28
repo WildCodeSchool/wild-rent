@@ -70,20 +70,9 @@ export const CREATE_ORDER = gql`
             id
           }
           size
-          total_quantity
         }
         quantity
       }
-    }
-  }
-`;
-export const UPDATE_PRODUCT_OPTION_QUANTITY = gql`
-  mutation UpdateProductOptionQuantity(
-    $data: [ProductOptionQuantityUpdateInput!]!
-  ) {
-    updateProductOptionQuantity(data: $data) {
-      id
-      total_quantity
     }
   }
 `;

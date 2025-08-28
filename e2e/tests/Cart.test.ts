@@ -19,9 +19,7 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 }) => {
   await page.goto(`${baseUrl}/produit/1`);
 
-  await page
-    .getByRole("combobox")
-    .selectOption('{"id":1,"size":"150 cm","total_quantity":10}');
+  await page.getByRole("combobox").selectOption('{"id":1,"size":"150 cm"}');
 
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
 

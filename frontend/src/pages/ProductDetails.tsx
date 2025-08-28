@@ -14,7 +14,6 @@ const ProductDetails = () => {
   const [selectedOption, setSelectedOption] = useState<{
     id: number;
     size: string;
-    total_quantity: number;
   } | null>(null);
 
   const [activeImage, setActiveImage] = useState<string | null>(null);
@@ -85,7 +84,6 @@ const ProductDetails = () => {
                     value={JSON.stringify({
                       id: el.id,
                       size: el.size,
-                      total_quantity: el.total_quantity,
                     })}
                   >
                     {el.size}

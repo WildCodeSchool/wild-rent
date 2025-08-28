@@ -23,7 +23,7 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
 
-  await page.getByRole("link", { name: /Mon panier/ }).click();
+  await page.getByRole("link", { name: "cart Mon panier (1)" }).click();
 
   await page.goto(`${baseUrl}/panier`);
 

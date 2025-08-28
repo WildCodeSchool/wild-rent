@@ -3,12 +3,17 @@ import {
   useDeleteOrderByIdMutation,
   useGetAllOrdersAndDetailsQuery,
 } from "@/generated/graphql-types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const AdminOrder = () => {
   const { loading, error, data } = useGetAllOrdersAndDetailsQuery();
   const [deleteOrder] = useDeleteOrderByIdMutation();
   const [approvedOrderById] = useApprovedOrderByIdMutation();
+
+  const [statusFilter, setStatusFilter] = useState<
+    "ALL" | "PENDING" | "APPROVED" | "CANCELED"
+  >("ALL");
+  const [emailSearch, setEmailSearch] = useState("");
 
   const handleDelete = async (orderId: number) => {
     try {
@@ -28,20 +33,60 @@ const AdminOrder = () => {
         variables: { data: { id: orderId, status } },
         refetchQueries: ["GetAllOrdersAndDetails"],
       });
-      console.log("Commande approuvée ✅");
+      console.log("Statut modifié ✅");
     } catch (err) {
-      console.error("Erreur lors de l'aprobation ❌", err);
+      console.error("Erreur lors du changement de statut ❌", err);
     }
   };
+
+  const filteredOrders = data?.getAllOrders.filter((order) => {
+    const matchStatus = statusFilter === "ALL" || order.status === statusFilter;
+    const matchEmail = order.user.email
+      .toLowerCase()
+      .includes(emailSearch.toLowerCase());
+    return matchStatus && matchEmail;
+  });
 
   useEffect(() => {
     console.log(data);
   }, [data]);
 
-  if (loading) return <p>Loading ...</p>;
-  if (error) return <p>Une erreur est survenue ...</p>;
+  if (loading) return <p>Chargement...</p>;
+  if (error) return <p>Une erreur est survenue...</p>;
+
   return (
     <>
+      <div className="flex gap-4 mb-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Filtrer par statut
+          </label>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as any)}
+            className="border px-3 py-1 rounded"
+          >
+            <option value="ALL">Tous</option>
+            <option value="PENDING">En attente</option>
+            <option value="APPROVED">Approuvés</option>
+            <option value="CANCELED">Annulés</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            Rechercher par email
+          </label>
+          <input
+            type="text"
+            placeholder="client@email.com"
+            value={emailSearch}
+            onChange={(e) => setEmailSearch(e.target.value)}
+            className="border px-3 py-1 rounded w-64"
+          />
+        </div>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="w-full border-collapse shadow-md bg-white rounded-lg overflow-hidden">
           <thead className="bg-gray-100 text-left text-sm text-gray-700">
@@ -56,7 +101,7 @@ const AdminOrder = () => {
             </tr>
           </thead>
           <tbody>
-            {data?.getAllOrders.map((order, idx) => (
+            {filteredOrders?.map((order, idx) => (
               <tr
                 key={idx}
                 className="border-t hover:bg-gray-50 transition-colors"
@@ -92,6 +137,7 @@ const AdminOrder = () => {
                 <td className="px-4 py-3 text-sm">
                   {new Date(order.created_at).toLocaleDateString()}
                 </td>
+
                 <td className="px-4 py-3 text-sm">
                   {(() => {
                     switch (order.status) {

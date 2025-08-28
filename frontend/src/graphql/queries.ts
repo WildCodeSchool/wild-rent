@@ -297,3 +297,17 @@ export const GET_AVAILABLE_PRODUCTS = gql`
     }
 }
 `
+
+export const GET_AVAILABLE_PRODUCT_OPTION = gql `
+  query GetAvailableProductOptions($productId: Float, $endDate: DateTimeISO!, $startDate: DateTimeISO!) {
+    getAvailableProductOptions(productId: $productId, endDate: $endDate, startDate: $startDate) {
+      availableQuantity
+      id
+      product {
+        name
+      }
+      size
+      total_quantity
+    }
+}
+`

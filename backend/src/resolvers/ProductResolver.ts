@@ -93,7 +93,8 @@ export class ProductResolver {
     @Arg("keyword", { nullable: true }) keyword?: string,
     @Arg("minPrice",  { nullable: true }) minPrice?: number,
     @Arg("maxPrice",  { nullable: true }) maxPrice?: number,
-    @Arg("tags", () => [String]) tags?: string[]
+    @Arg("tags", () => [String],  { nullable: true }) tags?: string[],
+    @Arg("productId", {nullable: true}) productId?:number,
   ) {
 
   const queryBuilder = ProductOption.createQueryBuilder("po")
@@ -110,17 +111,21 @@ export class ProductResolver {
     if (keyword) {
       queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
     }
-
+    // Filtre par prix
     if(maxPrice){
       queryBuilder.andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
     }
-
     if(minPrice){
       queryBuilder.andWhere("product.price >= :minPrice", { minPrice: minPrice })
     }
-
+    // Filtre par tags
     if (tags && tags.length > 0) {
       queryBuilder.andWhere("tag.label IN (:...tags)", { tags });
+    }
+
+     // Filtre par product ID
+    if (productId) {
+      queryBuilder.andWhere("product.id = :productId", { productId: productId });
     }
 
   // Objectif seul de récupérer la donnée "reserved_quantity" et de la sauvegarder à l'aide du addSelect
@@ -174,7 +179,7 @@ export class ProductResolver {
     @Arg("keyword", { nullable: true }) keyword?: string,
     @Arg("minPrice",  { nullable: true }) minPrice?: number,
     @Arg("maxPrice",  { nullable: true }) maxPrice?: number,
-    @Arg("tags", () => [String]) tags?: string[]
+    @Arg("tags", () => [String], { nullable: true }) tags?: string[]
   ) {
     const availableProductOptions = await this.getAvailableProductOptions(startDate, endDate, categoryId, keyword, minPrice, maxPrice, tags);
 

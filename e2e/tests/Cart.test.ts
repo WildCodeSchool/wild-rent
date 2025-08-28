@@ -27,17 +27,6 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 
   await page.goto(`${baseUrl}/panier`);
 
-  /*   // Vérifie que la textbox du calendrier est visible avant de cliquer
-  const dateTextbox = page.getByPlaceholder("Choisir une date");
-  await expect(dateTextbox).toBeVisible();
-  await dateTextbox.click();
-
-  await page.getByRole("gridcell", { name: date16 }).click();
-  await page.getByRole("gridcell", { name: date19 }).click();
-
-  await page.getByRole("button", { name: "Valider les dates" }).click();
- */
-
   await page.getByRole("textbox", { name: "Choisir une date" }).click();
   await page.getByRole("gridcell", { name: date16 }).click();
   await page.getByRole("gridcell", { name: date19 }).click();

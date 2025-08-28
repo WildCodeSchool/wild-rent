@@ -30,7 +30,7 @@ test("register and login", async ({ page }) => {
 
   await expect(page.getByText("Consultez vos emails afin de")).toBeVisible();
 
-  /* // Retrouve le dernier email envoyé à l'adresse testmail
+  // Retrouve le dernier email envoyé à l'adresse testmail
   let link = "";
   const res = await axios.get("https://api.testmail.app/api/json", {
     params: {

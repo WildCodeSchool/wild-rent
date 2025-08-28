@@ -10,11 +10,10 @@ import { normalizeString } from "../assets/utils";
 import { useRentalDates } from "@/hooks/useRentalDates";
 import Loader from "./Loader";
 
+export const toUTCISOString = (date: Date) => date.toISOString();
+
 function CategoryCarousel({ title, id, image }: categoryProps) {
   const { startDate, endDate } = useRentalDates();
-  const toUTCISOString = (date: Date) => date.toISOString();
-
-  console.log(startDate, endDate);
 
   const {
     data: dataAvailable,
@@ -25,6 +24,7 @@ function CategoryCarousel({ title, id, image }: categoryProps) {
       categoryId: id,
       startDate: startDate ? toUTCISOString(startDate) : "",
       endDate: endDate ? toUTCISOString(endDate) : "",
+      tags: [],
     },
     skip: !startDate || !endDate,
   });

@@ -13,6 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { PriceRangeSlider } from "./PriceRangeSlider";
+import { useRentalDates } from "@/hooks/useRentalDates";
+import { toUTCISOString } from "./CategoryCarousel";
 
 type tag = {
   id: number;
@@ -33,6 +35,7 @@ export function ProductFilters({
   refetch: any;
   categoryId: number;
 }) {
+  const { startDate, endDate } = useRentalDates();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -43,13 +46,23 @@ export function ProductFilters({
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
-
-    refetch({
-      categoryId: categoryId,
-      minPrice: data.priceRange[0],
-      maxPrice: data.priceRange[1],
-      tags: data.tags,
-    });
+    if (startDate && endDate) {
+      refetch({
+        categoryId: categoryId,
+        minPrice: data.priceRange[0],
+        maxPrice: data.priceRange[1],
+        tags: data.tags,
+        startDate: toUTCISOString(startDate),
+        endDate: toUTCISOString(endDate),
+      });
+    } else {
+      refetch({
+        categoryId: categoryId,
+        minPrice: data.priceRange[0],
+        maxPrice: data.priceRange[1],
+        tags: data.tags,
+      });
+    }
   }
 
   function reset() {
@@ -60,12 +73,23 @@ export function ProductFilters({
 
     form.reset(defaultValues);
 
-    refetch({
-      categoryId: categoryId,
-      minPrice: defaultValues.priceRange[0],
-      maxPrice: defaultValues.priceRange[1],
-      tags: defaultValues.tags,
-    });
+    if (startDate && endDate) {
+      refetch({
+        categoryId: categoryId,
+        minPrice: defaultValues.priceRange[0],
+        maxPrice: defaultValues.priceRange[1],
+        tags: defaultValues.tags,
+        startDate: toUTCISOString(startDate),
+        endDate: toUTCISOString(endDate),
+      });
+    } else {
+      refetch({
+        categoryId: categoryId,
+        minPrice: defaultValues.priceRange[0],
+        maxPrice: defaultValues.priceRange[1],
+        tags: defaultValues.tags,
+      });
+    }
   }
 
   return (
@@ -136,7 +160,7 @@ export function ProductFilters({
             <Button
               type="button"
               variant={"outline"}
-              className="text-base cursor-pointer w-full text-sm md:text-base"
+              className="cursor-pointer w-full text-sm md:text-base"
               onClick={() => reset()}
             >
               Réinitialiser
@@ -145,7 +169,7 @@ export function ProductFilters({
           <div className="w-1/2">
             <Button
               type="submit"
-              className="bg-green hover:bg-green/60 text-base cursor-pointer w-full text-sm md:text-base"
+              className="bg-green hover:bg-green/60 cursor-pointer w-full text-sm md:text-base"
             >
               Appliquer
             </Button>

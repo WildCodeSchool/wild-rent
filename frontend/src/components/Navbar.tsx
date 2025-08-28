@@ -1,10 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useGetAllCategoriesQuery } from "../generated/graphql-types";
 import { normalizeString } from "../assets/utils";
 import { SelectRentalDates } from "./SelectRentalDates";
 
 const Navbar = () => {
   const { loading, error, data } = useGetAllCategoriesQuery();
+
+  const location = useLocation();
+  const pathname = location.pathname;
+
+  const isCategoryPage = pathname.includes("/products/category");
 
   if (loading) return <p>Loading ...</p>;
   if (error) return <p> Error : {error.message}</p>;
@@ -49,7 +54,7 @@ const Navbar = () => {
             </div>
           </form>
         </nav>
-        <SelectRentalDates />
+        {!isCategoryPage && <SelectRentalDates />}
       </div>
     );
   }

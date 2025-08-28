@@ -90,7 +90,10 @@ export class ProductResolver {
     @Arg("startDate") startDate: Date,
     @Arg("endDate") endDate: Date,
     @Arg("categoryId", { nullable: true }) categoryId?: number,
-    @Arg("keyword", { nullable: true }) keyword?: string
+    @Arg("keyword", { nullable: true }) keyword?: string,
+    @Arg("minPrice",  { nullable: true }) minPrice?: number,
+    @Arg("maxPrice",  { nullable: true }) maxPrice?: number,
+    @Arg("tags", () => [String]) tags?: string[]
   ) {
 
   const queryBuilder = ProductOption.createQueryBuilder("po")
@@ -108,6 +111,18 @@ export class ProductResolver {
       queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
     }
 
+    if(maxPrice){
+      queryBuilder.andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
+    }
+
+    if(minPrice){
+      queryBuilder.andWhere("product.price >= :minPrice", { minPrice: minPrice })
+    }
+
+    if (tags && tags.length > 0) {
+      queryBuilder.andWhere("tag.label IN (:...tags)", { tags });
+    }
+
   // Objectif seul de récupérer la donnée "reserved_quantity" et de la sauvegarder à l'aide du addSelect
   queryBuilder.addSelect(subQuery => {
     return subQuery
@@ -119,7 +134,7 @@ export class ProductResolver {
       .andWhere("o.rental_end_date >= :startDate")
   }, "reserved_quantity");
 
-  // Filtre uniquement les products options qui sont disponibles pour les dates sélectionnées
+  // Filtre uniquement les products options qui sont disponibles pour les dates et options sélectionnées
   queryBuilder.andWhere(qb => {
     const reservedQty = qb.subQuery()
       .select("SUM(pio.quantity)")
@@ -156,9 +171,12 @@ export class ProductResolver {
     @Arg("startDate") startDate: Date,
     @Arg("endDate") endDate: Date,
     @Arg("categoryId", { nullable: true }) categoryId?: number,
-    @Arg("keyword", { nullable: true }) keyword?: string
+    @Arg("keyword", { nullable: true }) keyword?: string,
+    @Arg("minPrice",  { nullable: true }) minPrice?: number,
+    @Arg("maxPrice",  { nullable: true }) maxPrice?: number,
+    @Arg("tags", () => [String]) tags?: string[]
   ) {
-    const availableProductOptions = await this.getAvailableProductOptions(startDate, endDate, categoryId, keyword);
+    const availableProductOptions = await this.getAvailableProductOptions(startDate, endDate, categoryId, keyword, minPrice, maxPrice, tags);
 
     // Extrait les Products disponibles à partir des products Options dispo
     let availableProducts: Product[] = [];

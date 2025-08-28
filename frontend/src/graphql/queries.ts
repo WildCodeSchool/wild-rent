@@ -276,8 +276,8 @@ export const SEARCH_PRODUCTS_BY_OPTIONS = gql`
 `;
 
 export const GET_AVAILABLE_PRODUCTS = gql`
-  query GetAvailableProductForDates($endDate: DateTimeISO!, $startDate: DateTimeISO!, $categoryId: Float, $keyword: String) {
-    getAvailableProductForDates(endDate: $endDate, startDate: $startDate, categoryId: $categoryId, keyword: $keyword) {
+  query GetAvailableProductForDates($endDate: DateTimeISO!, $startDate: DateTimeISO!, $categoryId: Float, $keyword: String, $minPrice: Float, $maxPrice: Float, $tags: [String!]!) {
+    getAvailableProductForDates(endDate: $endDate, startDate: $startDate, categoryId: $categoryId, keyword: $keyword, minPrice: $minPrice, maxPrice: $maxPrice, tags: $tags) {
       name
       id
       pictures {

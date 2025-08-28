@@ -1,59 +1,96 @@
+import { useCreateNewCategoryMutation } from "@/generated/graphql-types";
+import { useEffect, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
-import { toast } from "react-toastify";
+
+type CategoryFormData = {
+  title: string;
+  image: FileList;
+};
 
 const CategoryForm = () => {
+  const [createNewCategory] = useCreateNewCategoryMutation();
   const {
     register, // pour lier les champs du formulaire
     handleSubmit, // fonction pour gérer la soumission
+    watch, // pour surveiller les changements de champs
     formState: { errors }, // pour gérer les erreurs
-  } = useForm();
+  } = useForm<CategoryFormData>();
+  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = (formData: any) => {
+    console.log(formData);
+    try {
+      createNewCategory({
+        variables: {
+          data: {
+            title: formData.title,
+            image: formData.image[0],
+          },
+        },
+      });
+    } catch (error) {
+      console.error("Erreur lors de la création de la catégorie :", error);
+    }
   };
+  const image = watch("image");
+
+  useEffect(() => {
+    if (image && image[0]) {
+      const file = image[0];
+      const reader = new FileReader();
+      reader.onloadend = () => setPreview(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      setPreview(null);
+    }
+  }, [image]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div>
         <label>Titre de la catégorie</label>
         <input
           className="border border-gray-300 rounded p-2"
-          type="category"
-          {...register("category", { required: "Catégorie requise" })}
+          type="title"
+          {...register("title", { required: "Catégorie requise" })}
         />
       </div>
-      {errors.category && <p>{(errors.category as FieldError).message}</p>}
+      {errors.title && <p>{(errors.title as FieldError).message}</p>}
+
       <div>
-        <button
-          type="button"
-          onClick={() => document.getElementById(`file-upload`)?.click()}
-          className="hover:bg-green border-green border-1 hover:text-white px-4 py-2 rounded bg-light-beige text-green transition mt-4 cursor-pointer"
-        >
-          Parcourir une image
-        </button>
+        <label>Choisir une image</label>
         <input
-          id={`file-upload`}
+          className="hover:bg-green border-green border-1 hover:text-white px-4 py-2 rounded bg-light-beige text-green transition mt-4 cursor-pointer"
           type="file"
           accept="image/*"
-          className="hidden"
-          onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
-            if (e.target.files) {
-              const file = e.target.files[0];
-
-              if (file.size > 5 * 1024 * 1024) {
-                toast.error("L'image est trop grande (max. 5MB).");
-                return;
-              }
-              if (!file.type.startsWith("image/")) {
-                toast.error("Le fichier doit être une image.");
-                return;
-              }
-            }
-          }}
+          {...register("image", {
+            required: "L'image est obligatoire",
+            validate: {
+              fileType: (files) =>
+                (files[0] &&
+                  ["image/jpeg", "image/png"].includes(files[0].type)) ||
+                "Format autorisé : JPG/PNG",
+              fileSize: (files) =>
+                (files[0] && files[0].size < 2 * 1024 * 1024) || // 2MB
+                "Image trop lourde (max 2 Mo)",
+            },
+          })}
         />
-        {errors.image && <p>{(errors.image as FieldError).message}</p>}
+        {errors.image && <p>{(errors.image as FieldError)?.message}</p>}
       </div>
+      {preview && typeof preview === "string" && (
+        <div style={{ marginTop: "1rem" }}>
+          <p>Aperçu :</p>
+          <img src={preview} alt="Preview" style={{ width: 200 }} />
+        </div>
+      )}
 
-      <button type="submit">Valider</button>
+      <button
+        className="hover:bg-green border-green border-1 hover:text-white px-4 py-2 rounded bg-light-beige text-green transition mt-4 cursor-pointer"
+        type="submit"
+      >
+        Envoyer
+      </button>
     </form>
   );
 };

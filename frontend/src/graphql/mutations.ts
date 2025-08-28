@@ -207,3 +207,25 @@ export const CHANGE_PASSWORD = gql`
     changePassword(data: $data)
   }
 `;
+
+export const CREATE_CATEGORY = gql`
+  mutation CreateNewCategory($data: CategoryInput!) {
+    createNewCategory(data: $data) {
+      id
+    }
+  }
+`;
+export const MODIFY_CATEGORY = gql`
+  mutation ModifyCategory($data: CategoryInput!) {
+    modifyCategory(data: $data) {
+      id
+      title
+      image
+    }
+  }
+`;
+export const DELETE_CATEGORY = gql`
+  mutation DeleteCategory($id: Float!) {
+    deleteCategory(id: $id)
+  }
+`;

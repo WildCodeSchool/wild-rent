@@ -274,3 +274,26 @@ export const SEARCH_PRODUCTS_BY_OPTIONS = gql`
     }
   }
 `;
+
+export const GET_AVAILABLE_PRODUCTS = gql`
+  query GetAvailableProductForDates($endDate: DateTimeISO!, $startDate: DateTimeISO!, $categoryId: Float, $keyword: String) {
+    getAvailableProductForDates(endDate: $endDate, startDate: $startDate, categoryId: $categoryId, keyword: $keyword) {
+      name
+      id
+      pictures {
+        id
+        url
+      }
+      description
+      category {
+        id
+        title
+      }
+      price
+      tags {
+        id
+        label
+      }
+    }
+}
+`

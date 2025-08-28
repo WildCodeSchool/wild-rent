@@ -6,6 +6,7 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { BrowserRouter } from "react-router-dom";
 import { CartContextProvider } from "./context/CartContext";
 import { UserProvider } from "./context/UserContext.tsx";
+import { RentalDatesProvider } from "./context/RentalDatesContext.tsx";
 
 export const client = new ApolloClient({
   uri: "/api",
@@ -16,13 +17,15 @@ export const client = new ApolloClient({
 createRoot(document.getElementById("root")!).render(
   <ApolloProvider client={client}>
     <UserProvider>
-      <CartContextProvider>
-        <StrictMode>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </StrictMode>
-      </CartContextProvider>
+      <RentalDatesProvider>
+        <CartContextProvider>
+          <StrictMode>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </StrictMode>
+        </CartContextProvider>
+      </RentalDatesProvider>
     </UserProvider>
   </ApolloProvider>
 );

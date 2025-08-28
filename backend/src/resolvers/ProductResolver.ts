@@ -86,51 +86,91 @@ export class ProductResolver {
   }
 
   @Query(() => [ProductOption])
-  async getProductWithFiltersByDate(
-    // @Arg("categoryId") categoryId: number,
-    // @Arg("keyword") keyword: string,
+  async getAvailableProductOptions(
     @Arg("startDate") startDate: Date,
-    @Arg("endDate") endDate: Date
+    @Arg("endDate") endDate: Date,
+    @Arg("categoryId", { nullable: true }) categoryId?: number,
+    @Arg("keyword", { nullable: true }) keyword?: string
   ) {
-    const queryBuilder = ProductOption.createQueryBuilder("po")
-      // .leftJoinAndSelect("product.category", "category")
-      .leftJoinAndSelect("po.product", "product")
-      // .leftJoinAndSelect("product.tags", "tag")
-      // .leftJoinAndSelect("product.pictures", "pictures")
 
-    // if (categoryId) {
-    //   queryBuilder.andWhere("category.id = :categoryId", {categoryId});
-    // }
+  const queryBuilder = ProductOption.createQueryBuilder("po")
+    .leftJoinAndSelect("po.product", "product")
+    .leftJoinAndSelect("product.category", "category")
+    .leftJoinAndSelect("product.tags", "tag")
+    .leftJoinAndSelect("product.pictures", "pictures");
 
-    //  if (keyword) {
-    // queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
-    // }
+     // Filtre par catégorie
+    if (categoryId) {
+      queryBuilder.andWhere("category.id = :categoryId", {categoryId});
+    }
+    // Filtre par mot-clé
+    if (keyword) {
+      queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
+    }
 
-    queryBuilder.andWhere(qb => {
-      // Sous-requête qui calcule le nombre de products-options déjà loués dans l'itervalle des dates données
-      const subQuery = qb.subQuery()
-        .select("SUM(pio.quantity)", "reserved")
-        .from(ProductInOrder, "pio")
-        .leftJoin("pio.order", "o")
-        .where("pio.productOptionId = po.id")
-        .andWhere(`
-          o.rental_start_date <= :endDate
-          AND o.rental_end_date >= :startDate
-          AND o.status != 'CANCELLED'
-        `)
-        .getQuery();
-    
-    // Si la sous-requête retourne NULL, aucune réservation, product option disponible. Sinon on vérifie que la quantitée totale de l'inventaire est supérieure au nombre de products options loués pour ces dates
-    return `
-      (${subQuery}) IS NULL
-      OR po.total_quantity - (${subQuery}) > 0
-    `;
+  // Objectif seul de récupérer la donnée "reserved_quantity" et de la sauvegarder à l'aide du addSelect
+  queryBuilder.addSelect(subQuery => {
+    return subQuery
+      .select("COALESCE(SUM(pio.quantity), 0)")
+      .from(ProductInOrder, "pio")
+      .leftJoin("pio.order", "o")
+      .where("pio.productOptionId = po.id")
+      .andWhere("o.rental_start_date <= :endDate")
+      .andWhere("o.rental_end_date >= :startDate")
+  }, "reserved_quantity");
+
+  // Filtre uniquement les products options qui sont disponibles pour les dates sélectionnées
+  queryBuilder.andWhere(qb => {
+    const reservedQty = qb.subQuery()
+      .select("SUM(pio.quantity)")
+      .from(ProductInOrder, "pio")
+      .leftJoin("pio.order", "o")
+      .where("pio.productOptionId = po.id")
+      .andWhere("o.rental_start_date <= :endDate")
+      .andWhere("o.rental_end_date >= :startDate")
+      .andWhere("o.status != 'CANCELLED'")
+      .getQuery();
+
+      return `po.total_quantity - COALESCE((${reservedQty}), 0) > 0`;
+    });
+
+  queryBuilder.setParameters({startDate, endDate});
+  
+  // Récupère les ProductOptions avec la quantité disponible
+  const result = await queryBuilder.getRawAndEntities();
+
+  const productOptionWithAvailableQty = result.entities.map(entity=>{
+    const rawForThisEntity = result.raw.find(r => r.po_id === entity.id)
+    const reserved = rawForThisEntity ? Number(rawForThisEntity.reserved_quantity) : 0
+
+    return {
+      ...entity,
+      availableQuantity: entity.total_quantity - reserved
+    }
   })
-  .setParameters({ startDate, endDate });
+  return productOptionWithAvailableQty
+  }
 
-  const availableProductsOptions = await queryBuilder.distinct(true).getMany();
+  @Query(()=> [Product])
+  async getAvailableProductForDates(
+    @Arg("startDate") startDate: Date,
+    @Arg("endDate") endDate: Date,
+    @Arg("categoryId", { nullable: true }) categoryId?: number,
+    @Arg("keyword", { nullable: true }) keyword?: string
+  ) {
+    const availableProductOptions = await this.getAvailableProductOptions(startDate, endDate, categoryId, keyword);
 
-  return availableProductsOptions;
+    // Extrait les Products disponibles à partir des products Options dispo
+    let availableProducts: Product[] = [];
+
+    availableProductOptions.forEach(option => {
+      const product = option.product;
+      if (!availableProducts.some((item)=> item.id === product.id )) {
+        availableProducts.push(product);
+      }
+    });
+   
+    return availableProducts;
   }
 
   @Mutation(() => Product)

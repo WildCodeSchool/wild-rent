@@ -7,6 +7,7 @@ import { Category } from "../entities/Category";
 import { FindManyOptions, In, Raw } from "typeorm";
 import { merge } from "../assets/utils";
 import { Tag } from "../entities/Tag";
+import { ProductInOrder } from "../entities/ProductInOrder";
 
 @Resolver(Product)
 export class ProductResolver {
@@ -82,6 +83,54 @@ export class ProductResolver {
     const products = await queryBuilder.distinct(true).getMany();
 
     return products;
+  }
+
+  @Query(() => [ProductOption])
+  async getProductWithFiltersByDate(
+    // @Arg("categoryId") categoryId: number,
+    // @Arg("keyword") keyword: string,
+    @Arg("startDate") startDate: Date,
+    @Arg("endDate") endDate: Date
+  ) {
+    const queryBuilder = ProductOption.createQueryBuilder("po")
+      // .leftJoinAndSelect("product.category", "category")
+      .leftJoinAndSelect("po.product", "product")
+      // .leftJoinAndSelect("product.tags", "tag")
+      // .leftJoinAndSelect("product.pictures", "pictures")
+
+    // if (categoryId) {
+    //   queryBuilder.andWhere("category.id = :categoryId", {categoryId});
+    // }
+
+    //  if (keyword) {
+    // queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
+    // }
+
+    queryBuilder.andWhere(qb => {
+      // Sous-requête qui calcule le nombre de products-options déjà loués dans l'itervalle des dates données
+      const subQuery = qb.subQuery()
+        .select("SUM(pio.quantity)", "reserved")
+        .from(ProductInOrder, "pio")
+        .leftJoin("pio.order", "o")
+        .where("pio.productOptionId = po.id")
+        .andWhere(`
+          o.rental_start_date <= :endDate
+          AND o.rental_end_date >= :startDate
+          AND o.status != 'CANCELLED'
+        `)
+        .getQuery();
+    
+    // Si la sous-requête retourne NULL, aucune réservation, product option disponible. Sinon on vérifie que la quantitée totale de l'inventaire est supérieure au nombre de products options loués pour ces dates
+    return `
+      (${subQuery}) IS NULL
+      OR po.total_quantity - (${subQuery}) > 0
+    `;
+  })
+  .setParameters({ startDate, endDate });
+
+  const availableProductsOptions = await queryBuilder.distinct(true).getMany();
+
+  return availableProductsOptions;
   }
 
   @Mutation(() => Product)

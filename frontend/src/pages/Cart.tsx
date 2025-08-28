@@ -107,6 +107,8 @@ const Cart = () => {
     window.location.reload();
   };
 
+  console.log(items);
+
   return (
     <>
       {items.length === 0 && (

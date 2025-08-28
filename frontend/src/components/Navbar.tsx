@@ -1,6 +1,13 @@
 import { Link } from "react-router-dom";
 import { useGetAllCategoriesQuery } from "../generated/graphql-types";
 import { normalizeString } from "../assets/utils";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 
 const Navbar = () => {
   const { loading, error, data } = useGetAllCategoriesQuery();
@@ -10,6 +17,17 @@ const Navbar = () => {
   if (data) {
     return (
       <nav className="bg-green flex items-center justify-center sm:justify-between px-6 py-3">
+        {/* <Select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Theme" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="light">Light</SelectItem>
+            <SelectItem value="dark">Dark</SelectItem>
+            <SelectItem value="system">System</SelectItem>
+          </SelectContent>
+        </Select> */}
+
         {data.getAllCategories.map((category) => (
           <Link
             key={category.id}

@@ -1,6 +1,6 @@
 import { Order } from "../entities/Order";
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import { OrderInput } from "../inputs/OrderInput";
+import { ChangeOrderStatusInput, OrderInput } from "../inputs/OrderInput";
 import { User } from "../entities/User";
 import { ProductOption } from "../entities/ProductOption";
 import { ProductInOrder } from "../entities/ProductInOrder";
@@ -82,5 +82,25 @@ export class OrderResolver {
         "user",
       ],
     });
+  }
+
+  @Mutation(() => String)
+  async deleteOrderById(@Arg("id") id: number) {
+    const orderToDelete = await Order.findOneBy({ id });
+
+    await orderToDelete?.remove();
+
+    return "Order has been deleted";
+  }
+
+  @Mutation(() => String)
+  async changeStatusOrderById(@Arg("data") data: ChangeOrderStatusInput) {
+    const orderToChange = await Order.findOneByOrFail({ id: data.id });
+
+    orderToChange.status = data.status;
+
+    await orderToChange.save();
+
+    return "Status changed";
   }
 }

@@ -18,6 +18,7 @@ import AdminPendingUsers from "./pages/AdminPendingUsers";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
+import AdminOrder from "./pages/AdminOrder";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
             path="utilisateurs/en-attente"
             element={<AdminPendingUsers />}
           />
+          <Route path="commandes" element={<AdminOrder />} />
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

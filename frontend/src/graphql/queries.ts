@@ -233,6 +233,32 @@ export const GET_ORDER_BY_ID = gql`
   }
 `;
 
+export const GET_ALL_ORDERS_AND_DETAILS = gql`
+  query GetAllOrdersAndDetails {
+    getAllOrders {
+      id
+      user {
+        email
+      }
+      total_price
+      status
+      rental_start_date
+      rental_end_date
+      created_at
+      products_in_order {
+        quantity
+        productOption {
+          size
+          product {
+            name
+            price
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const GET_ALL_TEMP_USERS = gql`
   query GetTempUsers {
     getAllTempUsers {

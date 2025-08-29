@@ -11,12 +11,3 @@ export class ProductOptionInput {
   @Field({ nullable: true })
   total_quantity?: number;
 }
-
-@InputType()
-export class ProductOptionQuantityUpdateInput {
-  @Field()
-  id: number;
-
-  @Field()
-  total_quantity: number;
-}

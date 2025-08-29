@@ -12,7 +12,7 @@ export const AdminNavbar = () => {
           isOpen ? "sm:w-60" : "w-36"
         }  min-h-screen bg-light-beige p-4 flex flex-col transition-all duration-400 shadow-md z-50`}
       >
-        <div className=" fixed top-5 left-5 flex-grow">
+        <div className="flex-grow">
           <div className="flex items-center justify-between mb-6">
             <div className="md:px-4 gap-2 flex text-nowrap items-center gap-x-2">
               <img

@@ -2,16 +2,11 @@ import { useContext, useEffect, useState } from "react";
 import { cartContext } from "../context/CartContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  useCreateNewOrderMutation,
-  useUpdateProductOptionQuantityMutation,
-} from "../generated/graphql-types";
+import { useCreateNewOrderMutation } from "../generated/graphql-types";
 import { useUser } from "@/hooks/useUser";
 
 const Cart = () => {
   const [createOrderMutation] = useCreateNewOrderMutation();
-  const [updateProductOptionQuantityMutation] =
-    useUpdateProductOptionQuantityMutation();
   const { user } = useUser();
   const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -86,20 +81,8 @@ const Cart = () => {
     console.log("Création de la commande...");
   };
 
-  const updateProductOptionQuantity = () => {
-    updateProductOptionQuantityMutation({
-      variables: {
-        data: items.map((item: any) => ({
-          id: item.selectedOption.id,
-          total_quantity: item.selectedOption.total_quantity - item.quantity,
-        })),
-      },
-    });
-  };
-
   const handleSubmit = () => {
     createOrder();
-    updateProductOptionQuantity();
     localStorage.removeItem("cart");
     localStorage.removeItem("rentalStartDate");
     localStorage.removeItem("rentalEndDate");
@@ -137,7 +120,7 @@ const Cart = () => {
                     className="text-sm lg:text-base bg-green text-white p-2 lg:pr-5 lg:pl-5 ml-5 lg:ml-15 rounded-xl"
                     onClick={() => handleDuration(startDate, endDate)}
                   >
-                    Valider les dates
+                    Valider les date
                   </button>
                 </div>
               </div>

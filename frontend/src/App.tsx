@@ -9,12 +9,12 @@ import ConfirmEmailPage from "./pages/ConfirmEmail";
 import { ToastContainer } from "react-toastify";
 import Cart from "./pages/Cart";
 import { AdminLayout } from "./pages/AdminLayout";
+
 import { AdminArticle } from "./pages/AdminArticle";
 import { AdminHomepage } from "./pages/AdminHomepage";
 import { AccountDetails } from "./pages/Account/AccountDetails";
 import AdminUsers from "./pages/AdminUsers";
 import ConfirmRegistration from "./pages/ConfirmRegistration";
-import AdminPendingUsers from "./pages/AdminPendingUsers";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
@@ -47,10 +47,10 @@ function App() {
           <Route index element={<AdminHomepage />} />
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
-          <Route
+          {/* <Route
             path="utilisateurs/en-attente"
             element={<AdminPendingUsers />}
-          />
+          /> */}
           <Route path="commandes" element={<AdminOrder />} />
         </Route>
       </Routes>

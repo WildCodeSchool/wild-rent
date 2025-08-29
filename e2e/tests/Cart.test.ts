@@ -13,13 +13,11 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
   await page.getByRole('button', { name: 'Wednesday, August 27th,' }).click();
   await page.getByRole('button').nth(3).click();
 
-  await page.getByRole("combobox").selectOption('{"id":1,"size":"150 cm"}');
+    await page.getByLabel('Sélecteur d\'options').selectOption('{"id":1,"size":"150 cm"}');
 
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
 
   await page.getByRole("link", { name: "cart Mon panier (1)" }).click();
-
-  await page.goto(`${baseUrl}/panier`);
 
   await expect(page.getByText("Total: 45€")).toBeVisible();
 

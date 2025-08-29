@@ -3,7 +3,7 @@ import { AdminNavbar } from "../components/AdminNavbar";
 
 export const AdminLayout = () => {
   return (
-    <div className="py-5">
+    <div>
       <div className="grid grid-cols-[auto_1fr] h-full">
         <AdminNavbar />
         <main className="overflow-auto p-4 bg-gray-50">

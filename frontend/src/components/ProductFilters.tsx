@@ -45,7 +45,6 @@ export function ProductFilters({
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
     if (startDate && endDate) {
       refetch({
         categoryId: categoryId,

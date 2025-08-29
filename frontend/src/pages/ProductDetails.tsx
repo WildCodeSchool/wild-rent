@@ -64,7 +64,7 @@ const ProductDetails = () => {
           <img
             src={mainImage}
             alt={products?.name}
-            className="w-64 h-64 object-cover rounded-lg"
+            className="w-64 h-64 object-contain rounded-lg"
           />
           {/* Miniatures */}
           <div className="flex flex-col md:flex-row gap-2 justify-around">
@@ -75,7 +75,7 @@ const ProductDetails = () => {
                   key={index}
                   src={fullUrl}
                   alt="Preview"
-                  className={`w-20 h-20 rounded-lg cursor-pointer border ${
+                  className={`w-20 h-20 rounded-lg cursor-pointer border object-contain ${
                     fullUrl === mainImage
                       ? "border-blue-500"
                       : "border-transparent"

@@ -1,18 +1,36 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { cartContext } from "../context/CartContext";
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useCreateNewOrderMutation } from "../generated/graphql-types";
 import { useUser } from "@/hooks/useUser";
+import { useRentalDates } from "@/hooks/useRentalDates";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [createOrderMutation] = useCreateNewOrderMutation();
   const { user } = useUser();
   const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [duration, setDuration] = useState<number>(0);
-  const [datesValidated, setDatesValidated] = useState(false);
+  const { startDate, endDate } = useRentalDates();
+  const navigate = useNavigate();
+
+  if (!startDate || !endDate)
+    return items.length === 0 ? (
+      <p className="text-center text-2xl mt-16 mb-16">Votre panier est vide</p>
+    ) : (
+      <p className="w-full mx-10 flex justify-center mt-5 font-bold">
+        Vous devez délectionner des dates de location pour voir le contenu de
+        votre panier et assuer la disponibilité des produits
+      </p>
+    );
+
+  const calculateDuration = (start: Date, end: Date) => {
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  const duration = calculateDuration(startDate, endDate);
 
   const total = items
     .map((item: any) => item.price * item.quantity * duration)
@@ -27,70 +45,43 @@ const Cart = () => {
   const handleRemoveQuantity = (product: any) => {
     updateQuantity(product.quantity--);
   };
-  const calculateDuration = (start: Date | null, end: Date | null) => {
-    if (start && end) {
-      const diffTime = Math.abs(end.getTime() - start.getTime());
-      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    }
-  };
-  const handleDuration = (startDate: Date | null, endDate: Date | null) => {
-    const newDuration: any = calculateDuration(startDate, endDate);
-    setDuration(newDuration);
-    setDatesValidated(true);
 
-    if (startDate && endDate && newDuration !== undefined) {
-      localStorage.setItem("rentalStartDate", startDate.toISOString());
-      localStorage.setItem("rentalEndDate", endDate.toISOString());
-      localStorage.setItem("rentalDuration", String(newDuration));
-    }
-  };
-
-  useEffect(() => {
-    const savedStart = localStorage.getItem("rentalStartDate");
-    const savedEnd = localStorage.getItem("rentalEndDate");
-    const savedDuration = localStorage.getItem("rentalDuration");
-
-    if (savedStart && savedEnd && savedDuration) {
-      setStartDate(new Date(savedStart));
-      setEndDate(new Date(savedEnd));
-      setDuration(parseInt(savedDuration));
-      setDatesValidated(true);
-    }
-  }, []);
-  const onChange = (dates: any) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
   const createOrder = () => {
+    const orderData = {
+      rental_start_date: startDate,
+      rental_end_date: endDate,
+      created_at: new Date(),
+      total_price: total,
+      products: items.map((item: any) => ({
+        quantity: item.quantity,
+        productOptionId: item.selectedOption.id,
+      })),
+      userId: user?.id ?? 0,
+    };
+
     createOrderMutation({
-      variables: {
-        data: {
-          rental_start_date: localStorage.getItem("rentalStartDate"),
-          rental_end_date: localStorage.getItem("rentalEndDate"),
-          created_at: new Date(),
-          total_price: total,
-          products: items.map((item: any) => ({
-            quantity: item.quantity,
-            productOptionId: item.selectedOption.id,
-          })),
-          userId: user?.id ?? 0,
-        },
+      variables: { data: orderData },
+      onCompleted: (data) => {
+        console.log("commande créé:", data);
+        toast.success(
+          "Votre commande a bien été enregistrée, vous allez être redirigée vers la page d'accueil"
+        );
+        setTimeout(() => {
+          localStorage.removeItem("cart");
+          navigate("/");
+          window.location.reload();
+        }, 3000);
+      },
+      onError: (error) => {
+        console.error("Une erreur est survenue:", error);
+        toast.error("Une erreur est survenue, veuillez réessayer");
       },
     });
-    console.log("Création de la commande...");
   };
 
   const handleSubmit = () => {
     createOrder();
-    localStorage.removeItem("cart");
-    localStorage.removeItem("rentalStartDate");
-    localStorage.removeItem("rentalEndDate");
-    localStorage.removeItem("rentalDuration");
-    window.location.reload();
   };
-
-  console.log(items);
 
   return (
     <>
@@ -103,30 +94,7 @@ const Cart = () => {
         <div>
           <div className="w-[90%] lg:w-[70%] m-auto">
             <div>
-              <h3 className="text-xl sm:text-1xl pt-6 font-semibold">
-                Vos dates de location :
-              </h3>
-              <div className="flex flex-col mt-4 mb-4">
-                <div className="flex flex-row items-center">
-                  <DatePicker
-                    placeholderText="Choisir une date"
-                    selected={startDate}
-                    onChange={onChange}
-                    startDate={startDate}
-                    endDate={endDate}
-                    dateFormat="dd/MM/yyyy"
-                    selectsRange
-                    className="border rounded-xl p-2 w-full"
-                  />
-                  <button
-                    className="text-sm lg:text-base bg-green text-white p-2 lg:pr-5 lg:pl-5 ml-5 lg:ml-15 rounded-xl"
-                    onClick={() => handleDuration(startDate, endDate)}
-                  >
-                    Valider les date
-                  </button>
-                </div>
-              </div>
-              {datesValidated ? (
+              {duration ? (
                 <p className="italic">
                   Vous souhaitez louer du {""}
                   <span className="font-bold">
@@ -189,7 +157,7 @@ const Cart = () => {
                         </button>
                       </div>
                       <div className="text-center mt-2 text-white">
-                        {duration === 0 ? (
+                        {!duration || duration === 0 ? (
                           <p>{item.price * item.quantity}€</p>
                         ) : (
                           <p>{item.price * item.quantity * duration}€</p>

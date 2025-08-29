@@ -91,6 +91,7 @@ const AdminOrder = () => {
         <table className="w-full border-collapse shadow-md bg-white rounded-lg overflow-hidden">
           <thead className="bg-gray-100 text-left text-sm text-gray-700">
             <tr>
+              <th className="px-4 py-3">N°</th>
               <th className="px-4 py-3">Client</th>
               <th className="px-4 py-3">Produits</th>
               <th className="px-4 py-3">Location</th>
@@ -106,6 +107,7 @@ const AdminOrder = () => {
                 key={idx}
                 className="border-t hover:bg-gray-50 transition-colors"
               >
+                <td className="px-4 py-3 text-sm">{order.id}</td>
                 <td className="px-4 py-3 text-sm">{order.user.email}</td>
 
                 <td className="px-4 py-3 text-sm">

@@ -9,6 +9,7 @@ import {
 } from "../generated/graphql-types";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { RentalDatesProvider } from "@/context/RentalDatesContext";
 
 // Créer un spy sur les fonctions
 vi.mock("../generated/graphql-types", () => ({
@@ -59,7 +60,9 @@ describe("Header", () => {
 
     render(
       <MemoryRouter>
-        <Header />
+        <RentalDatesProvider>
+          <Header />
+        </RentalDatesProvider>
       </MemoryRouter>
     );
 
@@ -80,7 +83,9 @@ describe("Header", () => {
 
     render(
       <MemoryRouter>
-        <Header />
+        <RentalDatesProvider>
+          <Header />
+        </RentalDatesProvider>
       </MemoryRouter>
     );
 
@@ -108,7 +113,9 @@ describe("Navbar", () => {
   it("should display all categories", async () => {
     render(
       <MemoryRouter>
-        <Navbar />
+        <RentalDatesProvider>
+          <Navbar />
+        </RentalDatesProvider>
       </MemoryRouter>
     );
 

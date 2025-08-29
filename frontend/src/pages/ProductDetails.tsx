@@ -100,6 +100,7 @@ const ProductDetails = () => {
                   Taille :
                 </label>
                 <select
+                  aria-label="Sélecteur d'options"
                   className="border rounded-md p-2 w-full"
                   value={selectedOption ? JSON.stringify(selectedOption) : ""}
                   onChange={(e) => {

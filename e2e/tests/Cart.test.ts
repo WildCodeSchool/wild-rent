@@ -2,35 +2,22 @@ import { test, expect } from "@playwright/test";
 
 const baseUrl = "http://localhost:7000";
 
-// Format de date pour le calendrier (choix des options du sélecteur)
-function formatDate(day: number): string {
-  const today = new Date();
-  const date = new Date(today.getFullYear(), today.getMonth(), day);
-  const weekday = date.toLocaleDateString("en-US", { weekday: "long" });
-  const month = date.toLocaleDateString("en-US", { month: "long" });
-  return `Choose ${weekday}, ${month} ${day}th,`;
-}
-
-const date16 = formatDate(16);
-const date19 = formatDate(19);
 
 test("Panier : ajout produit, sélection dates, modification quantité, suppression", async ({
   page,
 }) => {
   await page.goto(`${baseUrl}/produit/1`);
+  await page.getByRole('button', { name: 'Début de la location Fin de' }).click();
+  await page.getByRole('button', { name: 'Sunday, August 24th,' }).click();
+  await page.getByRole('button', { name: 'Sélectionnez une date' }).click();
+  await page.getByRole('button', { name: 'Wednesday, August 27th,' }).click();
+  await page.getByRole('button').nth(3).click();
 
-  await page.getByRole("combobox").selectOption('{"id":1,"size":"150 cm"}');
+    await page.getByLabel('Sélecteur d\'options').selectOption('{"id":1,"size":"150 cm"}');
 
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
 
   await page.getByRole("link", { name: "cart Mon panier (1)" }).click();
-
-  await page.goto(`${baseUrl}/panier`);
-
-  await page.getByRole("textbox", { name: "Choisir une date" }).click();
-  await page.getByRole("gridcell", { name: date16 }).click();
-  await page.getByRole("gridcell", { name: date19 }).click();
-  await page.getByRole("button", { name: "Valider les date" }).click();
 
   await expect(page.getByText("Total: 45€")).toBeVisible();
 
@@ -47,5 +34,5 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
   await page.getByRole("button", { name: "corbeille" }).click();
 
   // Vérifie que le panier est vide
-  await expect(page.getByText("Mon panier (0)")).toBeVisible();
+  await expect(page.getByText("Votre panier est vide")).toBeVisible();
 });

@@ -3,6 +3,7 @@ import { render, screen } from "@testing-library/react";
 import ProductDetails from "../pages/ProductDetails";
 import { GET_PRODUCT_BY_ID, WHO_AM_I } from "../graphql/queries";
 import "@testing-library/jest-dom";
+import { RentalDatesProvider } from "@/context/RentalDatesContext";
 
 const { id }: any = "1";
 const mocks = [
@@ -44,7 +45,9 @@ const mocks = [
 test("affiche le nom du produit", async () => {
   render(
     <MockedProvider mocks={mocks} addTypename={false}>
-      <ProductDetails />
+      <RentalDatesProvider>
+        <ProductDetails />
+      </RentalDatesProvider>
     </MockedProvider>
   );
 

@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import {
+  useGetAvailableProductForDatesQuery,
   useGetProductWithFiltersQuery,
   useGetTagsByCategoryQuery,
 } from "../generated/graphql-types";
@@ -13,10 +14,29 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { SelectRentalDates } from "@/components/SelectRentalDates";
+import { useRentalDates } from "@/hooks/useRentalDates";
+import { toUTCISOString } from "@/components/CategoryCarousel";
 
 function ProductsByCategories() {
   const location = useLocation();
   const { id, title, image } = location.state;
+  const { startDate, endDate } = useRentalDates();
+
+  const {
+    data: dataAvailable,
+    loading: loadingAvailable,
+    error: errorAvailable,
+    refetch: refetchAvailable,
+  } = useGetAvailableProductForDatesQuery({
+    variables: {
+      categoryId: id,
+      startDate: startDate ? toUTCISOString(startDate) : "",
+      endDate: endDate ? toUTCISOString(endDate) : "",
+      tags: [],
+    },
+    skip: !startDate || !endDate,
+  });
 
   const { data, loading, error, refetch } = useGetProductWithFiltersQuery({
     variables: {
@@ -31,14 +51,20 @@ function ProductsByCategories() {
       category: id,
     },
   });
-  const products = data?.getProductWithFilters;
+
+  let products;
+  if (startDate && endDate) {
+    products = dataAvailable?.getAvailableProductForDates;
+  } else {
+    products = data?.getProductWithFilters;
+  }
   const tags = tagsData?.getTagsByCategory;
 
-  if (loading) return <Loader />;
-  if (error) console.error(error);
+  if (loading || loadingAvailable) return <Loader />;
+  if (error || errorAvailable) console.error(error);
   return (
-    <div className="w-full">
-      <div className="w-full aspect-video md:aspect-[7/2] relative overflow-hidden flex flex-col justify-center items-center mb-5">
+    <div className="w-full flex flex-col items-center">
+      <div className="w-full aspect-video md:aspect-[7/2] relative overflow-hidden flex flex-col justify-center items-center mb-2">
         <img
           src={`/assets/images/categories/${image}`}
           className="object-cover w-full object-center"
@@ -48,6 +74,7 @@ function ProductsByCategories() {
           {title}
         </h1>
       </div>
+      <SelectRentalDates />
       <div className="flex flex-col sm:flex-row w-full px-5 lg:px-10 xl:px-20 mt-10 gap-10">
         <div className="w-full sm:w-1/4">
           <div className="sm:hidden flex flex-col">
@@ -60,7 +87,9 @@ function ProductsByCategories() {
                   {tags && (
                     <ProductFilters
                       tags={tags}
-                      refetch={refetch}
+                      refetch={
+                        startDate && endDate ? refetchAvailable : refetch
+                      }
                       categoryId={id}
                     />
                   )}
@@ -73,7 +102,11 @@ function ProductsByCategories() {
               Filtres
             </h2>
             {tags && (
-              <ProductFilters tags={tags} refetch={refetch} categoryId={id} />
+              <ProductFilters
+                tags={tags}
+                refetch={startDate && endDate ? refetchAvailable : refetch}
+                categoryId={id}
+              />
             )}
           </div>
         </div>

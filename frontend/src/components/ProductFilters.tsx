@@ -33,7 +33,7 @@ export function ProductFilters({
 }: {
   tags: tag[];
   refetch: any;
-  categoryId: number;
+  categoryId?: number;
 }) {
   const { startDate, endDate } = useRentalDates();
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -46,14 +46,24 @@ export function ProductFilters({
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     if (startDate && endDate) {
-      refetch({
-        categoryId: categoryId,
-        minPrice: data.priceRange[0],
-        maxPrice: data.priceRange[1],
-        tags: data.tags,
-        startDate: toUTCISOString(startDate),
-        endDate: toUTCISOString(endDate),
-      });
+      if (categoryId) {
+        refetch({
+          categoryId: categoryId,
+          minPrice: data.priceRange[0],
+          maxPrice: data.priceRange[1],
+          tags: data.tags,
+          startDate: toUTCISOString(startDate),
+          endDate: toUTCISOString(endDate),
+        });
+      } else {
+        refetch({
+          minPrice: data.priceRange[0],
+          maxPrice: data.priceRange[1],
+          tags: data.tags,
+          startDate: toUTCISOString(startDate),
+          endDate: toUTCISOString(endDate),
+        });
+      }
     } else {
       refetch({
         categoryId: categoryId,

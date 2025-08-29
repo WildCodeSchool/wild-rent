@@ -97,6 +97,8 @@ export class ProductResolver {
     @Arg("productId", {nullable: true}) productId?:number,
   ) {
 
+    
+
   const queryBuilder = ProductOption.createQueryBuilder("po")
     .leftJoinAndSelect("po.product", "product")
     .leftJoinAndSelect("product.category", "category")
@@ -181,6 +183,8 @@ export class ProductResolver {
     @Arg("maxPrice",  { nullable: true }) maxPrice?: number,
     @Arg("tags", () => [String], { nullable: true }) tags?: string[]
   ) {
+    console.log("args:", startDate, endDate, categoryId, keyword, minPrice, maxPrice, tags)
+
     const availableProductOptions = await this.getAvailableProductOptions(startDate, endDate, categoryId, keyword, minPrice, maxPrice, tags);
 
     // Extrait les Products disponibles à partir des products Options dispo

@@ -18,6 +18,7 @@ import ConfirmRegistration from "./pages/ConfirmRegistration";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
+import SearchArticle from "./pages/SearchArticle";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
             path="confirmation/enregistrement/:code?"
             element={<ConfirmRegistration />}
           />
+          <Route path="recherche" element={<SearchArticle />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHomepage />} />

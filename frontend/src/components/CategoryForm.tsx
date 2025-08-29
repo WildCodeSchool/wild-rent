@@ -1,10 +1,11 @@
 import { useCreateNewCategoryMutation } from "@/generated/graphql-types";
-import { useEffect, useState } from "react";
-import { FieldError, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 type CategoryFormData = {
   title: string;
-  image: FileList;
+  image: string;
 };
 
 const CategoryForm = () => {
@@ -12,10 +13,9 @@ const CategoryForm = () => {
   const {
     register, // pour lier les champs du formulaire
     handleSubmit, // fonction pour gérer la soumission
-    watch, // pour surveiller les changements de champs
+    setValue,
     formState: { errors }, // pour gérer les erreurs
   } = useForm<CategoryFormData>();
-  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
 
   const onSubmit = (formData: any) => {
     console.log(formData);
@@ -24,7 +24,7 @@ const CategoryForm = () => {
         variables: {
           data: {
             title: formData.title,
-            image: formData.image[0],
+            image: formData.image,
           },
         },
       });
@@ -32,61 +32,47 @@ const CategoryForm = () => {
       console.error("Erreur lors de la création de la catégorie :", error);
     }
   };
-  const image = watch("image");
-
-  useEffect(() => {
-    if (image && image[0]) {
-      const file = image[0];
-      const reader = new FileReader();
-      reader.onloadend = () => setPreview(reader.result);
-      reader.readAsDataURL(file);
-    } else {
-      setPreview(null);
-    }
-  }, [image]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div>
-        <label>Titre de la catégorie</label>
+        <label htmlFor="title" className="block font-semibold mb-1">
+          Titre
+        </label>
         <input
-          className="border border-gray-300 rounded p-2"
-          type="title"
+          id="title"
+          className="border p-2 rounded w-1/2 bg-white"
+          type="text"
           {...register("title", { required: "Catégorie requise" })}
         />
       </div>
-      {errors.title && <p>{(errors.title as FieldError).message}</p>}
-
+      {errors.title && <p>{errors.title.message}</p>}
       <div>
-        <label>Choisir une image</label>
+        <label className="block font-semibold mb-1">Image</label>
         <input
-          className="hover:bg-green border-green border-1 hover:text-white px-4 py-2 rounded bg-light-beige text-green transition mt-4 cursor-pointer"
+          id="file"
           type="file"
           accept="image/*"
-          {...register("image", {
-            required: "L'image est obligatoire",
-            validate: {
-              fileType: (files) =>
-                (files[0] &&
-                  ["image/jpeg", "image/png"].includes(files[0].type)) ||
-                "Format autorisé : JPG/PNG",
-              fileSize: (files) =>
-                (files[0] && files[0].size < 2 * 1024 * 1024) || // 2MB
-                "Image trop lourde (max 2 Mo)",
-            },
-          })}
+          className="border p-2 rounded w-1/2 bg-white"
+          onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
+            if (e.target.files) {
+              const formData = new FormData();
+              formData.append("file", e.target.files[0]);
+              try {
+                const result = await axios.post("/img", formData);
+                console.log(result);
+                setValue("image", result.data.filename);
+              } catch (error) {
+                console.error(error);
+                toast.error("Erreur lors de l'upload de l'image.");
+              }
+            }
+          }}
         />
-        {errors.image && <p>{(errors.image as FieldError)?.message}</p>}
       </div>
-      {preview && typeof preview === "string" && (
-        <div style={{ marginTop: "1rem" }}>
-          <p>Aperçu :</p>
-          <img src={preview} alt="Preview" style={{ width: 200 }} />
-        </div>
-      )}
-
+      {errors.image && <p>{errors.image.message}</p>}
       <button
-        className="hover:bg-green border-green border-1 hover:text-white px-4 py-2 rounded bg-light-beige text-green transition mt-4 cursor-pointer"
+        className="text-red-500 mt-5 border-1 rounded px-2 py-1 cursor-pointer"
         type="submit"
       >
         Envoyer

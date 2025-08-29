@@ -21,7 +21,6 @@ const AdminOrder = () => {
         variables: { deleteOrderId: orderId },
         refetchQueries: ["GetAllOrdersAndDetails"],
       });
-      console.log("Commande supprimée ✅");
     } catch (err) {
       console.error("Erreur de suppression ❌", err);
     }
@@ -33,7 +32,6 @@ const AdminOrder = () => {
         variables: { data: { id: orderId, status } },
         refetchQueries: ["GetAllOrdersAndDetails"],
       });
-      console.log("Statut modifié ✅");
     } catch (err) {
       console.error("Erreur lors du changement de statut ❌", err);
     }
@@ -56,7 +54,7 @@ const AdminOrder = () => {
 
   return (
     <>
-      <div className="flex gap-4 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-end gap-4 mb-4">
         <div>
           <label className="block text-sm font-medium mb-1">
             Filtrer par statut
@@ -87,102 +85,173 @@ const AdminOrder = () => {
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse shadow-md bg-white rounded-lg overflow-hidden">
-          <thead className="bg-gray-100 text-left text-sm text-gray-700">
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-[800px] sm:min-w-full table-auto border-collapse shadow-md bg-white rounded-lg">
+          <thead className="bg-gray-100 text-left text-sm text-gray-700 hidden md:table-header-group">
             <tr>
               <th className="px-4 py-3">N°</th>
               <th className="px-4 py-3">Client</th>
               <th className="px-4 py-3">Produits</th>
-              <th className="px-4 py-3">Location</th>
+              <th className="px-4 py-3 hidden md:table-cell">Location</th>
               <th className="px-4 py-3">Prix total</th>
               <th className="px-4 py-3">Statut</th>
-              <th className="px-4 py-3">Commandé le</th>
+              <th className="px-4 py-3 hidden md:table-cell">Commandé le</th>
               <th className="px-4 py-3">Action</th>
             </tr>
           </thead>
           <tbody>
             {filteredOrders?.map((order, idx) => (
-              <tr
-                key={idx}
-                className="border-t hover:bg-gray-50 transition-colors"
-              >
-                <td className="px-4 py-3 text-sm">{order.id}</td>
-                <td className="px-4 py-3 text-sm">{order.user.email}</td>
+              <>
+                {/* Mobile view */}
+                <tr
+                  key={`mobile-${idx}`}
+                  className="md:hidden border-b border-gray-200"
+                >
+                  <td colSpan={8} className="p-4">
+                    <details className="w-full">
+                      <summary className="cursor-pointer font-medium text-sm flex justify-between items-center">
+                        <span>
+                          #{order.id} — {order.user.email}
+                        </span>
+                        <span className="text-gray-500 text-xs">
+                          {new Date(order.created_at).toLocaleDateString()}
+                        </span>
+                      </summary>
+                      <div className="mt-3 space-y-2 text-sm text-gray-700">
+                        <div>
+                          <strong>Produits :</strong>
+                          {order.products_in_order.map((item, i) => (
+                            <div key={i}>
+                              {item.quantity}× {item.productOption.product.name}{" "}
+                              ({item.productOption.size})
+                            </div>
+                          ))}
+                        </div>
+                        <div>
+                          <strong>Location :</strong>
+                          <br />
+                          Début :{" "}
+                          {new Date(
+                            order.rental_start_date
+                          ).toLocaleDateString()}
+                          <br />
+                          Fin :{" "}
+                          {new Date(order.rental_end_date).toLocaleDateString()}
+                        </div>
+                        <div>
+                          <strong>Statut :</strong> {order.status}
+                        </div>
+                        <div>
+                          <strong>Prix total :</strong>{" "}
+                          <span className="text-green-600 font-semibold">
+                            {order.total_price.toFixed(2)} €
+                          </span>
+                        </div>
+                        <div className="pt-2 flex flex-wrap gap-2">
+                          {order.status === "PENDING" && (
+                            <button
+                              onClick={() => handleChange(order.id, "APPROVED")}
+                              className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                            >
+                              Approuver
+                            </button>
+                          )}
+                          {order.status === "APPROVED" && (
+                            <button
+                              onClick={() => handleChange(order.id, "CANCELED")}
+                              className="bg-orange-600 text-white px-3 py-1 rounded hover:bg-orange-700"
+                            >
+                              Annuler
+                            </button>
+                          )}
+                          {order.status === "CANCELED" && (
+                            <button
+                              onClick={() => handleChange(order.id, "PENDING")}
+                              className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                            >
+                              Restaurer
+                            </button>
+                          )}
+                          <button
+                            onClick={() => handleDelete(order.id)}
+                            className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      </div>
+                    </details>
+                  </td>
+                </tr>
 
-                <td className="px-4 py-3 text-sm">
-                  {order.products_in_order.map((item, i) => (
-                    <div key={i} className="mb-1">
-                      {item.quantity}× {item.productOption.product.name} (
-                      {item.productOption.size})
+                {/* Desktop view */}
+                <tr
+                  key={`desktop-${idx}`}
+                  className="hidden md:table-row border-t hover:bg-gray-50 transition-colors"
+                >
+                  <td className="px-4 py-3 text-sm">{order.id}</td>
+                  <td className="px-4 py-3 text-sm">{order.user.email}</td>
+                  <td className="px-4 py-3 text-sm">
+                    {order.products_in_order.map((item, i) => (
+                      <div key={i} className="mb-1">
+                        {item.quantity}× {item.productOption.product.name} (
+                        {item.productOption.size})
+                      </div>
+                    ))}
+                  </td>
+                  <td className="px-4 py-3 text-sm hidden md:table-cell">
+                    <div>
+                      <strong>Début : </strong>
+                      {new Date(order.rental_start_date).toLocaleDateString()}
                     </div>
-                  ))}
-                </td>
-
-                <td className="px-4 py-3 text-sm">
-                  <div>
-                    <strong>Début : </strong>
-                    {new Date(order.rental_start_date).toLocaleDateString()}
-                  </div>
-                  <div>
-                    <strong>Fin : </strong>
-                    {new Date(order.rental_end_date).toLocaleDateString()}
-                  </div>
-                </td>
-
-                <td className="px-4 py-3 text-sm font-semibold text-green-600">
-                  {order.total_price.toFixed(2)} €
-                </td>
-
-                <td className="px-4 py-3 text-sm uppercase">{order.status}</td>
-
-                <td className="px-4 py-3 text-sm">
-                  {new Date(order.created_at).toLocaleDateString()}
-                </td>
-
-                <td className="px-4 py-3 text-sm">
-                  {(() => {
-                    switch (order.status) {
-                      case "PENDING":
-                        return (
-                          <button
-                            onClick={() => handleChange(order.id, "APPROVED")}
-                            className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition mr-1"
-                          >
-                            Approuver
-                          </button>
-                        );
-                      case "APPROVED":
-                        return (
-                          <button
-                            onClick={() => handleChange(order.id, "CANCELED")}
-                            className="bg-orange-600 text-white px-3 py-1 rounded hover:bg-orange-700 transition mr-1"
-                          >
-                            Annuler
-                          </button>
-                        );
-                      case "CANCELED":
-                        return (
-                          <button
-                            onClick={() => handleChange(order.id, "PENDING")}
-                            className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition mr-1"
-                          >
-                            Restaurer
-                          </button>
-                        );
-                      default:
-                        return null;
-                    }
-                  })()}
-
-                  <button
-                    onClick={() => handleDelete(order.id)}
-                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
-                  >
-                    Supprimer
-                  </button>
-                </td>
-              </tr>
+                    <div>
+                      <strong>Fin : </strong>
+                      {new Date(order.rental_end_date).toLocaleDateString()}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-sm font-semibold text-green-600">
+                    {order.total_price.toFixed(2)} €
+                  </td>
+                  <td className="px-4 py-3 text-sm uppercase">
+                    {order.status}
+                  </td>
+                  <td className="px-4 py-3 text-sm hidden md:table-cell">
+                    {new Date(order.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-3 text-sm space-y-1 sm:space-y-0 sm:space-x-1 sm:flex sm:flex-wrap">
+                    {order.status === "PENDING" && (
+                      <button
+                        onClick={() => handleChange(order.id, "APPROVED")}
+                        className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                      >
+                        Approuver
+                      </button>
+                    )}
+                    {order.status === "APPROVED" && (
+                      <button
+                        onClick={() => handleChange(order.id, "CANCELED")}
+                        className="bg-orange-600 text-white px-3 py-1 rounded hover:bg-orange-700"
+                      >
+                        Annuler
+                      </button>
+                    )}
+                    {order.status === "CANCELED" && (
+                      <button
+                        onClick={() => handleChange(order.id, "PENDING")}
+                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                      >
+                        Restaurer
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleDelete(order.id)}
+                      className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                    >
+                      Supprimer
+                    </button>
+                  </td>
+                </tr>
+              </>
             ))}
           </tbody>
         </table>

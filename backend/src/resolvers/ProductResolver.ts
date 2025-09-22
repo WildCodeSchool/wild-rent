@@ -66,6 +66,7 @@ export class ProductResolver {
     @Arg("categoryId") categoryId: number,
     @Arg("minPrice") minPrice: number,
     @Arg("maxPrice") maxPrice: number,
+    @Arg("keyword") keyword: string,
     @Arg("tags", () => [String]) tags: string[]
   ) {
     const queryBuilder = Product.createQueryBuilder("product")
@@ -75,6 +76,11 @@ export class ProductResolver {
       .where("product.categoryId = :categoryId", { categoryId: categoryId })
       .andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
       .andWhere("product.price >= :minPrice", { minPrice: minPrice });
+
+
+    if (keyword.length > 0) {
+      queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
+    }
 
     if (tags && tags.length > 0) {
       queryBuilder.andWhere("tag.label IN (:...tags)", { tags });

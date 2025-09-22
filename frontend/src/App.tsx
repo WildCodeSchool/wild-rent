@@ -19,7 +19,6 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
 import AdminOrder from "./pages/AdminOrder";
-import SearchArticle from "./pages/SearchArticle";
 
 function App() {
   return (
@@ -28,7 +27,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route
-            path="products/category/:title"
+            path="produits/categorie/:title"
             element={<ProductsByCategories />}
           />
           <Route path="produit/:id" element={<ProductDetails />} />
@@ -43,7 +42,6 @@ function App() {
             path="confirmation/enregistrement/:code?"
             element={<ConfirmRegistration />}
           />
-          <Route path="recherche" element={<SearchArticle />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<AdminHomepage />} />

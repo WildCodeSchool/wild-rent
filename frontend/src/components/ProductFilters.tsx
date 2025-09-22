@@ -15,7 +15,7 @@ import {
 import { PriceRangeSlider } from "./PriceRangeSlider";
 import { useRentalDates } from "@/hooks/useRentalDates";
 import { toUTCISOString } from "./CategoryCarousel";
-
+import { Input } from "./ui/input";
 
 type tag = {
   id: number;
@@ -25,6 +25,7 @@ type tag = {
 const FormSchema = z.object({
   tags: z.array(z.string()),
   priceRange: z.tuple([z.number(), z.number()]),
+  keyword: z.string(),
 });
 
 export function ProductFilters({
@@ -34,7 +35,7 @@ export function ProductFilters({
 }: {
   tags: tag[];
   refetch: any;
-  categoryId?: number;
+  categoryId: number;
 }) {
   const { startDate, endDate } = useRentalDates();
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -42,34 +43,26 @@ export function ProductFilters({
     defaultValues: {
       tags: [],
       priceRange: [0, 50],
+      keyword: "",
     },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     if (startDate && endDate) {
-      if (categoryId) {
-        refetch({
-          categoryId: categoryId,
-          minPrice: data.priceRange[0],
-          maxPrice: data.priceRange[1],
-          tags: data.tags,
-          startDate: toUTCISOString(startDate),
-          endDate: toUTCISOString(endDate),
-        });
-      } else {
-        refetch({
-          minPrice: data.priceRange[0],
-          maxPrice: data.priceRange[1],
-          tags: data.tags,
-          startDate: toUTCISOString(startDate),
-          endDate: toUTCISOString(endDate),
-        });
-      }
+      refetch({
+        minPrice: data.priceRange[0],
+        maxPrice: data.priceRange[1],
+        tags: data.tags,
+        keyword: data.keyword,
+        startDate: toUTCISOString(startDate),
+        endDate: toUTCISOString(endDate),
+      });
     } else {
       refetch({
         categoryId: categoryId,
         minPrice: data.priceRange[0],
         maxPrice: data.priceRange[1],
+        keyword: data.keyword,
         tags: data.tags,
       });
     }
@@ -79,6 +72,7 @@ export function ProductFilters({
     const defaultValues = {
       tags: [],
       priceRange: [0, 50] as [number, number],
+      keyword: "",
     };
 
     form.reset(defaultValues);
@@ -89,6 +83,7 @@ export function ProductFilters({
         minPrice: defaultValues.priceRange[0],
         maxPrice: defaultValues.priceRange[1],
         tags: defaultValues.tags,
+        keyword: defaultValues.keyword,
         startDate: toUTCISOString(startDate),
         endDate: toUTCISOString(endDate),
       });
@@ -98,6 +93,7 @@ export function ProductFilters({
         minPrice: defaultValues.priceRange[0],
         maxPrice: defaultValues.priceRange[1],
         tags: defaultValues.tags,
+        keyword: defaultValues.keyword,
       });
     }
   }
@@ -105,6 +101,26 @@ export function ProductFilters({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="keyword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-green font-semibold text-lg lg:text-xl mb-3">
+                Rechercher un produit:
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Recherche par mot clé..."
+                  type=""
+                  className="border-green/20"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="tags"

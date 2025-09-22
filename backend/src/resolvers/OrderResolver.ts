@@ -36,6 +36,20 @@ export class OrderResolver {
     return order;
   }
 
+  @Query(() => [Order])
+  async getOrdersByUserId(@Arg("id") id: number) {
+    const user = await User.findOneByOrFail({ id });
+    return await Order.find({
+      where: { user },
+      relations: [
+        "products_in_order",
+        "products_in_order.productOption",
+        "products_in_order.productOption.product",
+        "user",
+      ],
+    });
+  }
+
   @Mutation(() => Order)
   async createNewOrder(@Arg("data") data: OrderInput) {
     const user = await User.findOne({ where: { id: data.userId } });

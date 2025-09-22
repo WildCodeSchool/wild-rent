@@ -27,7 +27,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route
-            path="products/category/:title"
+            path="produits/categorie/:title"
             element={<ProductsByCategories />}
           />
           <Route path="produit/:id" element={<ProductDetails />} />
@@ -47,10 +47,6 @@ function App() {
           <Route index element={<AdminHomepage />} />
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
-          {/* <Route
-            path="utilisateurs/en-attente"
-            element={<AdminPendingUsers />}
-          /> */}
           <Route path="commandes" element={<AdminOrder />} />
         </Route>
       </Routes>

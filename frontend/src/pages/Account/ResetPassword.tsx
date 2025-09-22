@@ -1,38 +1,27 @@
+import { ResetPasswordInput, useResetPasswordMutation } from "@/generated/graphql-types";
+import { JSX } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { Dispatch, JSX, SetStateAction } from "react";
-import {
-  ChangePasswordInput,
-  useChangePasswordMutation,
-} from "@/generated/graphql-types";
 
 type FormData = {
-  old_password: string;
   new_password: string;
   password_confirmation: string;
 };
 
-type PasswordFormProps = {
-  setShowPasswordForm: Dispatch<SetStateAction<boolean>>;
-};
-
-function PasswordForm({ setShowPasswordForm }: PasswordFormProps): JSX.Element {
+function ResetPassword(): JSX.Element {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
 
-  const [changePassword] = useChangePasswordMutation();
+  const [resetPassword] = useResetPasswordMutation();
 
-  const onSubmit: SubmitHandler<ChangePasswordInput> = async (
-    data: FormData
-  ) => {
-    await changePassword({
+  const onSubmit: SubmitHandler<ResetPasswordInput> = async (data: FormData) => {
+    await resetPassword({
       variables: { data },
       onCompleted: async () => {
         toast.success("Mot de passe changé avec succès !");
-        setShowPasswordForm(false);
       },
       onError: (error) => {
         console.error("error", error);
@@ -42,22 +31,6 @@ function PasswordForm({ setShowPasswordForm }: PasswordFormProps): JSX.Element {
 
   return (
     <form className="space-y-4 mt-4 max-w-md" onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label className="block text-sm text-gray-600">
-          Ancien mot de passe
-        </label>
-        <input
-          type="password"
-          {...register("old_password", {
-            required: "Ce champ est requis",
-          })}
-          className="w-full border rounded px-3 py-2"
-        />
-        {errors.old_password && (
-          <p className="text-red-600 text-sm">{errors.old_password.message}</p>
-        )}
-      </div>
-
       <div>
         <label className="block text-sm text-gray-600">
           Nouveau mot de passe
@@ -106,4 +79,4 @@ function PasswordForm({ setShowPasswordForm }: PasswordFormProps): JSX.Element {
   );
 }
 
-export default PasswordForm;
+export default ResetPassword;

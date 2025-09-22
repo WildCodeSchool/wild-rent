@@ -81,3 +81,12 @@ export class ChangePasswordInput {
   @Field()
   password_confirmation: string;
 }
+
+@InputType()
+export class ResetPasswordInput {
+  @Field()
+  new_password: string;
+
+  @Field()
+  password_confirmation: string;
+}

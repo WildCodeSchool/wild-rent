@@ -19,6 +19,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
 import AdminOrder from "./pages/AdminOrder";
+import AccountOrder from "./pages/Account/AccountOrder";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="produit/:id" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
           <Route path="moncompte" element={<AccountDetails />} />
+          <Route path="moncompte/mes-commandes" element={<AccountOrder />} />
           <Route path="panier" element={<Cart />} />
           <Route path="enregistrement" element={<Register />} />
           <Route path="RGPD" element={<PrivacyPolicy />} />

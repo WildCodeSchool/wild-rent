@@ -27,10 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route
-            path="produits/categorie/:title"
-            element={<ProductsByCategories />}
-          />
+          <Route path="categorie/:title" element={<ProductsByCategories />} />
           <Route path="produit/:id" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
           <Route path="moncompte" element={<AccountDetails />} />

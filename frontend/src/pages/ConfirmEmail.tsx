@@ -29,8 +29,6 @@ const ConfirmEmailPage = () => {
         })
     };
 
-    const inputRegisterClasses = "w-full px-4 py-2 border text-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400";
-
     return (
         <>
             <h2 className="text-2xl pt-10 font-semibold text-center text-gray-600 mb-4">Cliquez sur le bouton ci-dessous pour créer votre compte Wild Rent !</h2>
@@ -38,7 +36,6 @@ const ConfirmEmailPage = () => {
                 <input
                     defaultValue={code}
                     type="hidden"
-                    className={inputRegisterClasses}
                     {...register("code", { required: true })}
                 />
                 {errors.code && <span>This field is required</span>}

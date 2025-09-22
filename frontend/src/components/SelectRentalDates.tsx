@@ -100,6 +100,7 @@ export function SelectRentalDates() {
       <button
         className="p-2 sm:p-3.5 my-2 sm:my-0 flex items-center w-full justify-center gap-2 rounded-md sm:rounded-full bg-green hover:cursor-pointer text-white hover:bg-white hover:text-black "
         onClick={() => changeContextDates(startDate, endDate)}
+        aria-label="datebutton"
       >
         <Search size={20} />
         <p className="sm:hidden text-sm">Voir les produits </p>

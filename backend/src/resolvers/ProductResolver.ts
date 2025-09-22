@@ -66,6 +66,7 @@ export class ProductResolver {
     @Arg("categoryId") categoryId: number,
     @Arg("minPrice") minPrice: number,
     @Arg("maxPrice") maxPrice: number,
+    @Arg("keyword") keyword: string,
     @Arg("tags", () => [String]) tags: string[]
   ) {
     const queryBuilder = Product.createQueryBuilder("product")
@@ -75,6 +76,11 @@ export class ProductResolver {
       .where("product.categoryId = :categoryId", { categoryId: categoryId })
       .andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
       .andWhere("product.price >= :minPrice", { minPrice: minPrice });
+
+
+    if (keyword.length > 0) {
+      queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
+    }
 
     if (tags && tags.length > 0) {
       queryBuilder.andWhere("tag.label IN (:...tags)", { tags });
@@ -96,6 +102,8 @@ export class ProductResolver {
     @Arg("tags", () => [String],  { nullable: true }) tags?: string[],
     @Arg("productId", {nullable: true}) productId?:number,
   ) {
+
+    
 
   const queryBuilder = ProductOption.createQueryBuilder("po")
     .leftJoinAndSelect("po.product", "product")
@@ -181,6 +189,8 @@ export class ProductResolver {
     @Arg("maxPrice",  { nullable: true }) maxPrice?: number,
     @Arg("tags", () => [String], { nullable: true }) tags?: string[]
   ) {
+    console.log("args:", startDate, endDate, categoryId, keyword, minPrice, maxPrice, tags)
+
     const availableProductOptions = await this.getAvailableProductOptions(startDate, endDate, categoryId, keyword, minPrice, maxPrice, tags);
 
     // Extrait les Products disponibles à partir des products Options dispo

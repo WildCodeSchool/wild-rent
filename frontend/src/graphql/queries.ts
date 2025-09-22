@@ -33,12 +33,14 @@ export const GET_PRODUCTS_BY_FILTERS = gql`
     $minPrice: Float!
     $categoryId: Float!
     $tags: [String!]!
+    $keyword: String!
   ) {
     getProductWithFilters(
       maxPrice: $maxPrice
       minPrice: $minPrice
       categoryId: $categoryId
       tags: $tags
+      keyword: $keyword
     ) {
       category {
         title

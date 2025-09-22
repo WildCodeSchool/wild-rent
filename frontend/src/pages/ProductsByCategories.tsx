@@ -33,6 +33,7 @@ function ProductsByCategories() {
       categoryId: id,
       startDate: startDate ? toUTCISOString(startDate) : "",
       endDate: endDate ? toUTCISOString(endDate) : "",
+      keyword: "",
       tags: [],
     },
     skip: !startDate || !endDate,
@@ -43,6 +44,7 @@ function ProductsByCategories() {
       categoryId: id,
       minPrice: 0,
       maxPrice: 500,
+      keyword: "",
       tags: [],
     },
   });
@@ -113,7 +115,7 @@ function ProductsByCategories() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-5 sm:w-3/4 w-full">
           {products &&
             products.map((product) => (
-              <div className="aspect-square">
+              <div className="aspect-square" key={product.id}>
                 <ItemCard product={product} />
               </div>
             ))}

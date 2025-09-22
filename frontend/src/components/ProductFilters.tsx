@@ -16,6 +16,7 @@ import { PriceRangeSlider } from "./PriceRangeSlider";
 import { useRentalDates } from "@/hooks/useRentalDates";
 import { toUTCISOString } from "./CategoryCarousel";
 
+
 type tag = {
   id: number;
   label: string;

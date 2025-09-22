@@ -83,6 +83,18 @@ export const DELETE_USER = gql`
   }
 `;
 
+export const DELETE_ORDER_BY_ID = gql`
+  mutation DeleteOrderById($deleteOrderId: Float!) {
+    deleteOrderById(id: $deleteOrderId)
+  }
+`;
+
+export const APPROVED_ORDER_BY_ID = gql`
+  mutation approvedOrderById($data: ChangeOrderStatusInput!) {
+    changeStatusOrderById(data: $data)
+  }
+`;
+
 export const EDIT_USER = gql`
   mutation EditUser($data: UpdateOrCreateUserInput!) {
     editUser(data: $data) {

@@ -18,6 +18,7 @@ import ConfirmRegistration from "./pages/ConfirmRegistration";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
+import AdminOrder from "./pages/AdminOrder";
 import SearchArticle from "./pages/SearchArticle";
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
           <Route index element={<AdminHomepage />} />
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
+          <Route path="commandes" element={<AdminOrder />} />
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

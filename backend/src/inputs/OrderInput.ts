@@ -21,3 +21,12 @@ export class OrderInput {
   @Field(() => [ProductInOrderInput])
   products: ProductInOrderInput[];
 }
+
+@InputType()
+export class ChangeOrderStatusInput {
+  @Field()
+  id: number;
+
+  @Field()
+  status: string;
+}

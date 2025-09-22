@@ -337,3 +337,17 @@ export const GET_AVAILABLE_PRODUCT_OPTION = gql `
     }
 }
 `
+export const GET_INVENTORY = gql`
+  query GetInventoryByOptions($endDate: String!, $startDate: String!) {
+  getInventoryByOptions(endDate: $endDate, startDate: $startDate) {
+    option
+    product
+    reservations {
+      reservedQty
+      date
+      availableQty
+    }
+    totalQty
+  }
+}
+`;

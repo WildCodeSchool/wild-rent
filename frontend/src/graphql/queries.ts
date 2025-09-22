@@ -33,12 +33,14 @@ export const GET_PRODUCTS_BY_FILTERS = gql`
     $minPrice: Float!
     $categoryId: Float!
     $tags: [String!]!
+    $keyword: String!
   ) {
     getProductWithFilters(
       maxPrice: $maxPrice
       minPrice: $minPrice
       categoryId: $categoryId
       tags: $tags
+      keyword: $keyword
     ) {
       category {
         title
@@ -259,6 +261,29 @@ export const GET_ALL_ORDERS_AND_DETAILS = gql`
   }
 `;
 
+export const GET_ALL_ORDERS_BY_USER_ID = gql`
+  query GetOrdersByUserId($id: Float!) {
+    getOrdersByUserId(id: $id) {
+      created_at
+      id
+      status
+      total_price
+      rental_end_date
+      rental_start_date
+      products_in_order {
+        quantity
+        productOption {
+          product {
+            name
+            price
+          }
+          size
+        }
+      }
+    }
+  }
+`;
+
 export const GET_ALL_TEMP_USERS = gql`
   query GetTempUsers {
     getAllTempUsers {
@@ -302,8 +327,24 @@ export const SEARCH_PRODUCTS_BY_OPTIONS = gql`
 `;
 
 export const GET_AVAILABLE_PRODUCTS = gql`
-  query GetAvailableProductForDates($endDate: DateTimeISO!, $startDate: DateTimeISO!, $categoryId: Float, $keyword: String, $minPrice: Float, $maxPrice: Float, $tags: [String!]!) {
-    getAvailableProductForDates(endDate: $endDate, startDate: $startDate, categoryId: $categoryId, keyword: $keyword, minPrice: $minPrice, maxPrice: $maxPrice, tags: $tags) {
+  query GetAvailableProductForDates(
+    $endDate: DateTimeISO!
+    $startDate: DateTimeISO!
+    $categoryId: Float
+    $keyword: String
+    $minPrice: Float
+    $maxPrice: Float
+    $tags: [String!]!
+  ) {
+    getAvailableProductForDates(
+      endDate: $endDate
+      startDate: $startDate
+      categoryId: $categoryId
+      keyword: $keyword
+      minPrice: $minPrice
+      maxPrice: $maxPrice
+      tags: $tags
+    ) {
       name
       id
       pictures {
@@ -321,12 +362,20 @@ export const GET_AVAILABLE_PRODUCTS = gql`
         label
       }
     }
-}
-`
+  }
+`;
 
-export const GET_AVAILABLE_PRODUCT_OPTION = gql `
-  query GetAvailableProductOptions($productId: Float, $endDate: DateTimeISO!, $startDate: DateTimeISO!) {
-    getAvailableProductOptions(productId: $productId, endDate: $endDate, startDate: $startDate) {
+export const GET_AVAILABLE_PRODUCT_OPTION = gql`
+  query GetAvailableProductOptions(
+    $productId: Float
+    $endDate: DateTimeISO!
+    $startDate: DateTimeISO!
+  ) {
+    getAvailableProductOptions(
+      productId: $productId
+      endDate: $endDate
+      startDate: $startDate
+    ) {
       availableQuantity
       id
       product {

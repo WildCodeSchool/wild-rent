@@ -19,6 +19,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
 import AdminOrder from "./pages/AdminOrder";
+import AccountOrder from "./pages/Account/AccountOrder";
 
 function App() {
   return (
@@ -27,12 +28,13 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route
-            path="products/category/:title"
+            path="produits/categorie/:title"
             element={<ProductsByCategories />}
           />
           <Route path="produit/:id" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
           <Route path="moncompte" element={<AccountDetails />} />
+          <Route path="moncompte/mes-commandes" element={<AccountOrder />} />
           <Route path="panier" element={<Cart />} />
           <Route path="enregistrement" element={<Register />} />
           <Route path="RGPD" element={<PrivacyPolicy />} />
@@ -47,10 +49,6 @@ function App() {
           <Route index element={<AdminHomepage />} />
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
-          {/* <Route
-            path="utilisateurs/en-attente"
-            element={<AdminPendingUsers />}
-          /> */}
           <Route path="commandes" element={<AdminOrder />} />
         </Route>
       </Routes>

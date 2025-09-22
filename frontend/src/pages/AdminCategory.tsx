@@ -1,3 +1,4 @@
+import CategoryList from "../components/categoryList";
 import CategoryForm from "../components/CategoryForm";
 
 const AdminCategory = () => {
@@ -7,8 +8,9 @@ const AdminCategory = () => {
         <h2 className="font-bold text-3xl mb-6">Nouvelle catégorie</h2>
         <CategoryForm />
       </section>
-      <section>
+      <section className="mt-12">
         <h2 className="font-bold text-3xl mb-6">Modifier une catégorie</h2>
+        <CategoryList />
       </section>
     </div>
   );

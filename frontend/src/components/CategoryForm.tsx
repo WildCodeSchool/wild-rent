@@ -2,6 +2,7 @@ import { useCreateNewCategoryMutation } from "@/generated/graphql-types";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 type CategoryFormData = {
   title: string;
@@ -9,32 +10,34 @@ type CategoryFormData = {
 };
 
 const CategoryForm = () => {
-  const [createNewCategory] = useCreateNewCategoryMutation();
+  const [createNewCategory, { loading }] = useCreateNewCategoryMutation();
+  const [preview, setPreview] = useState<string | null>(null);
+
   const {
-    register, // pour lier les champs du formulaire
-    handleSubmit, // fonction pour gérer la soumission
+    register,
+    handleSubmit,
     setValue,
-    formState: { errors }, // pour gérer les erreurs
+    watch,
+    formState: { errors },
   } = useForm<CategoryFormData>();
 
-  const onSubmit = (formData: any) => {
-    console.log(formData);
+  const onSubmit = async (formData: CategoryFormData) => {
     try {
-      createNewCategory({
+      await createNewCategory({
         variables: {
-          data: {
-            title: formData.title,
-            image: formData.image,
-          },
+          data: formData,
         },
       });
+      toast.success("Catégorie créée avec succès !");
     } catch (error) {
       console.error("Erreur lors de la création de la catégorie :", error);
+      toast.error("Impossible de créer la catégorie.");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {/* Champ Titre */}
       <div>
         <label htmlFor="title" className="block font-semibold mb-1">
           Titre
@@ -45,8 +48,12 @@ const CategoryForm = () => {
           type="text"
           {...register("title", { required: "Catégorie requise" })}
         />
+        {errors.title && (
+          <p className="text-red-500 text-sm">{errors.title.message}</p>
+        )}
       </div>
-      {errors.title && <p>{errors.title.message}</p>}
+
+      {/* Upload Image */}
       <div>
         <label className="block font-semibold mb-1">Image</label>
         <input
@@ -56,12 +63,18 @@ const CategoryForm = () => {
           className="border p-2 rounded w-1/2 bg-white"
           onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
             if (e.target.files) {
+              const file = e.target.files[0];
+
+              const previewUrl = URL.createObjectURL(file);
+              setValue("image", previewUrl);
+
               const formData = new FormData();
-              formData.append("file", e.target.files[0]);
+              formData.append("file", file);
               try {
-                const result = await axios.post("/img", formData);
-                console.log(result);
-                setValue("image", result.data.filename);
+                const res = await axios.post("/img", formData);
+                console.log(res.data);
+                setValue("image", res.data.filename);
+                setPreview(URL.createObjectURL(file));
               } catch (error) {
                 console.error(error);
                 toast.error("Erreur lors de l'upload de l'image.");
@@ -69,15 +82,30 @@ const CategoryForm = () => {
             }
           }}
         />
+        {errors.image && (
+          <p className="text-red-500 text-sm">{errors.image.message}</p>
+        )}
+
+        {/* Preview de l’image */}
+        {(preview || watch("image")) && (
+          <img
+            src={preview || `/uploads/${watch("image")}`}
+            alt="Aperçu"
+            className="mt-2 w-32 h-32 object-cover border rounded"
+          />
+        )}
       </div>
-      {errors.image && <p>{errors.image.message}</p>}
+
+      {/* Bouton Submit */}
       <button
-        className="text-red-500 mt-5 border-1 rounded px-2 py-1 cursor-pointer"
+        className="text-white bg-red-500 mt-5 rounded px-4 py-2 cursor-pointer disabled:opacity-50"
         type="submit"
+        disabled={loading}
       >
-        Envoyer
+        {loading ? "Envoi en cours..." : "Envoyer"}
       </button>
     </form>
   );
 };
+
 export default CategoryForm;

@@ -13,6 +13,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { PriceRangeSlider } from "./PriceRangeSlider";
+import { useRentalDates } from "@/hooks/useRentalDates";
+import { toUTCISOString } from "./CategoryCarousel";
+import { Input } from "./ui/input";
 
 type tag = {
   id: number;
@@ -22,6 +25,7 @@ type tag = {
 const FormSchema = z.object({
   tags: z.array(z.string()),
   priceRange: z.tuple([z.number(), z.number()]),
+  keyword: z.string(),
 });
 
 export function ProductFilters({
@@ -33,44 +37,90 @@ export function ProductFilters({
   refetch: any;
   categoryId: number;
 }) {
+  const { startDate, endDate } = useRentalDates();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       tags: [],
       priceRange: [0, 50],
+      keyword: "",
     },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-
-    refetch({
-      categoryId: categoryId,
-      minPrice: data.priceRange[0],
-      maxPrice: data.priceRange[1],
-      tags: data.tags,
-    });
+    if (startDate && endDate) {
+      refetch({
+        minPrice: data.priceRange[0],
+        maxPrice: data.priceRange[1],
+        tags: data.tags,
+        keyword: data.keyword,
+        startDate: toUTCISOString(startDate),
+        endDate: toUTCISOString(endDate),
+      });
+    } else {
+      refetch({
+        categoryId: categoryId,
+        minPrice: data.priceRange[0],
+        maxPrice: data.priceRange[1],
+        keyword: data.keyword,
+        tags: data.tags,
+      });
+    }
   }
 
   function reset() {
     const defaultValues = {
       tags: [],
       priceRange: [0, 50] as [number, number],
+      keyword: "",
     };
 
     form.reset(defaultValues);
 
-    refetch({
-      categoryId: categoryId,
-      minPrice: defaultValues.priceRange[0],
-      maxPrice: defaultValues.priceRange[1],
-      tags: defaultValues.tags,
-    });
+    if (startDate && endDate) {
+      refetch({
+        categoryId: categoryId,
+        minPrice: defaultValues.priceRange[0],
+        maxPrice: defaultValues.priceRange[1],
+        tags: defaultValues.tags,
+        keyword: defaultValues.keyword,
+        startDate: toUTCISOString(startDate),
+        endDate: toUTCISOString(endDate),
+      });
+    } else {
+      refetch({
+        categoryId: categoryId,
+        minPrice: defaultValues.priceRange[0],
+        maxPrice: defaultValues.priceRange[1],
+        tags: defaultValues.tags,
+        keyword: defaultValues.keyword,
+      });
+    }
   }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="keyword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-green font-semibold text-lg lg:text-xl mb-3">
+                Rechercher un produit:
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Recherche par mot clé..."
+                  type=""
+                  className="border-green/20"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="tags"
@@ -136,7 +186,7 @@ export function ProductFilters({
             <Button
               type="button"
               variant={"outline"}
-              className="text-base cursor-pointer w-full text-sm md:text-base"
+              className="cursor-pointer w-full text-sm md:text-base"
               onClick={() => reset()}
             >
               Réinitialiser
@@ -145,7 +195,7 @@ export function ProductFilters({
           <div className="w-1/2">
             <Button
               type="submit"
-              className="bg-green hover:bg-green/60 text-base cursor-pointer w-full text-sm md:text-base"
+              className="bg-green hover:bg-green/60 cursor-pointer w-full text-sm md:text-base"
             >
               Appliquer
             </Button>

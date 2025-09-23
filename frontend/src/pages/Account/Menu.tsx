@@ -39,7 +39,7 @@ function Menu({ setShowForms }: MenuProps) {
       </div>
       <div
         className="text-green-900 cursor-pointer"
-        onClick={() => navigate("/mes-commandes")}
+        onClick={() => navigate("/moncompte/mes-commandes")}
       >
         Mes commandes
       </div>

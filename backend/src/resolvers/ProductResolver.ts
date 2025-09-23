@@ -7,6 +7,7 @@ import { Category } from "../entities/Category";
 import { FindManyOptions, In, Raw } from "typeorm";
 import { merge } from "../assets/utils";
 import { Tag } from "../entities/Tag";
+import { ProductInOrder } from "../entities/ProductInOrder";
 
 @Resolver(Product)
 export class ProductResolver {
@@ -65,6 +66,7 @@ export class ProductResolver {
     @Arg("categoryId") categoryId: number,
     @Arg("minPrice") minPrice: number,
     @Arg("maxPrice") maxPrice: number,
+    @Arg("keyword") keyword: string,
     @Arg("tags", () => [String]) tags: string[]
   ) {
     const queryBuilder = Product.createQueryBuilder("product")
@@ -75,6 +77,11 @@ export class ProductResolver {
       .andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
       .andWhere("product.price >= :minPrice", { minPrice: minPrice });
 
+
+    if (keyword.length > 0) {
+      queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
+    }
+
     if (tags && tags.length > 0) {
       queryBuilder.andWhere("tag.label IN (:...tags)", { tags });
     }
@@ -82,6 +89,121 @@ export class ProductResolver {
     const products = await queryBuilder.distinct(true).getMany();
 
     return products;
+  }
+
+  @Query(() => [ProductOption])
+  async getAvailableProductOptions(
+    @Arg("startDate") startDate: Date,
+    @Arg("endDate") endDate: Date,
+    @Arg("categoryId", { nullable: true }) categoryId?: number,
+    @Arg("keyword", { nullable: true }) keyword?: string,
+    @Arg("minPrice",  { nullable: true }) minPrice?: number,
+    @Arg("maxPrice",  { nullable: true }) maxPrice?: number,
+    @Arg("tags", () => [String],  { nullable: true }) tags?: string[],
+    @Arg("productId", {nullable: true}) productId?:number,
+  ) {
+
+    
+
+  const queryBuilder = ProductOption.createQueryBuilder("po")
+    .leftJoinAndSelect("po.product", "product")
+    .leftJoinAndSelect("product.category", "category")
+    .leftJoinAndSelect("product.tags", "tag")
+    .leftJoinAndSelect("product.pictures", "pictures");
+
+     // Filtre par catégorie
+    if (categoryId) {
+      queryBuilder.andWhere("category.id = :categoryId", {categoryId});
+    }
+    // Filtre par mot-clé
+    if (keyword) {
+      queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
+    }
+    // Filtre par prix
+    if(maxPrice){
+      queryBuilder.andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
+    }
+    if(minPrice){
+      queryBuilder.andWhere("product.price >= :minPrice", { minPrice: minPrice })
+    }
+    // Filtre par tags
+    if (tags && tags.length > 0) {
+      queryBuilder.andWhere("tag.label IN (:...tags)", { tags });
+    }
+
+     // Filtre par product ID
+    if (productId) {
+      queryBuilder.andWhere("product.id = :productId", { productId: productId });
+    }
+
+  // Objectif seul de récupérer la donnée "reserved_quantity" et de la sauvegarder à l'aide du addSelect
+  queryBuilder.addSelect(subQuery => {
+    return subQuery
+      .select("COALESCE(SUM(pio.quantity), 0)")
+      .from(ProductInOrder, "pio")
+      .leftJoin("pio.order", "o")
+      .where("pio.productOptionId = po.id")
+      .andWhere("o.rental_start_date <= :endDate")
+      .andWhere("o.rental_end_date >= :startDate")
+  }, "reserved_quantity");
+
+  // Filtre uniquement les products options qui sont disponibles pour les dates et options sélectionnées
+  queryBuilder.andWhere(qb => {
+    const reservedQty = qb.subQuery()
+      .select("SUM(pio.quantity)")
+      .from(ProductInOrder, "pio")
+      .leftJoin("pio.order", "o")
+      .where("pio.productOptionId = po.id")
+      .andWhere("o.rental_start_date <= :endDate")
+      .andWhere("o.rental_end_date >= :startDate")
+      .andWhere("o.status != 'CANCELLED'")
+      .getQuery();
+
+      return `po.total_quantity - COALESCE((${reservedQty}), 0) > 0`;
+    });
+
+  queryBuilder.setParameters({startDate, endDate});
+  
+  // Récupère les ProductOptions avec la quantité disponible
+  const result = await queryBuilder.getRawAndEntities();
+
+  const productOptionWithAvailableQty = result.entities.map(entity=>{
+    const rawForThisEntity = result.raw.find(r => r.po_id === entity.id)
+    const reserved = rawForThisEntity ? Number(rawForThisEntity.reserved_quantity) : 0
+
+    return {
+      ...entity,
+      availableQuantity: entity.total_quantity - reserved
+    }
+  })
+  return productOptionWithAvailableQty
+  }
+
+  @Query(()=> [Product])
+  async getAvailableProductForDates(
+    @Arg("startDate") startDate: Date,
+    @Arg("endDate") endDate: Date,
+    @Arg("categoryId", { nullable: true }) categoryId?: number,
+    @Arg("keyword", { nullable: true }) keyword?: string,
+    @Arg("minPrice",  { nullable: true }) minPrice?: number,
+    @Arg("maxPrice",  { nullable: true }) maxPrice?: number,
+    @Arg("tags", () => [String], { nullable: true }) tags?: string[]
+  ) {
+    console.log("args:", startDate, endDate, categoryId, keyword, minPrice, maxPrice, tags)
+
+    const availableProductOptions = await this.getAvailableProductOptions(startDate, endDate, categoryId, keyword, minPrice, maxPrice, tags);
+
+    // Extrait les Products disponibles à partir des products Options dispo
+    let availableProducts: Product[] = [];
+
+    availableProductOptions.forEach(option => {
+      const product = option.product;
+      if (!availableProducts.some((item)=> item.id === product.id )) {
+        availableProducts.push(product);
+      }
+    });
+   
+    return availableProducts;
   }
 
   @Mutation(() => Product)

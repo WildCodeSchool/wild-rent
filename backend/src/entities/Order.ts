@@ -14,6 +14,7 @@ import { User } from "./User";
 @ObjectType()
 @Entity()
 export class Order extends BaseEntity {
+  @Field()
   @PrimaryGeneratedColumn()
   id: number;
 

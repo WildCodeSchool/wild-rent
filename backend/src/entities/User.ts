@@ -53,7 +53,7 @@ export class User extends BaseEntity {
   @OneToOne(() => Address, {
     eager: true,
     cascade: true,
-    nullable: true
+    nullable: true,
   })
   @JoinColumn()
   address: Address | null;

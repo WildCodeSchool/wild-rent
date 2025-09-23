@@ -10,7 +10,7 @@ export const AdminNavbar = () => {
       <nav
         className={`${
           isOpen ? "sm:w-60" : "w-36"
-        } h-screen bg-light-beige p-4 flex flex-col transition-all duration-400 shadow-md`}
+        }  min-h-screen bg-light-beige p-4 flex flex-col transition-all duration-400 shadow-md z-50`}
       >
         <div className="flex-grow">
           <div className="flex items-center justify-between mb-6">
@@ -52,7 +52,7 @@ export const AdminNavbar = () => {
             </Link>
 
             <Link
-              to="/admin/categorie"
+              to="/admin/categories"
               className=" gap-2 flex text-nowrap md:text-xl md:px-4 md:py-2 md:rounded-md md:transition-all md:duration-300 md:border md:border-transparent md:hover:border-gray-500 md:hover:bg-gray-50"
             >
               📂 {isOpen && <p className="hidden sm:flex">Catégories</p>}

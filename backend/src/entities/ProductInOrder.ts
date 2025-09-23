@@ -22,10 +22,11 @@ export class ProductInOrder extends BaseEntity {
   @Field(() => Order)
   @ManyToOne(() => Order, (order) => order.products_in_order, {
     eager: true,
+    onDelete: "CASCADE",
   })
   order: Order;
 
-  @Field(()=> ProductOption)
-  @ManyToOne(() => ProductOption, (option)=> option.orders, { eager: true })
-  productOption: ProductOption
+  @Field(() => ProductOption)
+  @ManyToOne(() => ProductOption, (option) => option.orders, { eager: true })
+  productOption: ProductOption;
 }

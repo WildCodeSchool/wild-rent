@@ -52,7 +52,7 @@ export const AdminNavbar = () => {
             </Link>
 
             <Link
-              to="/admin/categorie"
+              to="/admin/categories"
               className=" gap-2 flex text-nowrap md:text-xl md:px-4 md:py-2 md:rounded-md md:transition-all md:duration-300 md:border md:border-transparent md:hover:border-gray-500 md:hover:bg-gray-50"
             >
               📂 {isOpen && <p className="hidden sm:flex">Catégories</p>}

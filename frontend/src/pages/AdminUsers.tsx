@@ -141,7 +141,7 @@ const AdminUsers = () => {
             </div>
             <Select
               value={selectedRole}
-              onValueChange={(value) => {
+              onValueChange={(value: any) => {
                 setCurrentPage(1);
                 setOffset(0);
                 setSelectedRole(value === "all" ? undefined : value);

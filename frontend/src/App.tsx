@@ -18,6 +18,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
 import AdminOrder from "./pages/AdminOrder";
+import AdminCategory from "./pages/AdminCategory";
 import AccountOrder from "./pages/Account/AccountOrder";
 import ResetPassword from "./pages/Account/ResetPassword";
 import ForgottenPasswordRequest from "./pages/Account/ForgottenPasswordRequest";
@@ -53,6 +54,7 @@ function App() {
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
           <Route path="commandes" element={<AdminOrder />} />
+          <Route path="categories" element={<AdminCategory />} />
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

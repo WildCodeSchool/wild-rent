@@ -22,7 +22,8 @@ function ProductsByCategories() {
   const location = useLocation();
   const { id, title, image } = location.state;
   const { startDate, endDate } = useRentalDates();
-
+  const imageBasePath = "/assets/images/categories/";
+  const imageSrc = image?.startsWith("/img/") ? image : imageBasePath + image;
   const {
     data: dataAvailable,
     loading: loadingAvailable,
@@ -67,10 +68,7 @@ function ProductsByCategories() {
   return (
     <div className="w-full flex flex-col items-center">
       <div className="w-full aspect-video md:aspect-[7/2] relative overflow-hidden flex flex-col justify-center items-center mb-2">
-        <img
-          src={`/assets/images/categories/${image}`}
-          className="object-cover w-full object-center"
-        />
+        <img src={imageSrc} className="object-cover w-full object-center" />
         <div className="absolute bottom-0 h-3/4 w-full bg-gradient-to-b from-transparent to-black/70 z-10"></div>
         <h1 className="absolute text-body font-semibold text-4xl lg:text-5xl xl:text-7xl text-white z-20">
           {title}

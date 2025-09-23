@@ -4,12 +4,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useState } from "react";
 
-type CategoryFormData = {
+type CategoryAddFormData = {
   title: string;
   image: string;
 };
 
-const CategoryForm = () => {
+const CategoryAddForm = () => {
   const [createNewCategory, { loading }] = useCreateNewCategoryMutation();
   const [preview, setPreview] = useState<string | null>(null);
 
@@ -19,9 +19,9 @@ const CategoryForm = () => {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<CategoryFormData>();
+  } = useForm<CategoryAddFormData>();
 
-  const onSubmit = async (formData: CategoryFormData) => {
+  const onSubmit = async (formData: CategoryAddFormData) => {
     try {
       await createNewCategory({
         variables: {
@@ -64,7 +64,6 @@ const CategoryForm = () => {
           onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
             if (e.target.files) {
               const file = e.target.files[0];
-
               const previewUrl = URL.createObjectURL(file);
               setValue("image", previewUrl);
 
@@ -108,4 +107,4 @@ const CategoryForm = () => {
   );
 };
 
-export default CategoryForm;
+export default CategoryAddForm;

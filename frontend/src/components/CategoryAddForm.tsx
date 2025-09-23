@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import { GET_ALL_CATEGORIES } from "@/graphql/queries";
 
 type CategoryAddFormData = {
   title: string;
@@ -10,13 +11,16 @@ type CategoryAddFormData = {
 };
 
 const CategoryAddForm = () => {
-  const [createNewCategory, { loading }] = useCreateNewCategoryMutation();
+  const [createNewCategory] = useCreateNewCategoryMutation({
+    refetchQueries: [GET_ALL_CATEGORIES],
+  });
   const [preview, setPreview] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     setValue,
+    reset,
     watch,
     formState: { errors },
   } = useForm<CategoryAddFormData>();
@@ -29,6 +33,8 @@ const CategoryAddForm = () => {
         },
       });
       toast.success("Catégorie créée avec succès !");
+      reset();
+      setPreview(null);
     } catch (error) {
       console.error("Erreur lors de la création de la catégorie :", error);
       toast.error("Impossible de créer la catégorie.");

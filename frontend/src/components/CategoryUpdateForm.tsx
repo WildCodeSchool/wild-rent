@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { GET_ALL_CATEGORIES } from "@/graphql/queries";
 
 type CategoryAddFormData = {
   title: string;
@@ -15,7 +16,9 @@ type CategoryAddFormData = {
 
 const CategoryUpdateForm = () => {
   const { data, loading, error } = useGetAllCategoriesQuery();
-  const [deleteCategoryById] = useDeleteCategoryByIdMutation();
+  const [deleteCategoryById] = useDeleteCategoryByIdMutation({
+    refetchQueries: [GET_ALL_CATEGORIES],
+  });
   const [updateCategoryById] = useUpdateCategoryByIdMutation();
 
   const [editingCategoryId, setEditingCategoryId] = useState<number | null>(

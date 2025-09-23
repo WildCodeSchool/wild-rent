@@ -33,8 +33,6 @@ import { Address } from "../entities/Address";
 import { IsCurrentUserOrAdmin } from "../middleware/AuthChecker";
 import { CreateOrUpdateAddressInput } from "../inputs/AddressInput";
 
-const baseUrl = "http://localhost:7000";
-
 @ObjectType()
 class PaginatedUsers {
   @Field(() => [User])
@@ -93,6 +91,16 @@ class UserInfo {
 
   @Field()
   phone_number: string;
+}
+
+let baseUrl = process.env.BASE_URL_DEV;
+
+if (process.env.APP_ENV === "staging") {
+  baseUrl = process.env.BASE_URL_STAGING;
+}
+
+if (process.env.APP_ENV === "production") {
+  baseUrl = process.env.BASE_URL_PRODUCTION;
 }
 
 @Resolver(User)

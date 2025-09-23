@@ -31,7 +31,9 @@ export class InventoryResolver {
    
     for (const option of productOptions){
         const optionInventory: OptionInventory = {
+            id: option.id,
             product: option.product.name,
+            category: option.product.category,
             option: option.size,
             totalQty: option.total_quantity,
             reservations: []

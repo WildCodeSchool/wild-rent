@@ -20,6 +20,7 @@ import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
 import AdminOrder from "./pages/AdminOrder";
 import AccountOrder from "./pages/Account/AccountOrder";
+import { AdminInventory } from "./pages/AdminInventory";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
           <Route path="commandes" element={<AdminOrder />} />
+          <Route path="inventaire" element={<AdminInventory />} />
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

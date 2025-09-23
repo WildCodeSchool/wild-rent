@@ -1,4 +1,5 @@
 import { ObjectType, Field, Int } from "type-graphql";
+import { Category } from "./Category";
 
 @ObjectType()
 export class ReservationItem {
@@ -14,8 +15,14 @@ export class ReservationItem {
 
 @ObjectType()
 export class OptionInventory {
+    @Field()
+  id: number;
+
   @Field()
   product: string;
+
+  @Field()
+  category: Category;
 
   @Field()
   option: string;

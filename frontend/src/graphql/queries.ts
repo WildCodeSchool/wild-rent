@@ -397,6 +397,10 @@ export const GET_INVENTORY = gql`
       availableQty
     }
     totalQty
+    id
+    category {
+      title
+    }
   }
 }
 `;

@@ -208,6 +208,18 @@ export const CHANGE_PASSWORD = gql`
   }
 `;
 
+export const RESET_PASSWORD = gql`
+  mutation ResetPassword($data: ResetPasswordInput!) {
+    resetPassword(data: $data)
+  }
+`;
+
+export const RESET_PASSWORD_REQUEST = gql`
+  mutation ForgottenPasswordRequest($data: ForgottenPasswordRequestInput!) {
+    forgottenPasswordRequest(data: $data)
+  }
+`;
+
 export const CREATE_CATEGORY = gql`
   mutation CreateNewCategory($data: CategoryInput!) {
     createNewCategory(data: $data) {

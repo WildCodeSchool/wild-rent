@@ -6,11 +6,6 @@ import {
   useChangePasswordMutation,
 } from "@/generated/graphql-types";
 
-// TODO -> regarder pour faire un mdp avec X caractère et genre un champ password faible moyen fort
-// valider le reste des champs des autres formulaire avec react hook form
-// Refacto le composant
-// comprendre un peu mieux le fonctionnel, pourquoi j'ai pas besoin de mettre hashed password et ça marche, jsuis perdu
-
 type FormData = {
   old_password: string;
   new_password: string;
@@ -26,7 +21,7 @@ function PasswordForm({ setShowPasswordForm }: PasswordFormProps): JSX.Element {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<ChangePasswordInput>();
 
   const [changePassword] = useChangePasswordMutation();
 

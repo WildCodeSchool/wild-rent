@@ -16,6 +16,8 @@ import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
 import {
   ChangePasswordInput,
+  ForgottenPasswordRequestInput,
+  ResetPasswordInput,
   UpdateOrCreateUserInput,
   UpdateUserInput,
   UserInput,
@@ -31,7 +33,7 @@ import { Address } from "../entities/Address";
 import { IsCurrentUserOrAdmin } from "../middleware/AuthChecker";
 import { CreateOrUpdateAddressInput } from "../inputs/AddressInput";
 
-const baseUrl = "http://localhost:7000/confirmation/";
+const baseUrl = "http://localhost:7000";
 
 @ObjectType()
 class PaginatedUsers {
@@ -147,8 +149,8 @@ export class UserResolver {
         subject: "Validation email",
         html: `
                 <p>Veuillez cliquer sur le lien suivant pour confirmer votre adresse mail</p>
-                <a href=${baseUrl}${random_code}>
-                ${baseUrl}${random_code}</a>
+                <a href=${baseUrl}/confirmation/${random_code}>
+                ${baseUrl}/confirmation/${random_code}</a>
                 `,
       });
       if (error) {
@@ -460,5 +462,75 @@ export class UserResolver {
     }
 
     return false;
+  }
+
+  @Query(() => Boolean)
+  async getResetPasswordToken(
+    @Arg("token") token: string
+  ): Promise<boolean> {
+    const user = await User.findOneBy({ reset_password_token: token });
+    if (!user) return false;
+  
+    if (!user.reset_password_expires || user.reset_password_expires < new Date()) {
+      return false;
+    }
+  
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async resetPassword(
+    @Arg("data") data: ResetPasswordInput
+  ): Promise<boolean> {
+    const user = await User.findOneBy({ reset_password_token: data.token });
+    if (!user) throw new Error("Token invalide");
+
+    if (!user.reset_password_expires || user.reset_password_expires < new Date()) {
+      throw new Error("Token expiré");
+    }
+
+    if (data.new_password !== data.password_confirmation) {
+      throw new Error("Les mots de passe ne correspondent pas");
+    }
+
+    user.hashed_password = await argon2.hash(data.new_password);
+    user.reset_password_token = null;
+    user.reset_password_expires = null;
+    await user.save();
+
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async forgottenPasswordRequest(
+    @Arg("data") emailInput: ForgottenPasswordRequestInput
+  ): Promise<boolean> {
+    const user = await User.findOneBy({ email: emailInput.email });
+    if (!user) {
+      return true;
+    }
+
+    const token = uuidv4();
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60);
+
+    user.reset_password_token = token;
+    user.reset_password_expires = expiresAt;
+    await user.save();
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    await resend.emails.send({
+      from: "wild-rent@test.anniec.eu",
+      to: user.email,
+      subject: "Réinitialisation de votre mot de passe",
+      html: `
+        <p>Bonjour,</p>
+        <p>Cliquez sur ce lien pour réinitialiser votre mot de passe :</p>
+        <a href="${baseUrl}/mdp-reset?token=${token}">Réinitialiser le mot de passe</a>
+        <p>Ce lien expirera dans 1 heure.</p>
+      `,
+    });
+
+    return true;
   }
 }

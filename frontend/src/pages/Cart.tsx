@@ -167,7 +167,7 @@ const Cart = () => {
                     <div className="mt-1 ml-2 md:ml-3  lg:mb-4 lg:ml-5">
                       <button onClick={() => handleRemoveClick(index)}>
                         <img
-                          src="/assets/images/corbeille.png"
+                          src="/assets/images/icons/corbeille.png"
                           alt="corbeille"
                           className="w-4 h-4  lg:w-6 lg:h-6  m-auto"
                         />{" "}

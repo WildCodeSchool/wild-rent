@@ -215,8 +215,8 @@ export const CREATE_CATEGORY = gql`
     }
   }
 `;
-export const MODIFY_CATEGORY = gql`
-  mutation ModifyCategory($data: CategoryInput!) {
+export const UPDATE_CATEGORY = gql`
+  mutation UpdateCategoryById($data: CategoryInput!) {
     modifyCategory(data: $data) {
       id
       title
@@ -225,7 +225,7 @@ export const MODIFY_CATEGORY = gql`
   }
 `;
 export const DELETE_CATEGORY = gql`
-  mutation DeleteCategory($id: Float!) {
+  mutation DeleteCategoryById($id: Float!) {
     deleteCategory(id: $id)
   }
 `;

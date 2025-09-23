@@ -464,6 +464,20 @@ export class UserResolver {
     return false;
   }
 
+  @Query(() => Boolean)
+  async getResetPasswordToken(
+    @Arg("token") token: string
+  ): Promise<boolean> {
+    const user = await User.findOneBy({ reset_password_token: token });
+    if (!user) return false;
+  
+    if (!user.reset_password_expires || user.reset_password_expires < new Date()) {
+      return false;
+    }
+  
+    return true;
+  }
+
   @Mutation(() => Boolean)
   async resetPassword(
     @Arg("data") data: ResetPasswordInput

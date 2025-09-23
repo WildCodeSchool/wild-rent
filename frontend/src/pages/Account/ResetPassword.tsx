@@ -1,5 +1,7 @@
+import MessageScreen from "@/components/MessageScreen";
 import {
   ResetPasswordInput,
+  useGetResetPasswordTokenQuery,
   useResetPasswordMutation,
 } from "@/generated/graphql-types";
 import { JSX } from "react";
@@ -15,39 +17,54 @@ type FormData = {
 
 function ResetPassword(): JSX.Element {
   const [searchParams] = useSearchParams();
-  const token = searchParams.get("token");
+  const tokenURL = searchParams.get("token");
+
+  const { data, loading, error } = useGetResetPasswordTokenQuery({
+    variables: { token: tokenURL ?? "" },
+    skip: !tokenURL,
+  });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
-
+  } = useForm<ResetPasswordInput>();
   const navigate = useNavigate();
   const [resetPassword] = useResetPasswordMutation();
-  if (!token) {
-    return <div>//TODO Votre token n'est pas bon</div>;
-  }
-  const onSubmit: SubmitHandler<ResetPasswordInput> = async (
-    data: FormData
-  ) => {
+
+  const onSubmit: SubmitHandler<FormData> = async (formData) => {
+    if (!tokenURL) return;
+
     await resetPassword({
       variables: {
         data: {
-          token: token,
-          new_password: data.new_password,
-          password_confirmation: data.password_confirmation,
+          token: tokenURL,
+          new_password: formData.new_password,
+          password_confirmation: formData.password_confirmation,
         },
       },
-      onCompleted: async () => {
+      onCompleted: () => {
         toast.success("Nouveau mot de passe créé avec succès !");
         navigate("/");
       },
       onError: (error) => {
-        console.error("error", error);
+        toast.error(error.message);
       },
     });
   };
+
+  if (!tokenURL) return <MessageScreen message="Pas de token fourni." />;
+
+  if (loading)
+    return (
+      <MessageScreen
+        message="Vérification du token..."
+        buttonLabel="Veuillez patienter"
+      />
+    );
+
+  if (error || !data?.getResetPasswordToken)
+    return <MessageScreen message="Token invalide ou expiré." />;
 
   return (
     <div className="flex justify-center items-center h-full bg-gray-100">

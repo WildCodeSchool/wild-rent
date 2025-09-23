@@ -21,7 +21,7 @@ function PasswordForm({ setShowPasswordForm }: PasswordFormProps): JSX.Element {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<ChangePasswordInput>();
 
   const [changePassword] = useChangePasswordMutation();
 

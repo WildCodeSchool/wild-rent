@@ -51,7 +51,7 @@ export const Register = () => {
           <div>
             <label className={labelRegisterClasses}>Prénom</label>
             <input
-              defaultValue={"Jojo"}
+              defaultValue={"Roman"}
               placeholder="Prénom"
               {...register("first_name", { required: true })}
               className={inputRegisterClasses}
@@ -64,7 +64,7 @@ export const Register = () => {
           <div>
             <label className={labelRegisterClasses}>Nom de famille</label>
             <input
-              defaultValue={"L'abricot"}
+              defaultValue={"Beldent"}
               placeholder="Nom de famille"
               {...register("last_name", { required: true })}
               className={inputRegisterClasses}
@@ -103,7 +103,7 @@ export const Register = () => {
           <div>
             <label className={labelRegisterClasses}>Mot de passe</label>
             <input
-              defaultValue={"test"}
+              defaultValue={"password"}
               placeholder="Mot de passe"
               type="password"
               {...register("password", { required: true })}

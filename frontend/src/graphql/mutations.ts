@@ -213,3 +213,9 @@ export const RESET_PASSWORD = gql`
     resetPassword(data: $data)
   }
 `;
+
+export const RESET_PASSWORD_REQUEST = gql`
+  mutation ForgottenPasswordRequest($data: ForgottenPasswordRequestInput!) {
+    forgottenPasswordRequest(data: $data)
+  }
+`;

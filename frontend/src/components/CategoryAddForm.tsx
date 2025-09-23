@@ -56,11 +56,19 @@ const CategoryAddForm = () => {
       {/* Upload Image */}
       <div>
         <label className="block font-semibold mb-1">Image</label>
+        {/* Bouton custom pour choisir un fichier */}
+        <button
+          type="button"
+          onClick={() => document.getElementById("file")?.click()}
+          className="border p-2 rounded w-1/2 bg-light-beige hover:bg-green hover:text-white transition"
+        >
+          {watch("image") || preview ? "Changer l'image" : "Choisir une image"}
+        </button>
         <input
           id="file"
           type="file"
           accept="image/*"
-          className="border p-2 rounded w-1/2 bg-white"
+          className="hidden"
           onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
             if (e.target.files) {
               const file = e.target.files[0];

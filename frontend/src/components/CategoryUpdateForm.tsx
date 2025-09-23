@@ -3,7 +3,6 @@ import {
   useGetAllCategoriesQuery,
   useUpdateCategoryByIdMutation,
 } from "@/generated/graphql-types";
-import CategoryCard from "./CategoryCard";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -66,6 +65,7 @@ const CategoryUpdateForm = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
+  const imageBasePath = "/assets/images/categories/";
   return (
     <div className="flex flex-col mb-12 ">
       {categories.map((category: any) => (
@@ -150,41 +150,54 @@ const CategoryUpdateForm = () => {
               </div>
             </form>
           ) : (
-            // === Mode affichage normal ===
             <>
-              <CategoryCard
-                id={category.id}
-                title={category.title}
-                image={category.image}
-              />
+              <div className="flex flex-col   md:flex-row md:items-center">
+                <div className="drop-shadow-md">
+                  <div className="relative z-10 w-[280px] overflow-hidden p-2 px-4 py-6 text-center rounded-md font-title font-semibold text-xl">
+                    <img
+                      src={
+                        category.image?.startsWith("/img/")
+                          ? category.image
+                          : imageBasePath + category.image
+                      }
+                      className="absolute inset-0 object-cover w-full h-full"
+                      alt={category.title}
+                    />
+                    <div className="absolute inset-0 bg-black/30"></div>
+                    <div className="text-white relative z-10 font-light text-2xl">
+                      {category.title}
+                    </div>
+                  </div>
+                </div>
 
-              {/* Bouton modifier */}
-              <div className="flex flex-row items-center ml-4 mr-4">
-                <p className="mr-4">Modifier</p>
-                <button
-                  onClick={() => {
-                    setEditingCategoryId(category.id);
-                    reset({ title: category.title, image: category.image });
-                  }}
-                >
-                  <img
-                    src="/assets/images/icons/pencil.png"
-                    alt="editer"
-                    className="w-4 h-4 lg:w-6 lg:h-6 m-auto"
-                  />
-                </button>
-              </div>
+                {/* Bouton modifier */}
+                <div className="flex flex-row items-center ml-4 mr-4">
+                  <p className="mr-4">Modifier</p>
+                  <button
+                    onClick={() => {
+                      setEditingCategoryId(category.id);
+                      reset({ title: category.title, image: category.image });
+                    }}
+                  >
+                    <img
+                      src="/assets/images/icons/pencil.png"
+                      alt="editer"
+                      className="w-4 h-4 lg:w-6 lg:h-6 m-auto"
+                    />
+                  </button>
+                </div>
 
-              {/* Bouton supprimer */}
-              <div className="flex flex-row items-center ml-4 mr-4">
-                <p className="mr-4">Supprimer</p>
-                <button onClick={() => handleDelete(category.id)}>
-                  <img
-                    src="/assets/images/icons/corbeille.png"
-                    alt="supprimer"
-                    className="w-4 h-4 lg:w-6 lg:h-6 m-auto"
-                  />
-                </button>
+                {/* Bouton supprimer */}
+                <div className="flex flex-row items-center ml-4 mr-4">
+                  <p className="mr-4">Supprimer</p>
+                  <button onClick={() => handleDelete(category.id)}>
+                    <img
+                      src="/assets/images/icons/corbeille.png"
+                      alt="supprimer"
+                      className="w-4 h-4 lg:w-6 lg:h-6 m-auto"
+                    />
+                  </button>
+                </div>
               </div>
             </>
           )}

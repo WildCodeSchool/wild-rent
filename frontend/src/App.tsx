@@ -9,7 +9,6 @@ import ConfirmEmailPage from "./pages/ConfirmEmail";
 import { ToastContainer } from "react-toastify";
 import Cart from "./pages/Cart";
 import { AdminLayout } from "./pages/AdminLayout";
-
 import { AdminArticle } from "./pages/AdminArticle";
 import { AdminHomepage } from "./pages/AdminHomepage";
 import { AccountDetails } from "./pages/Account/AccountDetails";
@@ -20,6 +19,7 @@ import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
 import AdminOrder from "./pages/AdminOrder";
 import AccountOrder from "./pages/Account/AccountOrder";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -45,7 +45,14 @@ function App() {
             element={<ConfirmRegistration />}
           />
         </Route>
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<AdminHomepage />} />
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />

@@ -404,3 +404,9 @@ export const GET_INVENTORY = gql`
   }
 }
 `;
+
+export const GET_RESET_PASSWORD_TOKEN = gql`
+  query GetResetPasswordToken($token: String!) {
+    getResetPasswordToken(token: $token)
+  }
+`;

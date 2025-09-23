@@ -9,7 +9,6 @@ import ConfirmEmailPage from "./pages/ConfirmEmail";
 import { ToastContainer } from "react-toastify";
 import Cart from "./pages/Cart";
 import { AdminLayout } from "./pages/AdminLayout";
-
 import { AdminArticle } from "./pages/AdminArticle";
 import { AdminHomepage } from "./pages/AdminHomepage";
 import { AccountDetails } from "./pages/Account/AccountDetails";
@@ -19,7 +18,11 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
 import AdminOrder from "./pages/AdminOrder";
+import AdminCategory from "./pages/AdminCategory";
 import AccountOrder from "./pages/Account/AccountOrder";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ResetPassword from "./pages/Account/ResetPassword";
+import ForgottenPasswordRequest from "./pages/Account/ForgottenPasswordRequest";
 import { AdminInventory } from "./pages/AdminInventory";
 
 function App() {
@@ -38,16 +41,26 @@ function App() {
           <Route path="RGPD" element={<PrivacyPolicy />} />
           <Route path="mentionslegales" element={<LegalNotice />} />
           <Route path="confirmation/:code?" element={<ConfirmEmailPage />} />
+          <Route path="mdp-oublie" element={<ForgottenPasswordRequest />} />
+          <Route path="mdp-reset" element={<ResetPassword />} />
           <Route
             path="confirmation/enregistrement/:code?"
             element={<ConfirmRegistration />}
           />
         </Route>
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<AdminHomepage />} />
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
           <Route path="commandes" element={<AdminOrder />} />
+          <Route path="categories" element={<AdminCategory />} />
           <Route path="inventaire" element={<AdminInventory />} />
         </Route>
       </Routes>

@@ -21,6 +21,7 @@ type UserContextType = {
       [key: string]: never;
     }>
   >;
+  isLoading: boolean;
 };
 
 export const UserContext = createContext<UserContextType | undefined>(
@@ -29,14 +30,17 @@ export const UserContext = createContext<UserContextType | undefined>(
 
 export const UserProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<UserType>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [whoami] = useWhoamiLazyQuery({
     fetchPolicy: "no-cache",
     onCompleted(data) {
       setUser(data.whoami ?? null);
+      setIsLoading(false);
     },
     onError() {
       setUser(null);
+      setIsLoading(false);
     },
   });
 
@@ -49,7 +53,9 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, changeUser, refetchUser: whoami }}>
+    <UserContext.Provider
+      value={{ user, changeUser, refetchUser: whoami, isLoading }}
+    >
       {children}
     </UserContext.Provider>
   );

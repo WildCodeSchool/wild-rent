@@ -20,6 +20,7 @@ import Login from "./pages/Login";
 import AdminOrder from "./pages/AdminOrder";
 import AdminCategory from "./pages/AdminCategory";
 import AccountOrder from "./pages/Account/AccountOrder";
+import ProtectedRoute from "./components/ProtectedRoute";
 import ResetPassword from "./pages/Account/ResetPassword";
 import ForgottenPasswordRequest from "./pages/Account/ForgottenPasswordRequest";
 
@@ -49,7 +50,14 @@ function App() {
             element={<ConfirmRegistration />}
           />
         </Route>
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route index element={<AdminHomepage />} />
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />

@@ -1,4 +1,4 @@
-import CategoryList from "../components/categoryList";
+import CategoryList from "../components/CategoryList";
 import CategoryForm from "../components/CategoryForm";
 
 const AdminCategory = () => {

@@ -11,10 +11,9 @@ export class CategoryResolver {
 
   @Mutation(() => Category)
   async createNewCategory(@Arg("data") data: CategoryInput) {
-    const image = data.image ? data.image.split("/").pop() ?? data.image : "";
     const newCategory = await Category.save({
       title: data.title,
-      image,
+      image: data.image,
     });
     return newCategory;
   }

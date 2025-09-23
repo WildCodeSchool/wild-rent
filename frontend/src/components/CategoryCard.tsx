@@ -12,7 +12,7 @@ const imageBasePath = "/assets/images/categories/";
 function CategoryCard({ title, id, image }: categoryProps) {
   return (
     <Link
-      to={`/products/category/${normalizeString(title)}`}
+      to={`/categorie/${normalizeString(title)}`}
       className="drop-shadow-sm"
       state={{
         id: id,

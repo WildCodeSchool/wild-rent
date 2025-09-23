@@ -33,6 +33,8 @@ import { Address } from "../entities/Address";
 import { IsCurrentUserOrAdmin } from "../middleware/AuthChecker";
 import { CreateOrUpdateAddressInput } from "../inputs/AddressInput";
 
+const baseUrl = "http://localhost:7000";
+
 @ObjectType()
 class PaginatedUsers {
   @Field(() => [User])
@@ -93,15 +95,15 @@ class UserInfo {
   phone_number: string;
 }
 
-let baseUrl = process.env.BASE_URL_DEV;
+//let baseUrl = process.env.BASE_URL_DEV;
 
-if (process.env.APP_ENV === "staging") {
+/* if (process.env.APP_ENV === "staging") {
   baseUrl = process.env.BASE_URL_STAGING;
 }
 
 if (process.env.APP_ENV === "production") {
   baseUrl = process.env.BASE_URL_PRODUCTION;
-}
+} */
 
 @Resolver(User)
 export class UserResolver {
@@ -473,27 +475,29 @@ export class UserResolver {
   }
 
   @Query(() => Boolean)
-  async getResetPasswordToken(
-    @Arg("token") token: string
-  ): Promise<boolean> {
+  async getResetPasswordToken(@Arg("token") token: string): Promise<boolean> {
     const user = await User.findOneBy({ reset_password_token: token });
     if (!user) return false;
-  
-    if (!user.reset_password_expires || user.reset_password_expires < new Date()) {
+
+    if (
+      !user.reset_password_expires ||
+      user.reset_password_expires < new Date()
+    ) {
       return false;
     }
-  
+
     return true;
   }
 
   @Mutation(() => Boolean)
-  async resetPassword(
-    @Arg("data") data: ResetPasswordInput
-  ): Promise<boolean> {
+  async resetPassword(@Arg("data") data: ResetPasswordInput): Promise<boolean> {
     const user = await User.findOneBy({ reset_password_token: data.token });
     if (!user) throw new Error("Token invalide");
 
-    if (!user.reset_password_expires || user.reset_password_expires < new Date()) {
+    if (
+      !user.reset_password_expires ||
+      user.reset_password_expires < new Date()
+    ) {
       throw new Error("Token expiré");
     }
 

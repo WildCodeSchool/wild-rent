@@ -18,8 +18,11 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import LegalNotice from "./pages/LegalNotice";
 import Login from "./pages/Login";
 import AdminOrder from "./pages/AdminOrder";
+import AdminCategory from "./pages/AdminCategory";
 import AccountOrder from "./pages/Account/AccountOrder";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ResetPassword from "./pages/Account/ResetPassword";
+import ForgottenPasswordRequest from "./pages/Account/ForgottenPasswordRequest";
 
 function App() {
   return (
@@ -40,6 +43,8 @@ function App() {
           <Route path="RGPD" element={<PrivacyPolicy />} />
           <Route path="mentionslegales" element={<LegalNotice />} />
           <Route path="confirmation/:code?" element={<ConfirmEmailPage />} />
+          <Route path="mdp-oublie" element={<ForgottenPasswordRequest />} />
+          <Route path="mdp-reset" element={<ResetPassword />} />
           <Route
             path="confirmation/enregistrement/:code?"
             element={<ConfirmRegistration />}
@@ -57,6 +62,7 @@ function App() {
           <Route path="article" element={<AdminArticle />} />
           <Route path="utilisateurs" element={<AdminUsers />} />
           <Route path="commandes" element={<AdminOrder />} />
+          <Route path="categories" element={<AdminCategory />} />
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

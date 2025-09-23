@@ -97,11 +97,10 @@ const CategoryAddForm = () => {
 
       {/* Bouton Submit */}
       <button
-        className="text-white bg-red-500 mt-5 rounded px-4 py-2 cursor-pointer disabled:opacity-50"
         type="submit"
-        disabled={loading}
+        className="bg-green border-green border-1 text-white px-4 py-2 rounded hover:bg-light-beige hover:text-green transition mt-4 cursor-pointer"
       >
-        {loading ? "Envoi en cours..." : "Envoyer"}
+        Envoyer
       </button>
     </form>
   );

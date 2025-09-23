@@ -136,14 +136,14 @@ const CategoryUpdateForm = () => {
               <div className="flex gap-2">
                 <button
                   type="submit"
-                  className="bg-green-500 text-white px-3 py-1 rounded"
+                  className="bg-green border-green border-1 text-white px-4 py-2 rounded hover:bg-light-beige hover:text-green transition mt-4 cursor-pointer"
                 >
                   Valider
                 </button>
                 <button
                   type="button"
                   onClick={() => setEditingCategoryId(null)}
-                  className="bg-gray-400 text-white px-3 py-1 rounded"
+                  className="bg-gray-400 text-white px-4 py-2 rounded hover:text-green transition mt-4 cursor-pointer"
                 >
                   Annuler
                 </button>

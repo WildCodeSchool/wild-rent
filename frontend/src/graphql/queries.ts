@@ -386,3 +386,9 @@ export const GET_AVAILABLE_PRODUCT_OPTION = gql`
     }
   }
 `;
+
+export const GET_RESET_PASSWORD_TOKEN = gql`
+  query GetResetPasswordToken($token: String!) {
+    getResetPasswordToken(token: $token)
+  }
+`;

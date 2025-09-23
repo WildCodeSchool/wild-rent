@@ -1,5 +1,7 @@
 import { User } from "../entities/User";
 import { Field, InputType } from "type-graphql";
+import { IsEmail } from 'class-validator';
+
 
 @InputType()
 export class UserInput implements Partial<User> {
@@ -80,4 +82,24 @@ export class ChangePasswordInput {
 
   @Field()
   password_confirmation: string;
+}
+
+@InputType()
+export class ResetPasswordInput {
+  @Field()
+  token: string;
+
+  @Field()
+  new_password: string;
+
+  @Field()
+  password_confirmation: string;
+}
+
+
+@InputType()
+export class ForgottenPasswordRequestInput {
+  @Field()
+  @IsEmail()
+  email: string;
 }

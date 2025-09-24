@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import { useWhoamiQuery } from "../generated/graphql-types";
 import { useContext } from "react";
 import { cartContext } from "../context/CartContext";
-import { Settings, ShoppingCart, UserRound } from "lucide-react";
+import { Menu, Settings, ShoppingCart, User, UserRound } from "lucide-react";
 
 const Header = () => {
   const { loading, error, data } = useWhoamiQuery();
@@ -25,10 +25,10 @@ const Header = () => {
     );
   if (data) {
     return (
-      <header className="sticky top-0 z-30">
+      <header>
         <div
           className={`${
-            isAdminPath ? "bg-green" : "bg-light-beige"
+            isAdminPath ? "bg-green/90" : "bg-light-beige"
           } flex items-center justify-between px-4 md:px-8 py-3`}
         >
           <Link to={"/"} className="flex items-center gap-x-2 md:flex-1">

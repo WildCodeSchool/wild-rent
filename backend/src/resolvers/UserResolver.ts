@@ -473,27 +473,29 @@ export class UserResolver {
   }
 
   @Query(() => Boolean)
-  async getResetPasswordToken(
-    @Arg("token") token: string
-  ): Promise<boolean> {
+  async getResetPasswordToken(@Arg("token") token: string): Promise<boolean> {
     const user = await User.findOneBy({ reset_password_token: token });
     if (!user) return false;
-  
-    if (!user.reset_password_expires || user.reset_password_expires < new Date()) {
+
+    if (
+      !user.reset_password_expires ||
+      user.reset_password_expires < new Date()
+    ) {
       return false;
     }
-  
+
     return true;
   }
 
   @Mutation(() => Boolean)
-  async resetPassword(
-    @Arg("data") data: ResetPasswordInput
-  ): Promise<boolean> {
+  async resetPassword(@Arg("data") data: ResetPasswordInput): Promise<boolean> {
     const user = await User.findOneBy({ reset_password_token: data.token });
     if (!user) throw new Error("Token invalide");
 
-    if (!user.reset_password_expires || user.reset_password_expires < new Date()) {
+    if (
+      !user.reset_password_expires ||
+      user.reset_password_expires < new Date()
+    ) {
       throw new Error("Token expiré");
     }
 

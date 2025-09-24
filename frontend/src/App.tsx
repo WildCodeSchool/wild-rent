@@ -23,6 +23,7 @@ import AccountOrder from "./pages/Account/AccountOrder";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ResetPassword from "./pages/Account/ResetPassword";
 import ForgottenPasswordRequest from "./pages/Account/ForgottenPasswordRequest";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
             path="confirmation/enregistrement/:code?"
             element={<ConfirmRegistration />}
           />
+          <Route path="*" element={<NotFound />} />
         </Route>
         <Route
           path="/admin"

@@ -12,6 +12,25 @@
   --font-title: "Montserrat", serif;
 }
 
+@keyframes my-pop-up {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  30% {
+    transform: translateY(-20px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+}
+
+.animate-pop-up {
+  animation: my-pop-up 0.6s ease-out;
+}
+
 h1 {
   font-family: var(--font-title);
 }

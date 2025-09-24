@@ -1,14 +1,27 @@
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import { useWhoamiQuery } from "../generated/graphql-types";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { cartContext } from "../context/CartContext";
+import { useLocation } from "react-router-dom";
 
 const Header = () => {
   const { loading, error, data } = useWhoamiQuery();
-
   const { items } = useContext(cartContext);
+  const [showPlusOne, setShowPlusOne] = useState(false);
+  const [prevCount, setPrevCount] = useState(items.length);
+  const location = useLocation();
 
+  useEffect(() => {
+    // Ne fait rien si on est sur /panier
+    if (location.pathname === "/panier") return;
+
+    if (items.length > prevCount) {
+      setShowPlusOne(true);
+      setTimeout(() => setShowPlusOne(false), 500);
+    }
+    setPrevCount(items.length);
+  }, [items.length, location.pathname]);
   if (loading) return <p>Loading...</p>;
   if (error)
     return (
@@ -75,6 +88,11 @@ const Header = () => {
                 alt="cart"
                 className="w-6 h-6 md:w-8 md:h-8"
               />
+              {showPlusOne && (
+                <span className="absolute top-15 right-2 text-xs text-white bg-green rounded-full px-1 animate-pop-up z-10">
+                  +1
+                </span>
+              )}
               <div className="flex items-center gap-x-1">
                 <span className="hidden md:block text-sm text-green">
                   Mon panier

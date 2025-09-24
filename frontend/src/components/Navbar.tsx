@@ -21,7 +21,7 @@ const Navbar = () => {
           {data.getAllCategories.map((category) => (
             <Link
               key={category.id}
-              to={`/produits/categorie/${normalizeString(category.title)}`}
+              to={`/categorie/${normalizeString(category.title)}`}
               state={{
                 id: category.id,
                 title: category.title,

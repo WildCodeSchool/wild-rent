@@ -54,7 +54,7 @@ function CategoryCarousel({ title, id, image }: categoryProps) {
       <div className="flex w-full justify-between px-4">
         <div className="font-bold font-title text-xl mb-4">{title}</div>
         <Link
-          to={`/produits/categorie/${normalizeString(title)}`}
+          to={`/categorie/${normalizeString(title)}`}
           className="text-body font-semibold text-green border-1 text-center self-center px-3 py-2 rounded-md border-gray-200 hover:bg-green/20"
           state={{
             id: id,

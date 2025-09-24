@@ -10,7 +10,7 @@ const Navbar = () => {
   const pathname = location.pathname;
 
   const rentalDatesVisible =
-    pathname === "/" || pathname === "/panier" || pathname.includes("/produit");
+    pathname === "/panier" || pathname.includes("/produit");
 
   if (loading) return <p>Loading ...</p>;
   if (error) return <p> Error : {error.message}</p>;

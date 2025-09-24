@@ -43,9 +43,10 @@ test("register and login", async ({ page }) => {
 
   // Permet de retrouver l'URL de confirmation dans la réponse de l'objet
   if (res.data.emails && res.data.emails.length > 0) {
+    console.log("There us an email:", res.data.email)
     const email = res.data.emails[0];
     link = email.text.split("\n")[2];
-  }
+  }else {console.log("did not find an email")}
 
   // Navigue jusqu'à l'URL et clique sur le bouton de création de compte
   await page.goto(link);

@@ -54,6 +54,9 @@ const AdminOrder = () => {
 
   return (
     <>
+      <h2 className="font-bold text-lg md:text-xl lg:text-2xl mb-4">
+        Commandes
+      </h2>
       <div className="flex flex-col sm:flex-row sm:items-end gap-4 mb-4">
         <div>
           <label className="block text-sm font-medium mb-1">

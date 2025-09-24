@@ -23,7 +23,7 @@ export const IsCurrentUserOrAdmin: MiddlewareFn<AuthContextType> = async (
 };
 
 // Uniquement pour les admins, exemple dans le resolver User.ts pour récupérer tous les utilisateurs
-export const isAdmin: MiddlewareFn<AuthContextType> = async (
+export const IsAdmin: MiddlewareFn<AuthContextType> = async (
   { context },
   next
 ) => {

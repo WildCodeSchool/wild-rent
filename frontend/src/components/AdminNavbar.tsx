@@ -13,7 +13,7 @@ export const AdminNavbar = () => {
       <nav
         className={`${
           isOpen ? "sm:w-60" : "w-fit"
-        }  min-h-screen bg-light-beige p-4 flex flex-col transition-all duration-400 shadow-md z-50`}
+        }  min-h-screen bg-light-beige p-4 flex flex-col transition-all duration-400 shadow-md`}
       >
         <div className="flex-grow">
           <div className="flex items-center justify-between mb-6 w-full">

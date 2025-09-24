@@ -109,7 +109,7 @@ const AdminUsers = () => {
 
   return (
     <div className="flex flex-col p-2 lg:mp-4 gap-4 w-full relative">
-      <h1 className="font-bold text-lg md:text-xl lg:text-2xl">
+      <h1 className="font-bold text-lg md:text-xl lg:text-2xl mb-4">
         Utilisateurs {seeTempUsers && "en attente de validation"}
       </h1>
       {seeTempUsers && (

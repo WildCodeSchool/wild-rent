@@ -17,7 +17,7 @@ const Navbar = () => {
   if (data) {
     return (
       <div className="flex flex-col items-center w-full">
-        <nav className="bg-green hidden sm:flex items-center justify-center sm:justify-between px-8 py-3 w-full">
+        <nav className="bg-green hidden md:flex items-center justify-center sm:justify-between px-8 py-3 w-full">
           {data.getAllCategories.map((category) => (
             <Link
               key={category.id}

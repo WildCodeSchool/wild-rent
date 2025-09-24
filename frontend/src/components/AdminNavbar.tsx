@@ -22,7 +22,7 @@ export const AdminNavbar = () => {
                 isOpen && "sm:justify-start"
               } w-full text-nowrap items-center gap-x-2`}
             >
-              <Settings size={25} />
+              <Settings size={25} aria-label="admin logo" />
               {isOpen && (
                 <h1 className="text-xl hidden sm:flex font-semibold text-gray-800">
                   Menu

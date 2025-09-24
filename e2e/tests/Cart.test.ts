@@ -32,20 +32,20 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 
     await page.getByLabel('Sélecteur d\'options').selectOption('{"id":1,"size":"150 cm"}');
 
-  await page.getByRole("button", { name: "Ajouter au panier" }).click();
+  await page.getByRole("button", { name: "Ajouter au panier"}).click();
 
-  await page.getByRole("link", { name: "cart Mon panier (1)" }).click();
+  await page.getByRole("link", { name: "Mon panier"}).click();
 
   await expect(page.getByText("Total: 45€")).toBeVisible();
 
   await page.getByRole("button", { name: "+" }).click();
-  await expect(page.getByText("2", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("quantity")).toHaveText("2");
 
   await expect(page.getByText("Total: 90€")).toBeVisible();
 
   // Diminue la quantité
   await page.getByRole("button", { name: "-" }).click();
-  await expect(page.getByText("1", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("quantity")).toHaveText("1");
 
   // Supprime le produit
   await page.getByRole("button", { name: "corbeille" }).click();

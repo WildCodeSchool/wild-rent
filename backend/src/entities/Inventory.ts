@@ -15,7 +15,7 @@ export class ReservationItem {
 
 @ObjectType()
 export class OptionInventory {
-    @Field()
+  @Field()
   id: number;
 
   @Field()

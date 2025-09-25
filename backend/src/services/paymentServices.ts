@@ -13,6 +13,16 @@ interface LineItemI {
   quantity: number;
 }
 
+let baseUrl = process.env.BASE_URL_DEV;
+
+if (process.env.APP_ENV === "staging") {
+  baseUrl = process.env.BASE_URL_STAGING;
+}
+
+if (process.env.APP_ENV === "production") {
+  baseUrl = process.env.BASE_URL_PRODUCTION;
+}
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-08-27.basil",
 });
@@ -38,8 +48,8 @@ const paymentServices = {
       payment_method_types: ["card"],
       mode: "payment",
       line_items,
-      success_url: "http://localhost:7000/success",
-      cancel_url: "http://localhost:7000/panier",
+      success_url: `${baseUrl}/success`,
+      cancel_url: `${baseUrl}/panier`,
     });
 
     return session;

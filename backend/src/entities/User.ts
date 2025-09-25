@@ -58,9 +58,9 @@ export class User extends BaseEntity {
   @JoinColumn()
   address: Address | null;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: "varchar", nullable: true })
   reset_password_token: string | null;
-  
-  @Column({ type: 'timestamp', nullable: true })
+
+  @Column({ type: "timestamp", nullable: true })
   reset_password_expires: Date | null;
 }

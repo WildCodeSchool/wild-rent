@@ -90,6 +90,11 @@ const Header = () => {
                 className="flex flex-col items-center hover:underline text-green"
                 to={"/panier"}
               >
+                {showPlusOne && (
+                  <span className="absolute top-15 right-2 text-xs bg-green-600 text-white px-1 rounded-full animate-pop-up z-10">
+                    +1
+                  </span>
+                )}
                 <div className="relative">
                   <ShoppingCart />
                   <div className="absolute w-4 h-4 -top-1 -right-3 text-xs flex justify-center items-center font-bold text-white rounded-full bg-green">

@@ -1,11 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { cartContext } from "../context/CartContext";
 import "react-datepicker/dist/react-datepicker.css";
-import {
-  useCheckProductAvailabilityLazyQuery,
-  useCreateNewOrderMutation,
-} from "../generated/graphql-types";
-import { useUser } from "@/hooks/useUser";
+import { useCheckProductAvailabilityLazyQuery } from "../generated/graphql-types";
+
 import { useRentalDates } from "@/hooks/useRentalDates";
 import { useCreateCheckoutSessionLazyQuery } from "@/generated/graphql-types";
 import { SelectRentalDates } from "@/components/SelectRentalDates";
@@ -105,7 +102,6 @@ const Cart = () => {
       },
     });
   };
-
 
   const allProductAvailable = Object.values(availabilityResults).every(
     (result) => result.available
@@ -251,12 +247,13 @@ const Cart = () => {
             <p className="text-2xl">{total}€</p>
           </div>
           <div className="flex justify-center pb-8 pt-8">
-            <button
-              className="md:w-1/4 m-auto bg-green text-white p-2 rounded-xl sm:text-xl"
+            <Button
+              className="md:w-1/4 m-auto bg-green hover:bg-green/50 hover:cursor-pointer text-white p-2  sm:text-xl py-5"
               onClick={handleCheckout}
+              disabled={!allProductAvailable}
             >
               Payer avec Stripe
-            </button>
+            </Button>
           </div>
         </div>
       )}

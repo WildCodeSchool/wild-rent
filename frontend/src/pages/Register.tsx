@@ -41,7 +41,7 @@ export const Register = () => {
   const labelRegisterClasses = "block text-gray-600 font-semibold mb-1";
 
   return (
-    <div className="flex justify-center items-center h-full bg-light-beige">
+    <div className="flex flex-col flex-1 justify-center items-center py-5 ">
       <div className="bg-white p-8 rounded-lg shadow-md h-full md:h-auto w-full md:w-auto">
         <h2 className="text-2xl font-semibold text-center text-gray-600 mb-4">
           Inscription

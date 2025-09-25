@@ -144,7 +144,10 @@ export function UserTable({
 
                 <TableCell>
                   <Dialog>
-                    <DialogTrigger aria-label={`Delete user ${item.id}`}>
+                    <DialogTrigger
+                      aria-label={`Delete user ${item.id}`}
+                      className="hover:cursor-pointer"
+                    >
                       <RiDeleteBin6Line size={20} className="text-red-600" />
                     </DialogTrigger>
                     <DialogContent className="flex flex-col items-center gap-5">

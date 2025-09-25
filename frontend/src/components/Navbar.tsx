@@ -6,12 +6,6 @@ import { SelectRentalDates } from "./SelectRentalDates";
 const Navbar = () => {
   const { loading, error, data } = useGetAllCategoriesQuery();
 
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  const rentalDatesVisible =
-    pathname === "/panier" || pathname.includes("/produit");
-
   if (loading) return <p>Loading ...</p>;
   if (error) return <p> Error : {error.message}</p>;
   if (data) {
@@ -33,7 +27,6 @@ const Navbar = () => {
             </Link>
           ))}
         </nav>
-        {rentalDatesVisible && <SelectRentalDates />}
       </div>
     );
   }

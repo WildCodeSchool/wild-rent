@@ -48,7 +48,6 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: () => useNavigateMock,
-    // useParams: () => ({ id: "1" }),
   };
 });
 

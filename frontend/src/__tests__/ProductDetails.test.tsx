@@ -1,5 +1,5 @@
 import { MockedProvider } from "@apollo/client/testing";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import ProductDetails from "../pages/ProductDetails";
 import { GET_PRODUCT_BY_ID, WHO_AM_I } from "../graphql/queries";
 import "@testing-library/jest-dom";
@@ -44,11 +44,11 @@ const mocks = [
   },
 ];
 vi.mock("react-router-dom", async () => {
-  const actual: any = await vi.importActual("react-router-dom"); // importe le vrai
+  const actual: any = await vi.importActual("react-router-dom");
   return {
-    ...actual, // garde tout le reste
-    useNavigate: () => useNavigateMock, // on override juste useNavigate
-    useParams: () => ({ id: "1" }), // mock de useParams si besoin
+    ...actual,
+    useNavigate: () => useNavigateMock,
+    useParams: () => ({ id: "1" }),
   };
 });
 
@@ -61,5 +61,7 @@ test("affiche le nom du produit", async () => {
     </MockedProvider>
   );
 
-  expect(await screen.findByText("Produit Test")).toBeInTheDocument();
+  await waitFor(async () => {
+    expect(await screen.findByText("Produit Test")).toBeInTheDocument();
+  });
 });

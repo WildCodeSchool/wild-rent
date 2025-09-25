@@ -38,14 +38,15 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
 
+  setTimeout(() => {}, 5000);
   await page.goto(`${baseUrl}/panier`);
 
-  // await expect(page.getByText("45€")).toBeVisible();
+  await expect(page.getByText("45€")).toBeVisible();
 
   await page.getByRole("button", { name: "+" }).click();
   await expect(page.getByLabel("quantity")).toHaveText("2");
 
-  // await expect(page.getByText("90€")).toBeVisible();
+  await expect(page.getByText("90€")).toBeVisible();
 
   // Diminue la quantité
   await page.getByRole("button", { name: "-" }).click();

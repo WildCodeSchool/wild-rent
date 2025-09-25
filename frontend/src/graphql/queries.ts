@@ -410,3 +410,9 @@ export const GET_RESET_PASSWORD_TOKEN = gql`
     getResetPasswordToken(token: $token)
   }
 `;
+
+export const CREATE_SESSION = gql`
+  query createCheckoutSession($data: [ProductForSessionInput!]!) {
+    createCheckoutSession(data: $data)
+  }
+`;

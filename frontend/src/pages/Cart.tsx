@@ -1,20 +1,20 @@
 import { useContext } from "react";
 import { cartContext } from "../context/CartContext";
-// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useCreateNewOrderMutation } from "../generated/graphql-types";
-import { useUser } from "@/hooks/useUser";
 import { useRentalDates } from "@/hooks/useRentalDates";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useCreateCheckoutSessionLazyQuery } from "@/generated/graphql-types";
 import { SelectRentalDates } from "@/components/SelectRentalDates";
 
 const Cart = () => {
-  const [createOrderMutation] = useCreateNewOrderMutation();
-  const { user } = useUser();
-  const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
+  const { items, removeItemFromCart, updateQuantity } = useContext(
+    cartContext
+  ) as {
+    items: any[];
+    removeItemFromCart: (index: number) => void;
+    updateQuantity: (quantity: number) => void;
+  };
   const { startDate, endDate } = useRentalDates();
-  const navigate = useNavigate();
+  const [getStripeSession] = useCreateCheckoutSessionLazyQuery();
 
   if (!startDate || !endDate)
     return items.length === 0 ? (
@@ -56,41 +56,32 @@ const Cart = () => {
     updateQuantity(product.quantity--);
   };
 
-  const createOrder = () => {
-    const orderData = {
-      rental_start_date: startDate,
-      rental_end_date: endDate,
-      created_at: new Date(),
-      total_price: total,
-      products: items.map((item: any) => ({
-        quantity: item.quantity,
-        productOptionId: item.selectedOption.id,
-      })),
-      userId: user?.id ?? 0,
-    };
-
-    createOrderMutation({
-      variables: { data: orderData },
-      onCompleted: (data) => {
-        console.log("commande créé:", data);
-        toast.success(
-          "Votre commande a bien été enregistrée, vous allez être redirigée vers la page d'accueil"
-        );
-        setTimeout(() => {
-          localStorage.removeItem("cart");
-          navigate("/");
-          window.location.reload();
-        }, 3000);
+  const handleCheckout = async () => {
+    localStorage.setItem(
+      "cartInfos",
+      JSON.stringify({ startDate, endDate, total })
+    );
+    getStripeSession({
+      variables: {
+        data: items.map((item: any) => ({
+          name: item.name,
+          quantity: Number(item.quantity * duration),
+          price: Number(item.price),
+        })),
       },
-      onError: (error) => {
-        console.error("Une erreur est survenue:", error);
-        toast.error("Une erreur est survenue, veuillez réessayer");
+      onCompleted(data) {
+        console.log(data);
+        console.log("Stripe session response:", data);
+        if (data?.createCheckoutSession?.url) {
+          window.location.href = data.createCheckoutSession.url;
+        } else {
+          console.error("❌ Pas d'URL Stripe retournée");
+        }
+      },
+      onError(error) {
+        console.error("❌ Erreur Stripe:", error);
       },
     });
-  };
-
-  const handleSubmit = () => {
-    createOrder();
   };
 
   return (
@@ -201,10 +192,10 @@ const Cart = () => {
           </div>
           <div className="flex justify-center pb-8 pt-8">
             <button
-              onClick={() => handleSubmit()}
-              className="md:w-1/4 m-auto bg-green hover:bg-green/50 hover:cursor-pointer hover:shadow-md hover:text-black text-white p-2 rounded-xl sm:text-xl"
+              className="md:w-1/4 m-auto bg-green text-white p-2 rounded-xl sm:text-xl"
+              onClick={handleCheckout}
             >
-              Valider ma commande
+              Payer avec Stripe
             </button>
           </div>
         </div>

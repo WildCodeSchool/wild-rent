@@ -8,6 +8,7 @@ import { cartContext } from "../context/CartContext";
 import { useRentalDates } from "@/hooks/useRentalDates";
 import { ShieldAlert } from "lucide-react";
 import { toUTCISOString } from "@/components/CategoryCarousel";
+import { SelectRentalDates } from "@/components/SelectRentalDates";
 
 const ProductDetails = () => {
   const { id }: any = useParams();
@@ -49,7 +50,8 @@ const ProductDetails = () => {
   const mainImage = activeImage || products?.pictures[0].url;
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center py-5">
+      <SelectRentalDates />
       {(!startDate || !endDate) && (
         <p className="flex items-center gap-2 text-red-600">
           <ShieldAlert />

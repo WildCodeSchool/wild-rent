@@ -7,6 +7,7 @@ import { useUser } from "@/hooks/useUser";
 import { useRentalDates } from "@/hooks/useRentalDates";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { SelectRentalDates } from "@/components/SelectRentalDates";
 
 const Cart = () => {
   const [createOrderMutation] = useCreateNewOrderMutation();
@@ -17,12 +18,21 @@ const Cart = () => {
 
   if (!startDate || !endDate)
     return items.length === 0 ? (
-      <p className="text-center text-2xl mt-16 mb-16">Votre panier est vide</p>
+      <div className="flex flex-col items-center py-5">
+        <SelectRentalDates />
+        <p className="text-center text-2xl mt-16 mb-16">
+          Votre panier est vide
+        </p>
+      </div>
     ) : (
-      <p className="w-full mx-10 flex justify-center mt-5 font-bold">
-        Vous devez délectionner des dates de location pour voir le contenu de
-        votre panier et assuer la disponibilité des produits
-      </p>
+      <div className="flex flex-col items-center py-5">
+        {" "}
+        <SelectRentalDates />
+        <p className="w-full mx-10 flex justify-center mt-5 font-bold">
+          Vous devez délectionner des dates de location pour voir le contenu de
+          votre panier et assuer la disponibilité des produits
+        </p>
+      </div>
     );
 
   const calculateDuration = (start: Date, end: Date) => {
@@ -84,14 +94,15 @@ const Cart = () => {
   };
 
   return (
-    <>
+    <div className="flex flex-col flex-1 items-center w-full">
+      <SelectRentalDates />
       {items.length === 0 && (
         <p className="text-center text-2xl mt-16 mb-16">
           Votre panier est vide
         </p>
       )}
       {items.length !== 0 && (
-        <div>
+        <div className="w-full">
           <div className="w-[90%] lg:w-[70%] m-auto">
             <div>
               {duration ? (
@@ -118,7 +129,7 @@ const Cart = () => {
           <div className="bg-white flex justify-center flex-col md:p-4 ">
             {items.map((item: any, index: number) => (
               <div
-                className="w-[95%] lg:w-[80%] bg-green rounded-lg m-auto mt-4 flex justify-between items-center"
+                className="w-[95%] lg:w-[80%] p-2 bg-green rounded-lg m-auto mt-4 flex justify-between items-center"
                 key={index}
               >
                 <div className="w-[20%] md:w-[25%] flex justify-center mt-2 mb-2">
@@ -141,7 +152,7 @@ const Cart = () => {
                     <div>
                       <div className="flex flex-row">
                         <button
-                          className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-10 xl:w-14 rounded-tl-lg rounded-bl-lg text-center cursor-pointer"
+                          className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-10 xl:w-14 rounded-tl-lg rounded-bl-lg text-center hover:cursor-pointer"
                           onClick={() => handleRemoveQuantity(item)}
                         >
                           -
@@ -153,7 +164,7 @@ const Cart = () => {
                           {item.quantity}
                         </div>
                         <button
-                          className="bg-[#D9D9D9] w-6 md:w-8 lg:w-10 xl:w-14 rounded-tr-lg rounded-br-lg text-center cursor-pointer"
+                          className="bg-[#D9D9D9] w-6 md:w-8 lg:w-10 xl:w-14 rounded-tr-lg rounded-br-lg text-center hover:cursor-pointer"
                           onClick={() => handleAddQuantity(item)}
                         >
                           +
@@ -167,8 +178,11 @@ const Cart = () => {
                         )}
                       </div>
                     </div>
-                    <div className="mt-1 ml-2 md:ml-3  lg:mb-4 lg:ml-5">
-                      <button onClick={() => handleRemoveClick(index)}>
+                    <div className="mt-1 ml-2 md:ml-3  lg:mb-4 lg:ml-5 ">
+                      <button
+                        onClick={() => handleRemoveClick(index)}
+                        className="hover:cursor-pointer"
+                      >
                         <img
                           src="/assets/images/icons/corbeille.png"
                           alt="corbeille"
@@ -188,14 +202,14 @@ const Cart = () => {
           <div className="flex justify-center pb-8 pt-8">
             <button
               onClick={() => handleSubmit()}
-              className="md:w-1/4 m-auto bg-green text-white p-2 rounded-xl sm:text-xl cursor-pointer"
+              className="md:w-1/4 m-auto bg-green hover:bg-green/50 hover:cursor-pointer hover:shadow-md hover:text-black text-white p-2 rounded-xl sm:text-xl"
             >
               Valider ma commande
             </button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

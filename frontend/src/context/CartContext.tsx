@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useEffect, useReducer } from "react";
+import { toast } from "react-toastify";
 
 interface ProductWithOptions {
   selectedOption: {
@@ -65,6 +66,9 @@ const getInitialCart = (): CartState => {
 const cartReducer = (state: CartState, action: CartAction) => {
   switch (action.type) {
     case "ADD_ITEM":
+      toast.success("Vous avez ajouter un article à votre panier", {
+        position: "bottom-right",
+      });
       return {
         ...state,
         items: [...state.items, action.payload],

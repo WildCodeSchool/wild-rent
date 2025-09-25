@@ -31,6 +31,8 @@ services:
         condition: service_healthy
   frontend:
     build: ./frontend
+    environment:
+      - VITE_E2E_TEST=true
     volumes:
       - ./frontend/src:/app/src
     depends_on:

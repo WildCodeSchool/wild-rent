@@ -19,6 +19,7 @@ jobs:
           echo "BASE_URL_PRODUCTION=${{ vars.BASE_URL_PRODUCTION }}" >> .env
           echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> .env
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+          echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env
           echo "FIXTURES=TRUE" >> .env
       - name: Create e2e .env
         run: |

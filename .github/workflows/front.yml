@@ -37,10 +37,22 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      - name: Install backend
+      - name: Install backend and start server
         run: |
-          cd backend && npm ci && npm run start &
-          timeout 20s bash -c 'until curl --fail --request POST --header "content-type: application/json" --url "http://localhost:4000" --data "{\"query\":\"query { __typename }\"}" > /dev/null 2>&1; do sleep 1; done'
+          cd backend
+          npm ci
+          # Lancer le backend en mode détaché dans un sous-shell et enregistrer son PID
+          npm run start &
+          BACKEND_PID=$!
+          echo "Waiting for backend to be ready..."
+          for i in {1..40}; do
+            if curl --fail --silent http://localhost:4000 >/dev/null; then
+              echo "Backend ready!"
+              break
+            fi
+            sleep 1
+          done
+          # Backend reste actif pour le job entier
 
       - name: Goto frontend and run tests
         run: cd frontend && npm ci && npm run codegen && npm run test

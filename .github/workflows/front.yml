@@ -24,7 +24,6 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_USER: ${{ vars.POSTGRES_USERNAME }}
           POSTGRES_DB: ${{ vars.POSTGRES_DATABASE }}
-          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready

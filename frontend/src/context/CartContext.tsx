@@ -1,4 +1,5 @@
 import { createContext, useEffect, useReducer } from "react";
+import { toast } from "react-toastify";
 
 export const cartContext = createContext({
   items: [],
@@ -23,6 +24,9 @@ const getInitialCart = () => {
 const cartReducer = (state: any, action: any) => {
   switch (action.type) {
     case "ADD_ITEM":
+      toast.success("Vous avez ajouter un article à votre panier", {
+        position: "bottom-right",
+      });
       return {
         ...state,
         items: [...state.items, action.payload],

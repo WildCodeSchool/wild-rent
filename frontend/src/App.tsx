@@ -23,6 +23,8 @@ import AccountOrder from "./pages/Account/AccountOrder";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ResetPassword from "./pages/Account/ResetPassword";
 import ForgottenPasswordRequest from "./pages/Account/ForgottenPasswordRequest";
+import { AdminInventory } from "./pages/AdminInventory";
+import NotFound from "./pages/NotFound";
 import Success from "./pages/SuccessPayment";
 
 function App() {
@@ -31,10 +33,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route
-            path="produits/categorie/:title"
-            element={<ProductsByCategories />}
-          />
+          <Route path="categorie/:title" element={<ProductsByCategories />} />
           <Route path="produit/:id" element={<ProductDetails />} />
           <Route path="login" element={<Login />} />
           <Route path="moncompte" element={<AccountDetails />} />
@@ -51,6 +50,7 @@ function App() {
             path="confirmation/enregistrement/:code?"
             element={<ConfirmRegistration />}
           />
+          <Route path="*" element={<NotFound />} />
         </Route>
         <Route
           path="/admin"
@@ -65,6 +65,20 @@ function App() {
           <Route path="utilisateurs" element={<AdminUsers />} />
           <Route path="commandes" element={<AdminOrder />} />
           <Route path="categories" element={<AdminCategory />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN"]}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="article" element={<AdminArticle />} />
+            <Route path="utilisateurs" element={<AdminUsers />} />
+            <Route path="commandes" element={<AdminOrder />} />
+            <Route path="categories" element={<AdminCategory />} />
+            <Route path="inventaire" element={<AdminInventory />} />
+          </Route>
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

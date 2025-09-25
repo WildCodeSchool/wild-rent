@@ -15,7 +15,7 @@ const AccountOrder = () => {
   if (error) return <p>Error</p>;
   return (
     <>
-      <div className="w-full overflow-x-auto p-2">
+      <div className="w-full overflow-x-auto p-5">
         <table className="min-w-[800px] sm:min-w-full table-auto border-collapse shadow-md bg-white rounded-lg">
           <thead className="bg-gray-100 text-left text-sm text-gray-700 hidden md:table-header-group">
             <tr>

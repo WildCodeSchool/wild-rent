@@ -7,6 +7,7 @@ import { TagResolver } from "./resolvers/TagResolver";
 import { authChecker } from "./auth";
 import { OrderResolver } from "./resolvers/OrderResolver";
 import { TempUserResolver } from "./resolvers/TempUserResolver";
+import { InventoryResolver } from "./resolvers/InventoryResolver";
 import PaymentResolver from "./resolvers/PaymentResolver";
 
 export async function getSchema() {
@@ -19,6 +20,7 @@ export async function getSchema() {
       OrderResolver,
       TagResolver,
       TempUserResolver,
+      InventoryResolver,
       PaymentResolver,
     ],
     authChecker,

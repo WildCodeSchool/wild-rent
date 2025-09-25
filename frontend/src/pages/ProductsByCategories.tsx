@@ -66,7 +66,7 @@ function ProductsByCategories() {
   if (loading || loadingAvailable) return <Loader />;
   if (error || errorAvailable) console.error(error);
   return (
-    <div className="w-full flex flex-col items-center">
+    <div className="w-full flex flex-col items-center pb-5">
       <div className="w-full aspect-video md:aspect-[7/2] relative overflow-hidden flex flex-col justify-center items-center mb-2">
         <img src={imageSrc} className="object-cover w-full object-center" />
         <div className="absolute bottom-0 h-3/4 w-full bg-gradient-to-b from-transparent to-black/70 z-10"></div>

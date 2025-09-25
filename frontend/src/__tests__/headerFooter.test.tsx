@@ -102,7 +102,11 @@ describe("Header", () => {
       data: undefined,
     });
 
-    render(<Header />);
+    render(
+      <MemoryRouter>
+        <Header />
+      </MemoryRouter>
+    );
 
     expect(whoamiMock.data).toBeUndefined();
     expect(await screen.findByText("An error occured")).toBeInTheDocument();

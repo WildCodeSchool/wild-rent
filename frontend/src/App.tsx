@@ -23,6 +23,7 @@ import AccountOrder from "./pages/Account/AccountOrder";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ResetPassword from "./pages/Account/ResetPassword";
 import ForgottenPasswordRequest from "./pages/Account/ForgottenPasswordRequest";
+import Success from "./pages/SuccessPayment";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
           <Route path="confirmation/:code?" element={<ConfirmEmailPage />} />
           <Route path="mdp-oublie" element={<ForgottenPasswordRequest />} />
           <Route path="mdp-reset" element={<ResetPassword />} />
+          <Route path="success" element={<Success />} />
           <Route
             path="confirmation/enregistrement/:code?"
             element={<ConfirmRegistration />}

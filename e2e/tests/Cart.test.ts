@@ -39,9 +39,7 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
 
-  await page.waitForLoadState("networkidle");
-
-  await page.goto(`${baseUrl}/panier`);
+  await page.getByRole("link", { name: "Mon panier" }).click();
 
   await expect(page.getByText("45€")).toBeVisible();
 

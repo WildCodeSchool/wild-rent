@@ -18,9 +18,6 @@ export const dataSource = new DataSource({
   username: "admin",
   password: "password",
   database: "db_wild_rent",
-  /* username: process.env.POSTGRES_USER,
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD, */
   entities: [
     User,
     ProductInOrder,

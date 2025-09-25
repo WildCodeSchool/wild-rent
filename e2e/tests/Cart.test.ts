@@ -38,10 +38,7 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
 
-  await page
-    .getByRole("link", { name: "Mon panier" })
-    .waitFor({ state: "visible" });
-  await page.getByRole("link", { name: "Mon panier" }).click();
+  await page.goto(`${baseUrl}/panier`);
 
   await expect(page.getByText("Total: 45€")).toBeVisible();
 

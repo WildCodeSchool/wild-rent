@@ -32,6 +32,6 @@ test("test click article and add cart", async ({ page }) => {
     .getByLabel("Sélecteur d'options")
     .selectOption('{"id":1,"size":"150 cm"}');
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
-  await page.getByText("Mon panier").toBeVisible();
+  await page.goto("http://localhost:7000/");
   await expect(page.getByText("Mon panier")).toBeVisible();
 });

@@ -12,6 +12,6 @@ test("login", async ({ page }) => {
   await page.getByRole("button", { name: "Se connecter" }).click();
 
   await expect(
-    page.getByRole("link", { name: "user icon Mon compte" })
+    page.getByRole("link", { name: "Mon compte" })
   ).toBeVisible();
 });

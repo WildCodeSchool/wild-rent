@@ -146,7 +146,10 @@ const Cart = () => {
                         >
                           -
                         </button>
-                        <div className="bg-[#D9D9D966] w-6 md:w-8 lg:w-10 xl:w-14 text-center">
+                        <div
+                          aria-label="quantity"
+                          className="bg-[#D9D9D966] w-6 md:w-8 lg:w-10 xl:w-14 text-center"
+                        >
                           {item.quantity}
                         </div>
                         <button

@@ -13,7 +13,7 @@ function CategoryCard({ title, id, image }: categoryProps) {
   const imageSrc = image?.startsWith("/img/") ? image : imageBasePath + image;
   return (
     <Link
-      to={`/produits/categorie/${normalizeString(title)}`}
+      to={`/categorie/${normalizeString(title)}`}
       className="drop-shadow-sm"
       state={{
         id: id,

@@ -1,14 +1,56 @@
-import { createContext, useEffect, useReducer } from "react";
+import { createContext, ReactNode, useEffect, useReducer } from "react";
 import { toast } from "react-toastify";
 
-export const cartContext = createContext({
+interface ProductWithOptions {
+  selectedOption: {
+    id: number;
+    size: string;
+  };
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+  created_at?: any;
+  pictures?: {
+    id: number;
+    url: string;
+  }[];
+  product_options: {
+    size: string;
+    id: number;
+    total_quantity: number;
+  }[];
+  tags?: {
+    id: number;
+    label: string;
+  }[];
+  quantity: number;
+}
+
+type CartState = {
+  items: ProductWithOptions[];
+};
+
+type CartAction =
+  | { type: "ADD_ITEM"; payload: ProductWithOptions }
+  | { type: "REMOVE_ITEM"; payload: { index: number } }
+  | { type: "UPDATE_QUANTITY"; payload: { id: number; quantity: number } };
+
+type CartContextType = {
+  items: ProductWithOptions[];
+  addItemToCart: (product: any) => void;
+  removeItemFromCart: (product: any) => void;
+  updateQuantity: (product: any) => void;
+};
+
+export const cartContext = createContext<CartContextType>({
   items: [],
-  addItemToCart: (_product: any) => {},
-  removeItemFromCart: (_product: any) => {},
-  updateQuantity: (_product: any) => {},
+  addItemToCart: () => {},
+  removeItemFromCart: () => {},
+  updateQuantity: () => {},
 });
 
-const getInitialCart = () => {
+const getInitialCart = (): CartState => {
   try {
     const storedCart = localStorage.getItem("cart");
     return storedCart ? JSON.parse(storedCart) : { items: [] };
@@ -21,7 +63,7 @@ const getInitialCart = () => {
   }
 };
 
-const cartReducer = (state: any, action: any) => {
+const cartReducer = (state: CartState, action: CartAction) => {
   switch (action.type) {
     case "ADD_ITEM":
       toast.success("Vous avez ajouter un article à votre panier", {
@@ -41,7 +83,7 @@ const cartReducer = (state: any, action: any) => {
     case "UPDATE_QUANTITY":
       return {
         ...state,
-        items: state.items.map((item: any) =>
+        items: state.items.map((item) =>
           item.id === action.payload.id
             ? { ...item, quantity: action.payload.quantity }
             : item
@@ -52,7 +94,7 @@ const cartReducer = (state: any, action: any) => {
   }
 };
 
-export const CartContextProvider = ({ children }: any) => {
+export const CartContextProvider = ({ children }: { children: ReactNode }) => {
   const [cartState, cartDispatch] = useReducer(
     cartReducer,
     undefined,
@@ -62,7 +104,10 @@ export const CartContextProvider = ({ children }: any) => {
     localStorage.setItem("cart", JSON.stringify(cartState));
   }, [cartState]);
 
-  const handleToAddItem = (product: any, quantity: number = 1) => {
+  const handleToAddItem = (
+    product: ProductWithOptions,
+    quantity: number = 1
+  ) => {
     const productWithTotalPrice = {
       ...product,
       quantity,
@@ -79,7 +124,7 @@ export const CartContextProvider = ({ children }: any) => {
       payload: { index },
     });
   };
-  const handleChangeQuantity = (product: any) => {
+  const handleChangeQuantity = (product: { id: number; quantity: number }) => {
     cartDispatch({
       type: "UPDATE_QUANTITY",
       payload: product,

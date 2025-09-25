@@ -1,7 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useGetAllCategoriesQuery } from "../generated/graphql-types";
 import { normalizeString } from "../assets/utils";
-import { SelectRentalDates } from "./SelectRentalDates";
 
 const Navbar = () => {
   const { loading, error, data } = useGetAllCategoriesQuery();

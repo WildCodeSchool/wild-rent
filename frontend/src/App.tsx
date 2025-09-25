@@ -51,20 +51,6 @@ function App() {
             element={<ConfirmRegistration />}
           />
           <Route path="*" element={<NotFound />} />
-        </Route>
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute allowedRoles={["ADMIN"]}>
-              <AdminLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminHomepage />} />
-          <Route path="article" element={<AdminArticle />} />
-          <Route path="utilisateurs" element={<AdminUsers />} />
-          <Route path="commandes" element={<AdminOrder />} />
-          <Route path="categories" element={<AdminCategory />} />
           <Route
             path="/admin"
             element={
@@ -73,6 +59,7 @@ function App() {
               </ProtectedRoute>
             }
           >
+            <Route index element={<AdminHomepage />} />
             <Route path="article" element={<AdminArticle />} />
             <Route path="utilisateurs" element={<AdminUsers />} />
             <Route path="commandes" element={<AdminOrder />} />

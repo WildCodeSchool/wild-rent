@@ -2,17 +2,13 @@ import { ProductOption } from "../entities/ProductOption";
 import { ProductInOrder } from "../entities/ProductInOrder";
 
 import { Resolver, Query, Arg } from "type-graphql";
-import { OptionInventory } from "../entities/Inventory";
+import { OptionAvailability, OptionInventory } from "../entities/Inventory";
 
 @Resolver()
 export class InventoryResolver {
   @Query(() => [OptionInventory])
   async getInventoryByOptions( @Arg("startDate") startDate: string,
-    @Arg("endDate") endDate: string) {
-    
-    const productOptions = await ProductOption.find({relations: ["product"]})
-   
-    const reservations = await ProductInOrder.find({relations: ["productOption.product"]})
+    @Arg("endDate") endDate: string, @Arg("productId", { nullable: true }) productId?: number) {
 
     const getAllDates = (startDate: string, endDate:string)=>{
         const allDates= [];
@@ -27,6 +23,17 @@ export class InventoryResolver {
     
     const allDates = getAllDates(startDate, endDate)
 
+    let productOptions;
+    let reservations;
+
+    if(productId){
+        productOptions = await ProductOption.find({where:{id: productId}, relations: ["product"]})
+        reservations = await ProductInOrder.find({where:{productOption:{id: productId}}, relations: ["productOption.product"]})
+    } else {
+        productOptions = await ProductOption.find({relations: ["product"]})
+        reservations = await ProductInOrder.find({relations: ["productOption.product"]})
+    }
+   
     let inventory = []
    
     for (const option of productOptions){
@@ -61,4 +68,27 @@ export class InventoryResolver {
     
     return inventory
   }
+
+   @Query(() => OptionAvailability)
+    async checkProductAvailability( @Arg("startDate") startDate: string,
+    @Arg("endDate") endDate: string, @Arg("product_id") productId:number, @Arg("quantity") quantity:number) {
+        const productInventory = await this.getInventoryByOptions(startDate, endDate, productId)
+        const reservations =  productInventory[0].reservations
+
+        const minAvailableQty = reservations.length > 0 ?  Math.min(...reservations.map(r => r.availableQty)): productInventory[0].totalQty
+
+        if (minAvailableQty >= quantity){
+            return {
+                productOptionId: productId,
+                available: true,
+                availableQty: minAvailableQty
+            }
+        }
+        return {
+                productOptionId: productId,
+                available: false,
+                availableQty: minAvailableQty
+            }
+    }
+
 }

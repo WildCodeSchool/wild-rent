@@ -8,6 +8,7 @@ import { cartContext } from "../context/CartContext";
 import { useRentalDates } from "@/hooks/useRentalDates";
 import { ShieldAlert } from "lucide-react";
 import { toUTCISOString } from "@/components/CategoryCarousel";
+import { SelectRentalDates } from "@/components/SelectRentalDates";
 
 const ProductDetails = () => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ const ProductDetails = () => {
 
   return (
     <div className="flex flex-col items-center">
+      <SelectRentalDates />
       {(!startDate || !endDate) && (
         <p className="flex items-center gap-2 text-red-600">
           <ShieldAlert />

@@ -25,6 +25,7 @@ import ResetPassword from "./pages/Account/ResetPassword";
 import ForgottenPasswordRequest from "./pages/Account/ForgottenPasswordRequest";
 import { AdminInventory } from "./pages/AdminInventory";
 import NotFound from "./pages/NotFound";
+import Success from "./pages/SuccessPayment";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="confirmation/:code?" element={<ConfirmEmailPage />} />
           <Route path="mdp-oublie" element={<ForgottenPasswordRequest />} />
           <Route path="mdp-reset" element={<ResetPassword />} />
+          <Route path="success" element={<Success />} />
           <Route
             path="confirmation/enregistrement/:code?"
             element={<ConfirmRegistration />}

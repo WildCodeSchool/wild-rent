@@ -4,8 +4,10 @@ import ProductDetails from "../pages/ProductDetails";
 import { GET_PRODUCT_BY_ID, WHO_AM_I } from "../graphql/queries";
 import "@testing-library/jest-dom";
 import { RentalDatesProvider } from "@/context/RentalDatesContext";
+import { vi } from "vitest";
 
 const { id }: any = "1";
+const useNavigateMock = vi.fn();
 const mocks = [
   {
     request: {
@@ -41,6 +43,14 @@ const mocks = [
     },
   },
 ];
+vi.mock("react-router-dom", async () => {
+  const actual: any = await vi.importActual("react-router-dom"); // importe le vrai
+  return {
+    ...actual, // garde tout le reste
+    useNavigate: () => useNavigateMock, // on override juste useNavigate
+    useParams: () => ({ id: "1" }), // mock de useParams si besoin
+  };
+});
 
 test("affiche le nom du produit", async () => {
   render(

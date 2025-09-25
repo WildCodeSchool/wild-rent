@@ -411,6 +411,17 @@ export const GET_RESET_PASSWORD_TOKEN = gql`
   }
 `;
 
+export const CHECK_PRODUCT_AVAILABILITY = gql`
+  query CheckProductAvailability($quantity: Float!, $productId: Float!, $endDate: String!, $startDate: String!) {
+  checkProductAvailability(quantity: $quantity, product_id: $productId, endDate: $endDate, startDate: $startDate) {
+    available
+    availableQty
+    productOptionId
+  }
+}
+`;
+
+
 export const CREATE_SESSION = gql`
   query createCheckoutSession($data: [ProductForSessionInput!]!) {
     createCheckoutSession(data: $data)

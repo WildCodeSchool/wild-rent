@@ -141,7 +141,7 @@ const Cart = () => {
                     <div>
                       <div className="flex flex-row">
                         <button
-                          className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-10 xl:w-14 rounded-tl-lg rounded-bl-lg text-center"
+                          className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-10 xl:w-14 rounded-tl-lg rounded-bl-lg text-center cursor-pointer"
                           onClick={() => handleRemoveQuantity(item)}
                         >
                           -
@@ -150,7 +150,7 @@ const Cart = () => {
                           {item.quantity}
                         </div>
                         <button
-                          className="bg-[#D9D9D9] w-6 md:w-8 lg:w-10 xl:w-14 rounded-tr-lg rounded-br-lg text-center"
+                          className="bg-[#D9D9D9] w-6 md:w-8 lg:w-10 xl:w-14 rounded-tr-lg rounded-br-lg text-center cursor-pointer"
                           onClick={() => handleAddQuantity(item)}
                         >
                           +
@@ -169,7 +169,7 @@ const Cart = () => {
                         <img
                           src="/assets/images/icons/corbeille.png"
                           alt="corbeille"
-                          className="w-4 h-4  lg:w-6 lg:h-6  m-auto"
+                          className="w-4 h-4  lg:w-6 lg:h-6  m-auto cursor-pointer"
                         />{" "}
                       </button>
                     </div>
@@ -185,7 +185,7 @@ const Cart = () => {
           <div className="flex justify-center pb-8 pt-8">
             <button
               onClick={() => handleSubmit()}
-              className="md:w-1/4 m-auto bg-green text-white p-2 rounded-xl sm:text-xl"
+              className="md:w-1/4 m-auto bg-green text-white p-2 rounded-xl sm:text-xl cursor-pointer"
             >
               Valider ma commande
             </button>

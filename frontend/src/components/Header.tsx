@@ -13,12 +13,11 @@ const Header = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Ne fait rien si on est sur /panier
     if (location.pathname === "/panier") return;
 
     if (items.length > prevCount) {
       setShowPlusOne(true);
-      setTimeout(() => setShowPlusOne(false), 500);
+      setTimeout(() => setShowPlusOne(false), 600);
     }
     setPrevCount(items.length);
   }, [items.length, location.pathname]);

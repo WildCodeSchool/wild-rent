@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetAvailableProductOptionsQuery,
   useGetProductByIdQuery,
@@ -10,6 +10,7 @@ import { ShieldAlert } from "lucide-react";
 import { toUTCISOString } from "@/components/CategoryCarousel";
 
 const ProductDetails = () => {
+  const navigate = useNavigate();
   const { id }: any = useParams();
   const { addItemToCart } = useContext(cartContext);
   const { startDate, endDate } = useRentalDates();
@@ -148,9 +149,10 @@ const ProductDetails = () => {
                     selectedOption,
                   };
                   addItemToCart(productWithOptions);
+                  navigate(-1);
                 }}
                 disabled={isDisabled}
-                className="h-15 md:mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition disabled:bg-green/50 px-2"
+                className="h-15 md:mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition disabled:bg-green/50 px-2 cursor-pointer"
               >
                 Ajouter au panier
               </button>

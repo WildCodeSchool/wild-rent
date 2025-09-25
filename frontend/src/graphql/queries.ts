@@ -74,10 +74,10 @@ export const GET_PRODUCT_BY_ID = gql`
       description
       price
       created_at
-      # category {
-      #   id
-      #   title
-      # }
+      category {
+        # id
+        title
+      }
       pictures {
         id
         url

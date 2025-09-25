@@ -186,7 +186,7 @@ const Cart = () => {
                         <img
                           src="/assets/images/icons/corbeille.png"
                           alt="corbeille"
-                          className="w-4 h-4  lg:w-6 lg:h-6  m-auto"
+                          className="w-4 h-4  lg:w-6 lg:h-6  m-auto cursor-pointer"
                         />{" "}
                       </button>
                     </div>

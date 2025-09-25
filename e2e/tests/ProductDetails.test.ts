@@ -13,8 +13,8 @@ test("test click article and add cart", async ({ page }) => {
   const year = today.getFullYear();
   const month = today.getMonth(); // current month (0-indexed)
 
-  const startDate = new Date(year, month + 1, 15);
-  const endDate = new Date(year, month + 1, 18);
+  const startDate = new Date(year, month, 26);
+  const endDate = new Date(year, month, 29);
 
   const startLabel = formatDateForTest(startDate);
   const endLabel = formatDateForTest(endDate);

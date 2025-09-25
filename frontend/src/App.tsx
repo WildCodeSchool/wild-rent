@@ -63,20 +63,7 @@ function App() {
           <Route path="utilisateurs" element={<AdminUsers />} />
           <Route path="commandes" element={<AdminOrder />} />
           <Route path="categories" element={<AdminCategory />} />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute allowedRoles={["ADMIN"]}>
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="article" element={<AdminArticle />} />
-            <Route path="utilisateurs" element={<AdminUsers />} />
-            <Route path="commandes" element={<AdminOrder />} />
-            <Route path="categories" element={<AdminCategory />} />
-            <Route path="inventaire" element={<AdminInventory />} />
-          </Route>
+          <Route path="inventaire" element={<AdminInventory />} />
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

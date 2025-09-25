@@ -119,15 +119,14 @@ const Cart = () => {
 
   if (!startDate || !endDate || items.length === 0)
     return items.length === 0 ? (
-      <div className="flex flex-col items-center py-5">
+      <div className="flex flex-col items-center p-5">
         <SelectRentalDates />
         <p className="text-center text-2xl mt-16 mb-16">
           Votre panier est vide
         </p>
       </div>
     ) : (
-      <div className="flex flex-col items-center py-5">
-        {" "}
+      <div className="flex flex-col items-center p-5">
         <SelectRentalDates />
         <p className="w-full mx-10 flex justify-center mt-5 font-bold">
           Vous devez délectionner des dates de location pour voir le contenu de

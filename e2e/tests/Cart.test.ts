@@ -23,7 +23,6 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
   const startLabel = formatDateForTest(startDate);
   const endLabel = formatDateForTest(endDate);
 
-  await page.goto(`${baseUrl}/categorie/sportsdhiver`);
   await page.goto(`${baseUrl}/produit/1`);
   await page
     .getByRole("button", { name: "Début de la location Fin de" })
@@ -39,16 +38,14 @@ test("Panier : ajout produit, sélection dates, modification quantité, suppress
 
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
 
-  await page.waitForLoadState("networkidle");
+  await page.getByRole("link", { name: "Mon panier" }).click();
 
-  await page.goto(`${baseUrl}/panier`);
-
-  await expect(page.getByText("45€")).toBeVisible();
+  await expect(page.getByText("Total: 45€")).toBeVisible();
 
   await page.getByRole("button", { name: "+" }).click();
   await expect(page.getByLabel("quantity")).toHaveText("2");
 
-  await expect(page.getByText("90€")).toBeVisible();
+  await expect(page.getByText("Total: 90€")).toBeVisible();
 
   // Diminue la quantité
   await page.getByRole("button", { name: "-" }).click();

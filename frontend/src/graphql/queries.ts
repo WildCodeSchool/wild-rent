@@ -410,3 +410,14 @@ export const GET_RESET_PASSWORD_TOKEN = gql`
     getResetPasswordToken(token: $token)
   }
 `;
+
+export const CHECK_PRODUCT_AVAILABILITY = gql`
+  query CheckProductAvailability($quantity: Float!, $productId: Float!, $endDate: String!, $startDate: String!) {
+  checkProductAvailability(quantity: $quantity, product_id: $productId, endDate: $endDate, startDate: $startDate) {
+    available
+    availableQty
+    productOptionId
+  }
+}
+`;
+

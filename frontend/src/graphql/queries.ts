@@ -384,35 +384,29 @@ export const GET_AVAILABLE_PRODUCT_OPTION = gql`
       size
       total_quantity
     }
-}
-`
+  }
+`;
 export const GET_INVENTORY = gql`
   query GetInventoryByOptions($endDate: String!, $startDate: String!) {
-  getInventoryByOptions(endDate: $endDate, startDate: $startDate) {
-    option
-    product
-    reservations {
-      reservedQty
-      date
-      availableQty
-    }
-    totalQty
-    id
-    category {
-      title
+    getInventoryByOptions(endDate: $endDate, startDate: $startDate) {
+      option
+      product
+      reservations {
+        reservedQty
+        date
+        availableQty
+      }
+      totalQty
+      id
+      category {
+        title
+      }
     }
   }
-}
 `;
 
 export const GET_RESET_PASSWORD_TOKEN = gql`
   query GetResetPasswordToken($token: String!) {
     getResetPasswordToken(token: $token)
-  }
-`;
-
-export const CREATE_SESSION = gql`
-  query createCheckoutSession($data: [ProductForSessionInput!]!) {
-    createCheckoutSession(data: $data)
   }
 `;

@@ -2,8 +2,8 @@ import { useContext } from "react";
 import { cartContext } from "../context/CartContext";
 import "react-datepicker/dist/react-datepicker.css";
 import { useRentalDates } from "@/hooks/useRentalDates";
-import { useCreateCheckoutSessionLazyQuery } from "@/generated/graphql-types";
 import { SelectRentalDates } from "@/components/SelectRentalDates";
+import { useCreateCheckoutSessionMutation } from "@/generated/graphql-types";
 
 const Cart = () => {
   const { items, removeItemFromCart, updateQuantity } = useContext(
@@ -14,7 +14,7 @@ const Cart = () => {
     updateQuantity: (quantity: number) => void;
   };
   const { startDate, endDate } = useRentalDates();
-  const [getStripeSession] = useCreateCheckoutSessionLazyQuery();
+  const [getStripeSession] = useCreateCheckoutSessionMutation();
 
   if (!startDate || !endDate)
     return items.length === 0 ? (

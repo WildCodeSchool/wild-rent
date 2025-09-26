@@ -134,7 +134,7 @@ const Cart = () => {
         </p>
       )}
       {items.length !== 0 && (
-        <div className="w-full">
+        <div className="w-full py-5">
           <div className="w-[90%] lg:w-[70%] m-auto">
             <div>
               {duration ? (

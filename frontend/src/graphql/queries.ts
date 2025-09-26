@@ -376,7 +376,6 @@ export const GET_AVAILABLE_PRODUCT_OPTION = gql`
       endDate: $endDate
       startDate: $startDate
     ) {
-      availableQuantity
       id
       product {
         name

@@ -52,20 +52,34 @@ export function UserTable({
   refetchTempUsers,
   seeTempUsers,
 }: UserTableProps) {
-  const [deleteUserMutation] = useDeleteUserMutation();
-  const [deleteTempUserMutation] = useDeleteTempUserMutation();
+  const [deleteUserMutation] = useDeleteUserMutation({
+    onError: () => {
+      toast.error(
+        "Une erreur est survenue, l'utilisateur n'a pas pu être supprimé"
+      );
+    },
+  });
+  const [deleteTempUserMutation] = useDeleteTempUserMutation({
+    onError: () => {
+      toast.error(
+        "Une erreur est survenue, l'utilisateur n'a pas pu être supprimé"
+      );
+    },
+  });
 
   const deteleUser = async (id: number) => {
     try {
       if (!seeTempUsers) {
         const response = await deleteUserMutation({
-          variables: { deleteUserId: id },
+          variables: {
+            data: {
+              userId: id,
+            },
+          },
         });
         refetchUsers();
         if (response.data?.deleteUser) {
           toast.success("Utilisateur supprimé avec succès");
-        } else {
-          toast.error("Une erreur est survenue, veuillez réessayer plus tard");
         }
         return response.data;
       } else {
@@ -75,8 +89,6 @@ export function UserTable({
         refetchTempUsers();
         if (response.data?.deleteTempUser) {
           toast.success("Utilisateur supprimé avec succès");
-        } else {
-          toast.error("Une erreur est survenue, veuillez réessayer plus tard");
         }
         return response.data;
       }
@@ -113,13 +125,7 @@ export function UserTable({
                 <TableCell>
                   <Badge
                     variant={"outline"}
-                    className={`${
-                      item.role === "ADMIN"
-                        ? "bg-green/30"
-                        : item.role === "SUPER_ADMIN"
-                        ? "bg-blue/30"
-                        : ""
-                    }`}
+                    className={`${item.role === "ADMIN" ? "bg-green/30" : ""}`}
                   >
                     {item.role}
                   </Badge>
@@ -168,7 +174,7 @@ export function UserTable({
                           <Button
                             onClick={() => deteleUser(item.id)}
                             variant={"destructive"}
-                            className="mt-5 w-[140px]"
+                            className="mt-5 w-[140px] hover:cursor-pointer hover:bg-red-600/70"
                           >
                             Confirmer
                           </Button>

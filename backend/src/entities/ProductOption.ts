@@ -37,7 +37,4 @@ export class ProductOption extends BaseEntity {
   )
   orders: ProductInOrder[];
 
-  // Ce champ sert seulement à pouvoir renvoyer la valeur de available_quantity qui est calculée dans un resolver
-  @Field(() => Number)
-  availableQuantity: number;
 }

@@ -154,7 +154,6 @@ const AdminUsers = () => {
               <SelectContent>
                 <SelectItem value="USER">User</SelectItem>
                 <SelectItem value="ADMIN">Admin</SelectItem>
-                <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
                 <SelectItem value="all">Tous les utilisateurs</SelectItem>
               </SelectContent>
             </Select>

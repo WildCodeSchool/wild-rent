@@ -42,7 +42,7 @@ export class UpdateUserInput {
 @InputType()
 export class UpdateOrCreateUserInput {
   @Field({ nullable: true })
-  id: number;
+  userId: number;
 
   @Field()
   first_name: string;
@@ -102,4 +102,10 @@ export class ForgottenPasswordRequestInput {
   @Field()
   @IsEmail()
   email: string;
+}
+
+@InputType()
+export class DeleteUserInput {
+  @Field()
+  userId!: number;
 }

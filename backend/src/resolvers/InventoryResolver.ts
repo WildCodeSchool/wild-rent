@@ -1,8 +1,9 @@
 import { ProductOption } from "../entities/ProductOption";
 import { ProductInOrder } from "../entities/ProductInOrder";
 
-import { Resolver, Query, Arg } from "type-graphql";
+import { Resolver, Query, Arg, Ctx } from "type-graphql";
 import { OptionAvailability, OptionInventory } from "../entities/Inventory";
+import { GraphQLError } from "graphql";
 
 @Resolver()
 export class InventoryResolver {
@@ -10,8 +11,18 @@ export class InventoryResolver {
   async getInventoryByOptions(
     @Arg("startDate") startDate: string,
     @Arg("endDate") endDate: string,
-    @Arg("productId", { nullable: true }) productId?: number
+    @Arg("productId", { nullable: true }) productId?: number, 
+    @Ctx() context?: any,
   ) {
+
+    if(!productId){
+        if(context.user.role !== "ADMIN"){
+             throw new GraphQLError("Only admins can query all inventory", {
+            extensions: { code: "FORBIDDEN" },
+            });
+        }
+    }
+
     const getAllDates = (startDate: string, endDate: string) => {
       const allDates = [];
       let currentDate = new Date(startDate);

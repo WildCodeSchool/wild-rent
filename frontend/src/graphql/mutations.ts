@@ -78,9 +78,9 @@ export const CREATE_ORDER = gql`
 `;
 
 export const DELETE_USER = gql`
-  mutation DeleteUser($deleteUserId: Float!) {
-    deleteUser(id: $deleteUserId)
-  }
+  mutation DeleteUser($data: DeleteUserInput!) {
+  deleteUser(data: $data)
+}
 `;
 
 export const DELETE_ORDER_BY_ID = gql`

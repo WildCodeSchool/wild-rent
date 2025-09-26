@@ -11,6 +11,9 @@ export const IsCurrentUserOrAdmin: MiddlewareFn<AuthContextType> = async (
   { context, args },
   next
 ) => {
+
+  console.log("args:", args,  "contextuser:", context.user)
+
   if (context.user.role === "ADMIN" || context.user.id === args.data.userId) {
     return next(); // on exécute le code du resolver si la condition est remplie
   } else {

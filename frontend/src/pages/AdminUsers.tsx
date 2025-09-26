@@ -46,6 +46,8 @@ const AdminUsers = () => {
   const { data: tempUsersData, refetch: tempUserRefetch } =
     useGetTempUsersQuery();
 
+  console.log(tempUsersData)
+
   const users = data?.getAllUsers?.users ?? [];
   const totalUsersLength = data?.getAllUsers.totalUsersLength;
   const tempUsers = tempUsersData?.getAllTempUsers ?? [];
@@ -154,7 +156,6 @@ const AdminUsers = () => {
               <SelectContent>
                 <SelectItem value="USER">User</SelectItem>
                 <SelectItem value="ADMIN">Admin</SelectItem>
-                <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
                 <SelectItem value="all">Tous les utilisateurs</SelectItem>
               </SelectContent>
             </Select>

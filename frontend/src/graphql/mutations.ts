@@ -241,3 +241,9 @@ export const DELETE_CATEGORY = gql`
     deleteCategory(id: $id)
   }
 `;
+
+export const CREATE_SESSION = gql`
+  mutation createCheckoutSession($data: [ProductForSessionInput!]!) {
+    createCheckoutSession(data: $data)
+  }
+`;

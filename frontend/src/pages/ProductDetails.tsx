@@ -35,7 +35,6 @@ const ProductDetails = () => {
   });
 
   const availableOptions = dataOptions?.getAvailableProductOptions;
-  console.log("availableOptions:");
 
   const [selectedOption, setSelectedOption] = useState<{
     id: number;

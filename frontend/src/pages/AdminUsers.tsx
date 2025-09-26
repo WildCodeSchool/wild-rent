@@ -46,8 +46,6 @@ const AdminUsers = () => {
   const { data: tempUsersData, refetch: tempUserRefetch } =
     useGetTempUsersQuery();
 
-  console.log(tempUsersData)
-
   const users = data?.getAllUsers?.users ?? [];
   const totalUsersLength = data?.getAllUsers.totalUsersLength;
   const tempUsers = tempUsersData?.getAllTempUsers ?? [];

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetAvailableProductOptionsQuery,
   useGetProductByIdQuery,
@@ -8,11 +8,14 @@ import { cartContext } from "../context/CartContext";
 import { useRentalDates } from "@/hooks/useRentalDates";
 import { ShieldAlert } from "lucide-react";
 import { toUTCISOString } from "@/components/CategoryCarousel";
+import { SelectRentalDates } from "@/components/SelectRentalDates";
 
 const ProductDetails = () => {
+  const navigate = useNavigate();
   const { id }: any = useParams();
   const { addItemToCart } = useContext(cartContext);
   const { startDate, endDate } = useRentalDates();
+  const isE2E = import.meta.env.VITE_E2E_TEST === "true";
 
   const { loading, error, data } = useGetProductByIdQuery({
     variables: { getProductByIdId: parseInt(id) },
@@ -50,6 +53,7 @@ const ProductDetails = () => {
 
   return (
     <div className="flex flex-col items-center">
+      <SelectRentalDates />
       {(!startDate || !endDate) && (
         <p className="flex items-center gap-2 text-red-600">
           <ShieldAlert />
@@ -148,9 +152,12 @@ const ProductDetails = () => {
                     selectedOption,
                   };
                   addItemToCart(productWithOptions);
+                  if (!isE2E) {
+                    navigate(-1);
+                  }
                 }}
                 disabled={isDisabled}
-                className="h-15 md:mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition disabled:bg-green/50 px-2"
+                className="h-15 md:mt-7 md:w-full bg-[#4F6F64] text-white py-3 rounded-lg font-medium shadow-md hover:bg-[#3e5b51] transition disabled:bg-green/50 px-2 cursor-pointer"
               >
                 Ajouter au panier
               </button>

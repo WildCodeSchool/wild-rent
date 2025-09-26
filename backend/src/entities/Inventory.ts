@@ -15,7 +15,7 @@ export class ReservationItem {
 
 @ObjectType()
 export class OptionInventory {
-    @Field()
+  @Field()
   id: number;
 
   @Field()
@@ -32,4 +32,16 @@ export class OptionInventory {
 
   @Field(() => [ReservationItem])
   reservations: ReservationItem[];
+}
+
+@ObjectType()
+export class OptionAvailability {
+  @Field()
+  productOptionId: number;
+
+  @Field()
+  available: boolean;
+
+  @Field()
+  availableQty: number;
 }

@@ -24,6 +24,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ResetPassword from "./pages/Account/ResetPassword";
 import ForgottenPasswordRequest from "./pages/Account/ForgottenPasswordRequest";
 import { AdminInventory } from "./pages/AdminInventory";
+import NotFound from "./pages/NotFound";
+import Success from "./pages/SuccessPayment";
 
 function App() {
   return (
@@ -43,25 +45,27 @@ function App() {
           <Route path="confirmation/:code?" element={<ConfirmEmailPage />} />
           <Route path="mdp-oublie" element={<ForgottenPasswordRequest />} />
           <Route path="mdp-reset" element={<ResetPassword />} />
+          <Route path="success" element={<Success />} />
           <Route
             path="confirmation/enregistrement/:code?"
             element={<ConfirmRegistration />}
           />
-        </Route>
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute allowedRoles={["ADMIN"]}>
-              <AdminLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminHomepage />} />
-          <Route path="article" element={<AdminArticle />} />
-          <Route path="utilisateurs" element={<AdminUsers />} />
-          <Route path="commandes" element={<AdminOrder />} />
-          <Route path="categories" element={<AdminCategory />} />
-          <Route path="inventaire" element={<AdminInventory />} />
+          <Route path="*" element={<NotFound />} />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN"]}>
+                <AdminLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminHomepage />} />
+            <Route path="article" element={<AdminArticle />} />
+            <Route path="utilisateurs" element={<AdminUsers />} />
+            <Route path="commandes" element={<AdminOrder />} />
+            <Route path="categories" element={<AdminCategory />} />
+            <Route path="inventaire" element={<AdminInventory />} />
+          </Route>
         </Route>
       </Routes>
       <ToastContainer theme="colored" />

@@ -1,23 +1,16 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useGetAllCategoriesQuery } from "../generated/graphql-types";
 import { normalizeString } from "../assets/utils";
-import { SelectRentalDates } from "./SelectRentalDates";
 
 const Navbar = () => {
   const { loading, error, data } = useGetAllCategoriesQuery();
-
-  const location = useLocation();
-  const pathname = location.pathname;
-
-  const rentalDatesVisible =
-    pathname === "/" || pathname === "/panier" || pathname.includes("/produit");
 
   if (loading) return <p>Loading ...</p>;
   if (error) return <p> Error : {error.message}</p>;
   if (data) {
     return (
       <div className="flex flex-col items-center w-full">
-        <nav className="bg-green hidden sm:flex items-center justify-center sm:justify-between px-8 py-3 w-full">
+        <nav className="bg-green hidden md:flex items-center justify-center sm:justify-between px-8 py-3 w-full">
           {data.getAllCategories.map((category) => (
             <Link
               key={category.id}
@@ -33,7 +26,6 @@ const Navbar = () => {
             </Link>
           ))}
         </nav>
-        {rentalDatesVisible && <SelectRentalDates />}
       </div>
     );
   }

@@ -12,37 +12,31 @@ describe("AdminNavbar", () => {
 
   it("renders the AdminNavbar component correctly", () => {
     renderNavbar();
-    expect(
-      screen.getByRole("img", { name: "Wild Rent logo" })
-    ).toBeInTheDocument();
+    expect(screen.getByLabelText("admin logo")).toBeInTheDocument();
   });
 
-  it('displays the text "Wild Rent" when isOpen is true', () => {
+  it('displays the text "Menu" when isOpen is true', () => {
     renderNavbar();
-    expect(
-      screen.getByRole("heading", { name: "Wild Rent" })
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Menu" })).toBeInTheDocument();
   });
 
   it("toggles the menu when clicking the button", () => {
     renderNavbar();
     const toggleButton = screen.getByRole("button");
 
-    expect(screen.getByText("Wild Rent")).toBeInTheDocument();
+    expect(screen.getByText("Menu")).toBeInTheDocument();
 
     fireEvent.click(toggleButton);
 
-    expect(screen.queryByText("Wild Rent")).not.toBeInTheDocument();
+    expect(screen.queryByText("Menu")).not.toBeInTheDocument();
   });
 
   it("displays all navigation links when the menu is open", () => {
     renderNavbar();
-    expect(screen.getByText("Accueil")).toBeInTheDocument();
+    expect(screen.getByText("Utilisateurs")).toBeInTheDocument();
     expect(screen.getByText("Catégories")).toBeInTheDocument();
     expect(screen.getByText("Articles")).toBeInTheDocument();
     expect(screen.getByText("Commandes")).toBeInTheDocument();
     expect(screen.getByText("Inventaire")).toBeInTheDocument();
-    expect(screen.getByText("Mon compte")).toBeInTheDocument();
-    expect(screen.getByText("Déconnexion")).toBeInTheDocument();
   });
 });

@@ -11,9 +11,10 @@ test('reset password', async ({ page }) => {
     await page.goto(baseUrl);
     await page.getByRole('link', { name: 'Connexion' }).click();
     await page.getByText('Mot de passe oublié ?').click();
+    await page.getByRole('textbox', { name: 'Entrez votre adresse email' }).click();
     await page.getByRole('textbox', { name: 'Entrez votre adresse email' }).fill(`${namespace}.test@inbox.testmail.app`);
-    // await page.getByText('Envoyer le lien de réinitialistaion').click();
-    // await expect(page.getByText('Un email de réinitialisation')).toBeVisible();
+    await page.getByRole('button', { name: 'Envoyer le lien de ré' }).click();
+    await expect(page.getByText('Un email de réinitialisation')).toBeVisible();
 
     let link = "";
     const res = await axios.get("https://api.testmail.app/api/json", {
@@ -29,13 +30,9 @@ test('reset password', async ({ page }) => {
     if (res.data.emails && res.data.emails[0].subject === 'Réinitialisation de votre mot de passe') {
         const email = res.data.emails[0];
         const match = email.text.match(/http:\/\/[^\s]+/g);
-        console.log('res.data RESETPASSWORD ', res.data)
-        console.log('email email email email email email email email email email email email email email ', email)
         link = match[0];
     } else {
         const email = res.data.emails[0];
-        console.log('res.data RESETPASSWORD ', res.data)
-        console.log('email email email email email email email email email email email email email email ', email)
         const match = email.text.match(/http:\/\/[^\s]+/g);
         link = match[0];
     }
@@ -46,5 +43,5 @@ test('reset password', async ({ page }) => {
     await page.locator('input[name="password_confirmation"]').click();
     await page.locator('input[name="password_confirmation"]').fill("password123");
     await page.getByRole('button', { name: 'Valider' }).click();
-    await page.getByText('Nouveau mot de passe créé').click();
+    await expect(page.getByText('Nouveau mot de passe créé')).toBeVisible();
 });

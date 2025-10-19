@@ -7,7 +7,7 @@ import { Category } from "../entities/Category";
 import { FindManyOptions, In, Raw } from "typeorm";
 import { merge } from "../assets/utils";
 import { Tag } from "../entities/Tag";
-// import { ProductInOrder } from "../entities/ProductInOrder";
+//import { ProductInOrder } from "../entities/ProductInOrder";
 import { getInventoryByOptionsService } from "../services/InventoryService";
 
 @Resolver(Product)
@@ -104,7 +104,7 @@ export class ProductResolver {
     @Arg("tags", () => [String], { nullable: true }) tags?: string[],
     @Arg("productId", { nullable: true }) productId?: number
   ) {
-    const queryBuilder = ProductOption.Builder("po")
+    const queryBuilder = ProductOption.createQueryBuilder("po")
       .leftJoinAndSelect("po.product", "product")
       .leftJoinAndSelect("product.category", "category")
       .leftJoinAndSelect("product.tags", "tag")

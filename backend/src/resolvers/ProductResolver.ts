@@ -78,9 +78,10 @@ export class ProductResolver {
       .andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
       .andWhere("product.price >= :minPrice", { minPrice: minPrice });
 
-
     if (keyword.length > 0) {
-      queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
+      queryBuilder.andWhere("product.name ILIKE :keyword", {
+        keyword: `%${keyword}%`,
+      });
     }
 
     if (tags && tags.length > 0) {
@@ -98,84 +99,102 @@ export class ProductResolver {
     @Arg("endDate") endDate: Date,
     @Arg("categoryId", { nullable: true }) categoryId?: number,
     @Arg("keyword", { nullable: true }) keyword?: string,
-    @Arg("minPrice",  { nullable: true }) minPrice?: number,
-    @Arg("maxPrice",  { nullable: true }) maxPrice?: number,
-    @Arg("tags", () => [String],  { nullable: true }) tags?: string[],
-    @Arg("productId", {nullable: true}) productId?:number,
+    @Arg("minPrice", { nullable: true }) minPrice?: number,
+    @Arg("maxPrice", { nullable: true }) maxPrice?: number,
+    @Arg("tags", () => [String], { nullable: true }) tags?: string[],
+    @Arg("productId", { nullable: true }) productId?: number
   ) {
-
-    const queryBuilder = ProductOption.createQueryBuilder("po")
-    .leftJoinAndSelect("po.product", "product")
-    .leftJoinAndSelect("product.category", "category")
-    .leftJoinAndSelect("product.tags", "tag")
-    .leftJoinAndSelect("product.pictures", "pictures");
-     // Filtre par catégorie
+    const queryBuilder = ProductOption.Builder("po")
+      .leftJoinAndSelect("po.product", "product")
+      .leftJoinAndSelect("product.category", "category")
+      .leftJoinAndSelect("product.tags", "tag")
+      .leftJoinAndSelect("product.pictures", "pictures");
+    // Filtre par catégorie
     if (categoryId) {
-      queryBuilder.andWhere("category.id = :categoryId", {categoryId});
+      queryBuilder.andWhere("category.id = :categoryId", { categoryId });
     }
     // Filtre par mot-clé
     if (keyword) {
-      queryBuilder.andWhere("product.name ILIKE :keyword", { keyword: `%${keyword}%` });
+      queryBuilder.andWhere("product.name ILIKE :keyword", {
+        keyword: `%${keyword}%`,
+      });
     }
     // Filtre par prix
-    if(maxPrice){
-      queryBuilder.andWhere("product.price <= :maxPrice", { maxPrice: maxPrice })
+    if (maxPrice) {
+      queryBuilder.andWhere("product.price <= :maxPrice", {
+        maxPrice: maxPrice,
+      });
     }
-    if(minPrice){
-      queryBuilder.andWhere("product.price >= :minPrice", { minPrice: minPrice })
+    if (minPrice) {
+      queryBuilder.andWhere("product.price >= :minPrice", {
+        minPrice: minPrice,
+      });
     }
     // Filtre par tags
     if (tags && tags.length > 0) {
       queryBuilder.andWhere("tag.label IN (:...tags)", { tags });
     }
-     // Filtre par product ID
+    // Filtre par product ID
     if (productId) {
-      queryBuilder.andWhere("product.id = :productId", { productId: productId });
+      queryBuilder.andWhere("product.id = :productId", {
+        productId: productId,
+      });
     }
 
     const productOptions = await queryBuilder.getMany();
 
-    const inventoryForDates = await getInventoryByOptionsService(startDate.toISOString().split("T")[0], endDate.toISOString().split("T")[0])
+    const inventoryForDates = await getInventoryByOptionsService(
+      startDate.toISOString().split("T")[0],
+      endDate.toISOString().split("T")[0]
+    );
 
     const unavailableProducts = inventoryForDates.filter((item) => {
-      if(!item.reservations || item.reservations.length ===0){
-        return false
+      if (!item.reservations || item.reservations.length === 0) {
+        return false;
       }
-      const maxReserved = Math.max(...item.reservations.map(r=>r.reservedQty))
-      return maxReserved >= item.totalQty
-    })
+      const maxReserved = Math.max(
+        ...item.reservations.map((r) => r.reservedQty)
+      );
+      return maxReserved >= item.totalQty;
+    });
 
-    const availableProductOptions = productOptions.filter((option)=>{
-      return !unavailableProducts.find((item)=> item.id === option.id)
-    })
+    const availableProductOptions = productOptions.filter((option) => {
+      return !unavailableProducts.find((item) => item.id === option.id);
+    });
 
-    return availableProductOptions
+    return availableProductOptions;
   }
 
-
-  @Query(()=> [Product])
+  @Query(() => [Product])
   async getAvailableProductForDates(
     @Arg("startDate") startDate: Date,
     @Arg("endDate") endDate: Date,
     @Arg("categoryId", { nullable: true }) categoryId?: number,
     @Arg("keyword", { nullable: true }) keyword?: string,
-    @Arg("minPrice",  { nullable: true }) minPrice?: number,
-    @Arg("maxPrice",  { nullable: true }) maxPrice?: number,
+    @Arg("minPrice", { nullable: true }) minPrice?: number,
+    @Arg("maxPrice", { nullable: true }) maxPrice?: number,
     @Arg("tags", () => [String], { nullable: true }) tags?: string[]
   ) {
-
-    const availableProductOptions = await this.getAvailableProductOptions(startDate, endDate, categoryId, keyword, minPrice, maxPrice, tags);
+    const availableProductOptions = await this.getAvailableProductOptions(
+      startDate,
+      endDate,
+      categoryId,
+      keyword,
+      minPrice,
+      maxPrice,
+      tags
+    );
 
     // Extrait les Products disponibles à partir des products Options dispo
     let availableProducts: Product[] = [];
 
-    availableProductOptions.forEach(option => {
+    availableProductOptions.forEach((option) => {
       const product = option.product;
-      if (!availableProducts.some((item)=> item.id === product.id )) {
+      if (!availableProducts.some((item) => item.id === product.id)) {
         availableProducts.push(product);
       }
     });
-   
+
     return availableProducts;
   }
 

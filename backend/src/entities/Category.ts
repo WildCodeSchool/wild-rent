@@ -22,7 +22,7 @@ export class Category extends BaseEntity {
   title: string;
 
   @Field()
-  @Column({nullable:true})
+  @Column()
   image: string;
 
   @OneToMany(() => Product, (product) => product.category)

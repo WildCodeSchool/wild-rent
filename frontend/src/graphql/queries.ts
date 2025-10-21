@@ -33,12 +33,14 @@ export const GET_PRODUCTS_BY_FILTERS = gql`
     $minPrice: Float!
     $categoryId: Float!
     $tags: [String!]!
+    $keyword: String!
   ) {
     getProductWithFilters(
       maxPrice: $maxPrice
       minPrice: $minPrice
       categoryId: $categoryId
       tags: $tags
+      keyword: $keyword
     ) {
       category {
         title
@@ -72,10 +74,10 @@ export const GET_PRODUCT_BY_ID = gql`
       description
       price
       created_at
-      # category {
-      #   id
-      #   title
-      # }
+      category {
+        # id
+        title
+      }
       pictures {
         id
         url
@@ -233,6 +235,55 @@ export const GET_ORDER_BY_ID = gql`
   }
 `;
 
+export const GET_ALL_ORDERS_AND_DETAILS = gql`
+  query GetAllOrdersAndDetails {
+    getAllOrders {
+      id
+      user {
+        email
+      }
+      total_price
+      status
+      rental_start_date
+      rental_end_date
+      created_at
+      products_in_order {
+        quantity
+        productOption {
+          size
+          product {
+            name
+            price
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const GET_ALL_ORDERS_BY_USER_ID = gql`
+  query GetOrdersByUserId($id: Float!) {
+    getOrdersByUserId(id: $id) {
+      created_at
+      id
+      status
+      total_price
+      rental_end_date
+      rental_start_date
+      products_in_order {
+        quantity
+        productOption {
+          product {
+            name
+            price
+          }
+          size
+        }
+      }
+    }
+  }
+`;
+
 export const GET_ALL_TEMP_USERS = gql`
   query GetTempUsers {
     getAllTempUsers {
@@ -274,3 +325,108 @@ export const SEARCH_PRODUCTS_BY_OPTIONS = gql`
     }
   }
 `;
+
+export const GET_AVAILABLE_PRODUCTS = gql`
+  query GetAvailableProductForDates(
+    $endDate: DateTimeISO!
+    $startDate: DateTimeISO!
+    $categoryId: Float
+    $keyword: String
+    $minPrice: Float
+    $maxPrice: Float
+    $tags: [String!]!
+  ) {
+    getAvailableProductForDates(
+      endDate: $endDate
+      startDate: $startDate
+      categoryId: $categoryId
+      keyword: $keyword
+      minPrice: $minPrice
+      maxPrice: $maxPrice
+      tags: $tags
+    ) {
+      name
+      id
+      pictures {
+        id
+        url
+      }
+      description
+      category {
+        id
+        title
+      }
+      price
+      tags {
+        id
+        label
+      }
+    }
+  }
+`;
+
+export const GET_AVAILABLE_PRODUCT_OPTION = gql`
+  query GetAvailableProductOptions(
+    $productId: Float
+    $endDate: DateTimeISO!
+    $startDate: DateTimeISO!
+  ) {
+    getAvailableProductOptions(
+      productId: $productId
+      endDate: $endDate
+      startDate: $startDate
+    ) {
+      id
+      product {
+        name
+      }
+      size
+      total_quantity
+    }
+  }
+`;
+export const GET_INVENTORY = gql`
+  query GetInventoryByOptions($endDate: String!, $startDate: String!) {
+    getInventoryByOptions(endDate: $endDate, startDate: $startDate) {
+      option
+      product
+      reservations {
+        reservedQty
+        date
+        availableQty
+      }
+      totalQty
+      id
+      category {
+        title
+      }
+    }
+  }
+`;
+
+export const GET_RESET_PASSWORD_TOKEN = gql`
+  query GetResetPasswordToken($token: String!) {
+    getResetPasswordToken(token: $token)
+  }
+`;
+
+export const CHECK_PRODUCT_AVAILABILITY = gql`
+  query CheckProductAvailability(
+    $quantity: Float!
+    $productId: Float!
+    $endDate: String!
+    $startDate: String!
+  ) {
+    checkProductAvailability(
+      quantity: $quantity
+      product_id: $productId
+      endDate: $endDate
+      startDate: $startDate
+    ) {
+      available
+      availableQty
+      productOptionId
+    }
+  }
+`;
+

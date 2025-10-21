@@ -68,7 +68,7 @@ export default function AdminUserForm({
         const user = await editUserMutation({
           variables: {
             data: {
-              id: userToUpdate.id,
+              userId: userToUpdate.id,
               created_at: userToUpdate.created_at,
               city: values.city,
               email: values.email,
@@ -83,10 +83,6 @@ export default function AdminUserForm({
         });
         if (user) {
           toast.success("Utilisateur modifié avec succès");
-        } else {
-          toast.error(
-            "Erreur dans la modification de l'utilisateur, veuillez réessayer"
-          );
         }
         setFormOpen(false);
       } else {
@@ -109,15 +105,16 @@ export default function AdminUserForm({
           toast.success(
             "Utilisateur ajouté avec succès, en attente de création de mot de passe"
           );
-        } else {
-          toast.error(
-            "Erreur dans la création de l'utilisateur, veuillez réessayer"
-          );
         }
         setFormOpen(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Form submission error", error);
+      if (error.graphQLErrors && error.graphQLErrors.length > 0) {
+        toast.error(error.graphQLErrors[0].message);
+      } else {
+        toast.error("Une erreur est survenue, veuillez réessayer");
+      }
     }
   };
 

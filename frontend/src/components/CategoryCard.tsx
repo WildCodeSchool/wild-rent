@@ -10,9 +10,10 @@ export interface categoryProps {
 const imageBasePath = "/assets/images/categories/";
 
 function CategoryCard({ title, id, image }: categoryProps) {
+  const imageSrc = image?.startsWith("/img/") ? image : imageBasePath + image;
   return (
     <Link
-      to={`/products/category/${normalizeString(title)}`}
+      to={`/categorie/${normalizeString(title)}`}
       className="drop-shadow-sm"
       state={{
         id: id,
@@ -23,7 +24,7 @@ function CategoryCard({ title, id, image }: categoryProps) {
       <div className="drop-shadow-md">
         <div className="relative z-10 w-[280px] overflow-hidden p-2 px-4 py-6 text-center rounded-md font-title font-semibold text-xl">
           <img
-            src={imageBasePath + image}
+            src={imageSrc}
             className="absolute inset-0 object-cover w-full h-full"
             alt={title}
           />

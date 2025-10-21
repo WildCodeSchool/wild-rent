@@ -53,8 +53,14 @@ export class User extends BaseEntity {
   @OneToOne(() => Address, {
     eager: true,
     cascade: true,
-    nullable: true
+    nullable: true,
   })
   @JoinColumn()
   address: Address | null;
+
+  @Column({ type: "varchar", nullable: true })
+  reset_password_token: string | null;
+
+  @Column({ type: "timestamp", nullable: true })
+  reset_password_expires: Date | null;
 }

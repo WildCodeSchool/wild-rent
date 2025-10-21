@@ -10,7 +10,7 @@ const namespace = process.env.TEST_MAIL_NAMESPACE;
 test("register and login", async ({ page }) => {
   // Enregistre l'utilisateur avec l'adresse du compte testmail
   await page.goto(baseUrl);
-  await page.getByRole("link", { name: "user icon Connexion" }).click();
+  await page.getByRole("link", { name: "Connexion" }).click();
   await page.getByRole("link", { name: "Inscrivez-vous ici" }).click();
   await page.getByRole("textbox", { name: "Prénom" }).click();
   await page.getByRole("textbox", { name: "Prénom" }).fill("Test");
@@ -54,7 +54,7 @@ test("register and login", async ({ page }) => {
   await expect(page.getByText("Votre compte a été créé avec")).toBeVisible();
 
   // Connecte l'utilisateur avec les données renseignées auparavant
-  await page.getByRole("link", { name: "user icon Connexion" }).click();
+  await page.getByRole("link", { name: "Connexion" }).click();
   await page.getByRole("textbox", { name: "Email" }).click();
   await page
     .getByRole("textbox", { name: "Email" })
@@ -64,6 +64,6 @@ test("register and login", async ({ page }) => {
   await page.getByRole("button", { name: "Se connecter" }).click();
 
   await expect(
-    page.getByRole("link", { name: "user icon Mon compte" })
+    page.getByRole("link", { name: "Mon compte" })
   ).toBeVisible();
 });

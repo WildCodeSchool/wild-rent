@@ -10,6 +10,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAddUserConfirmationMutation } from "@/generated/graphql-types";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeClosed } from "lucide-react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -29,13 +31,12 @@ const ConfirmRegistration = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-
   const navigate = useNavigate();
-
   const params = useParams();
   const { code } = params;
-
   const [addUserConfirmationMutation] = useAddUserConfirmationMutation();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -55,7 +56,9 @@ const ConfirmRegistration = () => {
       }
     } catch (error) {
       console.error("Form submission error", error);
-      toast.error("Il y a eu une erreur lors de la soumission du formulaire. Veuillez réessayer.");
+      toast.error(
+        "Il y a eu une erreur lors de la soumission du formulaire. Veuillez réessayer."
+      );
     }
   };
 
@@ -77,11 +80,24 @@ const ConfirmRegistration = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter your password"
-                      type="text"
-                      {...field}
-                    />
+                    <div className="relative w-full">
+                      <Input
+                        placeholder="Enter your password"
+                        type={showPassword ? "text" : "password"}
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-2 hover:cursor-pointer top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      >
+                        {showPassword ? (
+                          <EyeClosed size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
 
                   <FormMessage />
@@ -96,11 +112,27 @@ const ConfirmRegistration = () => {
                 <FormItem>
                   <FormLabel>Confirm password</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Confirm your password"
-                      type="text"
-                      {...field}
-                    />
+                    <div className="relative w-full">
+                      {" "}
+                      <Input
+                        placeholder="Confirm your password"
+                        type={showConfirmPassword ? "text" : "password"}
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className="absolute right-2 hover:cursor-pointer top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      >
+                        {showConfirmPassword ? (
+                          <EyeClosed size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
 
                   <FormMessage />

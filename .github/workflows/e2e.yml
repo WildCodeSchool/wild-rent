@@ -14,8 +14,12 @@ jobs:
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo "POSTGRES_USER=${{  vars.POSTGRES_USERNAME }}" >> .env
           echo "POSTGRES_DB=${{ vars.POSTGRES_DATABASE }}" >> .env
+          echo "BASE_URL_DEV=${{ vars.BASE_URL_DEV }}" >> .env
+          echo "BASE_URL_STAGING=${{ vars.BASE_URL_STAGING }}" >> .env
+          echo "BASE_URL_PRODUCTION=${{ vars.BASE_URL_PRODUCTION }}" >> .env
           echo "RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}" >> .env
           echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
+          echo "STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env
           echo "FIXTURES=TRUE" >> .env
       - name: Create e2e .env
         run: |

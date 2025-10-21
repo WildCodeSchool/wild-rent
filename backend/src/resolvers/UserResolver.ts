@@ -6,7 +6,6 @@ import {
   Resolver,
   Arg,
   Ctx,
-  Authorized,
   Int,
   ObjectType,
   Field,
@@ -16,6 +15,9 @@ import { User } from "../entities/User";
 import { TempUser } from "../entities/TempUser";
 import {
   ChangePasswordInput,
+  DeleteUserInput,
+  ForgottenPasswordRequestInput,
+  ResetPasswordInput,
   UpdateOrCreateUserInput,
   UpdateUserInput,
   UserInput,
@@ -28,10 +30,9 @@ import { v4 as uuidv4 } from "uuid";
 import * as jwt from "jsonwebtoken";
 import Cookies from "cookies";
 import { Address } from "../entities/Address";
-import { IsCurrentUserOrAdmin } from "../middleware/AuthChecker";
+import { IsAdmin, IsCurrentUserOrAdmin } from "../middleware/AuthChecker";
 import { CreateOrUpdateAddressInput } from "../inputs/AddressInput";
-
-const baseUrl = "http://localhost:7000/confirmation/";
+import { GraphQLError } from "graphql";
 
 @ObjectType()
 class PaginatedUsers {
@@ -93,10 +94,20 @@ class UserInfo {
   phone_number: string;
 }
 
+let baseUrl = process.env.BASE_URL_DEV;
+
+if (process.env.APP_ENV === "staging") {
+  baseUrl = process.env.BASE_URL_STAGING;
+}
+
+if (process.env.APP_ENV === "production") {
+  baseUrl = process.env.BASE_URL_PRODUCTION;
+}
+
 @Resolver(User)
 export class UserResolver {
   @Query(() => PaginatedUsers)
-  @Authorized()
+   @UseMiddleware(IsAdmin)
   async getAllUsers(
     @Arg("offset") offset: number,
     @Arg("limit") limit: number,
@@ -147,8 +158,8 @@ export class UserResolver {
         subject: "Validation email",
         html: `
                 <p>Veuillez cliquer sur le lien suivant pour confirmer votre adresse mail</p>
-                <a href=${baseUrl}${random_code}>
-                ${baseUrl}${random_code}</a>
+                <a href=${baseUrl}/confirmation/${random_code}>
+                ${baseUrl}/confirmation/${random_code}</a>
                 `,
       });
       if (error) {
@@ -238,35 +249,26 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-  async deleteUser(@Arg("id") id: number, @Ctx() context: any) {
-    if (context.user.role !== "ADMIN" && context.user.id !== id) {
-      throw new Error("Unauthorized");
-    }
-    const result = await User.delete(id);
+  @UseMiddleware(IsCurrentUserOrAdmin)
+  async deleteUser(@Arg("data") data: DeleteUserInput) {
+    const result = await User.delete(data.userId);
     if (result.affected === 1) {
       return "L'utilisateur a bien été supprimé";
-    } else {
-      throw new Error("L'utilisateur n'a pas été trouvé");
-    }
+    } 
+    throw new GraphQLError("L'utilisateur n'a pas été trouvé",{ extensions: { code: "NOT_FOUND" }});
   }
 
   @Mutation(() => User)
+  @UseMiddleware(IsCurrentUserOrAdmin)
   async editUser(
-    @Arg("data") updateUserData: UpdateOrCreateUserInput,
-    @Ctx() context: any
+    @Arg("data") updateUserData: UpdateOrCreateUserInput
   ) {
-    if (
-      context.user.role !== "ADMIN" &&
-      context.user.email !== updateUserData.email
-    ) {
-      throw new Error("Unauthorized");
-    }
     let userToUpdate = await User.findOne({
-      where: { id: updateUserData.id },
+      where: { id: updateUserData.userId },
       relations: ["address"],
     });
     if (!userToUpdate) {
-      throw new Error("User not found");
+      throw new GraphQLError("L'utilisateur n'a pas été trouvé",{ extensions: { code: "NOT_FOUND" }});
     }
 
     // Modifie les champs users
@@ -294,16 +296,24 @@ export class UserResolver {
       await newAddress.save();
       userToUpdate.address = newAddress;
     }
-
     await userToUpdate.save();
 
     return userToUpdate;
   }
 
   @Mutation(() => String)
+  @UseMiddleware(IsAdmin)
   async addUser(@Arg("data") new_user_data: UpdateOrCreateUserInput) {
+    const existing = await User.findOne({ where: { email: new_user_data.email } });
+
+    if(existing){
+      throw new GraphQLError("Un compte existe déjà avec cette adresse mail", {
+      extensions: { code: "EMAIL_TAKEN" },
+    });
+    }
+
     const random_code = uuidv4();
-    const result = TempUser.save({
+    const result = await TempUser.save({
       first_name: new_user_data.first_name,
       last_name: new_user_data.last_name,
       email: new_user_data.email,
@@ -316,23 +326,23 @@ export class UserResolver {
     });
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-
-    (async function () {
-      const { data, error } = await resend.emails.send({
-        from: "wild-rent@test.anniec.eu",
-        to: [new_user_data.email],
-        subject: "Verify Email",
-        html: `
-                <p>Veuillez cliquer sur le lien suivant pour compléter votre inscription à Wild Rent</p>
-                <a href=http://localhost:7000/confirmation/enregistrement/${random_code}>
-                http://localhost:7000/confirmation/enregistrement/${random_code}</a>
-                `,
+    const { data, error } = await resend.emails.send({
+      from: "wild-rent@test.anniec.eu",
+      to: [new_user_data.email],
+      subject: "Verify Email",
+      html: `
+              <p>Veuillez cliquer sur le lien suivant pour compléter votre inscription à Wild Rent</p>
+              <a href=http://localhost:7000/confirmation/enregistrement/${random_code}>
+              http://localhost:7000/confirmation/enregistrement/${random_code}</a>
+              `,
+    });
+    if (error) {
+      console.error({ error });
+      throw new GraphQLError("Erreur lors de l'envoi de l'email", {
+        extensions: { code: "EMAIL_ERROR" },
       });
-      if (error) {
-        return console.error({ error });
-      }
-      console.log({ data });
-    })();
+    }
+    console.log({ data });
     console.log("result", result);
     return "Temp user was created, validate with confirmation email";
   }
@@ -342,34 +352,39 @@ export class UserResolver {
     @Arg("random_code") random_code: string,
     @Arg("password") password: string
   ) {
-    const tempUser = await TempUser.findOneByOrFail({
-      random_code: random_code,
-    });
+      const tempUser = await TempUser.findOne({
+        where:{ random_code: random_code}
+      });
 
-    const hashed_password = await argon2.hash(password);
+      if(!tempUser){
+        throw new GraphQLError("Code de confirmation invalide ou expiré", {
+          extensions: { code: "INVALID_CODE" },
+        });
+      }
 
-    const newAddress = Address.create({
-      street: tempUser.street,
-      city: tempUser.city,
-      zipcode: tempUser.zipcode,
-      country: "France",
-    });
+      const hashed_password = await argon2.hash(password);
 
-    await newAddress.save();
+      const newAddress = Address.create({
+        street: tempUser.street,
+        city: tempUser.city,
+        zipcode: tempUser.zipcode,
+        country: "France",
+      });
 
-    const userResult = await User.save({
-      first_name: tempUser.first_name,
-      last_name: tempUser.last_name,
-      email: tempUser.email,
-      phone_number: tempUser.phone_number,
-      hashed_password: hashed_password,
-      created_at: new Date(),
-      address: newAddress,
-      role: tempUser.role,
-    });
-    await tempUser.remove();
+      await newAddress.save();
 
-    return userResult;
+      const userResult = await User.save({
+        first_name: tempUser.first_name,
+        last_name: tempUser.last_name,
+        email: tempUser.email,
+        phone_number: tempUser.phone_number,
+        hashed_password: hashed_password,
+        created_at: new Date(),
+        address: newAddress,
+        role: tempUser.role,
+      });
+      await tempUser.remove();
+      return userResult;
   }
 
   // Mutation pour enregistrer une adresse de facturation dans les détails du compte
@@ -460,5 +475,77 @@ export class UserResolver {
     }
 
     return false;
+  }
+
+  @Query(() => Boolean)
+  async getResetPasswordToken(@Arg("token") token: string): Promise<boolean> {
+    const user = await User.findOneBy({ reset_password_token: token });
+    if (!user) return false;
+
+    if (
+      !user.reset_password_expires ||
+      user.reset_password_expires < new Date()
+    ) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async resetPassword(@Arg("data") data: ResetPasswordInput): Promise<boolean> {
+    const user = await User.findOneBy({ reset_password_token: data.token });
+    if (!user) throw new Error("Token invalide");
+
+    if (
+      !user.reset_password_expires ||
+      user.reset_password_expires < new Date()
+    ) {
+      throw new Error("Token expiré");
+    }
+
+    if (data.new_password !== data.password_confirmation) {
+      throw new Error("Les mots de passe ne correspondent pas");
+    }
+
+    user.hashed_password = await argon2.hash(data.new_password);
+    user.reset_password_token = null;
+    user.reset_password_expires = null;
+    await user.save();
+
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async forgottenPasswordRequest(
+    @Arg("data") emailInput: ForgottenPasswordRequestInput
+  ): Promise<boolean> {
+    const user = await User.findOneBy({ email: emailInput.email });
+    if (!user) {
+      return true;
+    }
+
+    const token = uuidv4();
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60);
+
+    user.reset_password_token = token;
+    user.reset_password_expires = expiresAt;
+    await user.save();
+
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
+    await resend.emails.send({
+      from: "wild-rent@test.anniec.eu",
+      to: user.email,
+      subject: "Réinitialisation de votre mot de passe",
+      html: `
+        <p>Bonjour,</p>
+        <p>Cliquez sur ce lien pour réinitialiser votre mot de passe :</p>
+        <a href="${baseUrl}/mdp-reset?token=${token}">Réinitialiser le mot de passe</a>
+        <p>Ce lien expirera dans 1 heure.</p>
+      `,
+    });
+
+    return true;
   }
 }

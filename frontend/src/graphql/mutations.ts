@@ -70,27 +70,28 @@ export const CREATE_ORDER = gql`
             id
           }
           size
-          total_quantity
         }
         quantity
       }
     }
   }
 `;
-export const UPDATE_PRODUCT_OPTION_QUANTITY = gql`
-  mutation UpdateProductOptionQuantity(
-    $data: [ProductOptionQuantityUpdateInput!]!
-  ) {
-    updateProductOptionQuantity(data: $data) {
-      id
-      total_quantity
-    }
+
+export const DELETE_USER = gql`
+  mutation DeleteUser($data: DeleteUserInput!) {
+  deleteUser(data: $data)
+}
+`;
+
+export const DELETE_ORDER_BY_ID = gql`
+  mutation DeleteOrderById($deleteOrderId: Float!) {
+    deleteOrderById(id: $deleteOrderId)
   }
 `;
 
-export const DELETE_USER = gql`
-  mutation DeleteUser($deleteUserId: Float!) {
-    deleteUser(id: $deleteUserId)
+export const APPROVED_ORDER_BY_ID = gql`
+  mutation approvedOrderById($data: ChangeOrderStatusInput!) {
+    changeStatusOrderById(data: $data)
   }
 `;
 
@@ -204,5 +205,45 @@ export const UPDATE_USER = gql`
 export const CHANGE_PASSWORD = gql`
   mutation ChangePassword($data: ChangePasswordInput!) {
     changePassword(data: $data)
+  }
+`;
+
+export const RESET_PASSWORD = gql`
+  mutation ResetPassword($data: ResetPasswordInput!) {
+    resetPassword(data: $data)
+  }
+`;
+
+export const RESET_PASSWORD_REQUEST = gql`
+  mutation ForgottenPasswordRequest($data: ForgottenPasswordRequestInput!) {
+    forgottenPasswordRequest(data: $data)
+  }
+`;
+
+export const CREATE_CATEGORY = gql`
+  mutation CreateNewCategory($data: CategoryInput!) {
+    createNewCategory(data: $data) {
+      id
+    }
+  }
+`;
+export const UPDATE_CATEGORY = gql`
+  mutation UpdateCategoryById($data: CategoryInput!) {
+    modifyCategory(data: $data) {
+      id
+      title
+      image
+    }
+  }
+`;
+export const DELETE_CATEGORY = gql`
+  mutation DeleteCategoryById($id: Float!) {
+    deleteCategory(id: $id)
+  }
+`;
+
+export const CREATE_SESSION = gql`
+  mutation createCheckoutSession($data: [ProductForSessionInput!]!) {
+    createCheckoutSession(data: $data)
   }
 `;

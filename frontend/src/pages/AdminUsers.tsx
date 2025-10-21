@@ -109,7 +109,7 @@ const AdminUsers = () => {
 
   return (
     <div className="flex flex-col p-2 lg:mp-4 gap-4 w-full relative">
-      <h1 className="font-bold text-lg md:text-xl lg:text-2xl">
+      <h1 className="font-bold text-lg md:text-xl lg:text-2xl mb-4">
         Utilisateurs {seeTempUsers && "en attente de validation"}
       </h1>
       {seeTempUsers && (
@@ -141,7 +141,7 @@ const AdminUsers = () => {
             </div>
             <Select
               value={selectedRole}
-              onValueChange={(value) => {
+              onValueChange={(value: any) => {
                 setCurrentPage(1);
                 setOffset(0);
                 setSelectedRole(value === "all" ? undefined : value);
@@ -154,7 +154,6 @@ const AdminUsers = () => {
               <SelectContent>
                 <SelectItem value="USER">User</SelectItem>
                 <SelectItem value="ADMIN">Admin</SelectItem>
-                <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
                 <SelectItem value="all">Tous les utilisateurs</SelectItem>
               </SelectContent>
             </Select>

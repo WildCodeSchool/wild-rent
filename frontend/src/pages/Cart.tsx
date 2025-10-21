@@ -1,27 +1,70 @@
 import { useContext, useEffect, useState } from "react";
 import { cartContext } from "../context/CartContext";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
-  useCreateNewOrderMutation,
-  useUpdateProductOptionQuantityMutation,
+  useCheckProductAvailabilityLazyQuery,
+  useCreateCheckoutSessionMutation,
 } from "../generated/graphql-types";
-import { useUser } from "@/hooks/useUser";
+import { useRentalDates } from "@/hooks/useRentalDates";
+import { SelectRentalDates } from "@/components/SelectRentalDates";
+import { Button } from "@/components/ui/button";
+
+type AvailabilityResult = {
+  available: boolean | undefined;
+  availableQty: number | undefined;
+};
 
 const Cart = () => {
-  const [createOrderMutation] = useCreateNewOrderMutation();
-  const [updateProductOptionQuantityMutation] =
-    useUpdateProductOptionQuantityMutation();
-  const { user } = useUser();
-  const { items, removeItemFromCart, updateQuantity } = useContext(cartContext);
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const [duration, setDuration] = useState<number>(0);
-  const [datesValidated, setDatesValidated] = useState(false);
+  const { items, removeItemFromCart, updateQuantity } = useContext(
+    cartContext
+  ) as {
+    items: any[];
+    removeItemFromCart: (index: number) => void;
+    updateQuantity: (quantity: number) => void;
+  };
+  const { startDate, endDate } = useRentalDates();
+  const [availabilityResults, setAvailabilityResults] = useState<
+    Record<number, AvailabilityResult>
+  >({});
+  const [getStripeSession] = useCreateCheckoutSessionMutation();
+  const [checkProductAvailability] = useCheckProductAvailabilityLazyQuery();
+
+  const calculateDuration = (start: Date, end: Date) => {
+    const diffTime = Math.abs(end.getTime() - start.getTime());
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
+  const duration =
+    startDate && endDate ? calculateDuration(startDate, endDate) : 0;
 
   const total = items
     .map((item: any) => item.price * item.quantity * duration)
     .reduce((acc, price) => acc + price, 0);
+
+  useEffect(() => {
+    if (!items || items.length === 0 || !startDate || !endDate) return;
+    items.forEach((item) => {
+      checkProductAvailability({
+        variables: {
+          productId: item.selectedOption.id,
+          quantity: item.quantity,
+          startDate: startDate.toISOString().split("T")[0],
+          endDate: endDate.toISOString().split("T")[0],
+        },
+      }).then((response) => {
+        if (response.data) {
+          setAvailabilityResults((prev) => ({
+            ...prev,
+            [item.selectedOption.id]: {
+              available: response.data?.checkProductAvailability.available,
+              availableQty:
+                response.data?.checkProductAvailability.availableQty,
+            },
+          }));
+        }
+      });
+    });
+  }, [items, startDate, endDate]);
 
   const handleRemoveClick = (index: number) => {
     removeItemFromCart(index);
@@ -32,116 +75,70 @@ const Cart = () => {
   const handleRemoveQuantity = (product: any) => {
     updateQuantity(product.quantity--);
   };
-  const calculateDuration = (start: Date | null, end: Date | null) => {
-    if (start && end) {
-      const diffTime = Math.abs(end.getTime() - start.getTime());
-      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    }
-  };
-  const handleDuration = (startDate: Date | null, endDate: Date | null) => {
-    const newDuration: any = calculateDuration(startDate, endDate);
-    setDuration(newDuration);
-    setDatesValidated(true);
 
-    if (startDate && endDate && newDuration !== undefined) {
-      localStorage.setItem("rentalStartDate", startDate.toISOString());
-      localStorage.setItem("rentalEndDate", endDate.toISOString());
-      localStorage.setItem("rentalDuration", String(newDuration));
-    }
-  };
-
-  useEffect(() => {
-    const savedStart = localStorage.getItem("rentalStartDate");
-    const savedEnd = localStorage.getItem("rentalEndDate");
-    const savedDuration = localStorage.getItem("rentalDuration");
-
-    if (savedStart && savedEnd && savedDuration) {
-      setStartDate(new Date(savedStart));
-      setEndDate(new Date(savedEnd));
-      setDuration(parseInt(savedDuration));
-      setDatesValidated(true);
-    }
-  }, []);
-  const onChange = (dates: any) => {
-    const [start, end] = dates;
-    setStartDate(start);
-    setEndDate(end);
-  };
-  const createOrder = () => {
-    createOrderMutation({
-      variables: {
-        data: {
-          rental_start_date: localStorage.getItem("rentalStartDate"),
-          rental_end_date: localStorage.getItem("rentalEndDate"),
-          created_at: new Date(),
-          total_price: total,
-          products: items.map((item: any) => ({
-            quantity: item.quantity,
-            productOptionId: item.selectedOption.id,
-          })),
-          userId: user?.id ?? 0,
-        },
-      },
-    });
-    console.log("Création de la commande...");
-  };
-
-  const updateProductOptionQuantity = () => {
-    updateProductOptionQuantityMutation({
+  const handleCheckout = async () => {
+    localStorage.setItem(
+      "cartInfos",
+      JSON.stringify({ startDate, endDate, total })
+    );
+    getStripeSession({
       variables: {
         data: items.map((item: any) => ({
-          id: item.selectedOption.id,
-          total_quantity: item.selectedOption.total_quantity - item.quantity,
+          name: item.name,
+          quantity: Number(item.quantity * duration),
+          price: Number(item.price),
         })),
+      },
+      onCompleted(data) {
+        console.log(data);
+        console.log("Stripe session response:", data);
+        if (data?.createCheckoutSession?.url) {
+          window.location.href = data.createCheckoutSession.url;
+        } else {
+          console.error("❌ Pas d'URL Stripe retournée");
+        }
+      },
+      onError(error) {
+        console.error("❌ Erreur Stripe:", error);
       },
     });
   };
 
-  const handleSubmit = () => {
-    createOrder();
-    updateProductOptionQuantity();
-    localStorage.removeItem("cart");
-    localStorage.removeItem("rentalStartDate");
-    localStorage.removeItem("rentalEndDate");
-    localStorage.removeItem("rentalDuration");
-    window.location.reload();
-  };
+  const allProductAvailable = Object.values(availabilityResults).every(
+    (result) => result.available
+  );
+
+  if (!startDate || !endDate || items.length === 0)
+    return items.length === 0 ? (
+      <div className="flex flex-col items-center p-5">
+        <SelectRentalDates />
+        <p className="text-center text-2xl mt-16 mb-16">
+          Votre panier est vide
+        </p>
+      </div>
+    ) : (
+      <div className="flex flex-col items-center p-5">
+        <SelectRentalDates />
+        <p className="w-full mx-10 flex justify-center mt-5 font-bold">
+          Vous devez délectionner des dates de location pour voir le contenu de
+          votre panier et assuer la disponibilité des produits
+        </p>
+      </div>
+    );
 
   return (
-    <>
+    <div className="flex flex-col flex-1 items-center w-full">
+      <SelectRentalDates />
       {items.length === 0 && (
         <p className="text-center text-2xl mt-16 mb-16">
           Votre panier est vide
         </p>
       )}
       {items.length !== 0 && (
-        <div>
+        <div className="w-full py-5">
           <div className="w-[90%] lg:w-[70%] m-auto">
             <div>
-              <h3 className="text-xl sm:text-1xl pt-6 font-semibold">
-                Vos dates de location :
-              </h3>
-              <div className="flex flex-col mt-4 mb-4">
-                <div className="flex flex-row items-center">
-                  <DatePicker
-                    placeholderText="Choisir une date"
-                    selected={startDate}
-                    onChange={onChange}
-                    startDate={startDate}
-                    endDate={endDate}
-                    dateFormat="dd/MM/yyyy"
-                    selectsRange
-                    className="border rounded-xl p-2 w-full"
-                  />
-                  <button
-                    className="text-sm lg:text-base bg-green text-white p-2 lg:pr-5 lg:pl-5 ml-5 lg:ml-15 rounded-xl"
-                    onClick={() => handleDuration(startDate, endDate)}
-                  >
-                    Valider les dates
-                  </button>
-                </div>
-              </div>
-              {datesValidated ? (
+              {duration ? (
                 <p className="italic">
                   Vous souhaitez louer du {""}
                   <span className="font-bold">
@@ -162,84 +159,106 @@ const Cart = () => {
               Contenu de mon panier:
             </h3>
           </div>
-          <div className="bg-white flex justify-center flex-col md:p-4 ">
-            {items.map((item: any, index: number) => (
-              <div
-                className="w-[95%] lg:w-[80%] bg-green rounded-lg m-auto mt-4 flex justify-between items-center"
-                key={index}
-              >
-                <div className="w-[20%] md:w-[25%] flex justify-center mt-2 mb-2">
-                  <img
-                    className="max-w-full max-h-14 md:max-h-16 lg:max-h-24 rounded-lg ml-1"
-                    src={item.pictures[0].url}
-                    alt={item.name}
-                  />
-                </div>
-                <div className="bg-[#D9D9D9] w-[40%] lg:w-[50%] p-1 rounded-lg">
-                  <p className="text-base sm:text-xl">
-                    {" "}
-                    {item.name} - {item.selectedOption.size}
-                  </p>
-
-                  <p className="text-xs sm:text-base">{item.price}€ / jour</p>
-                </div>
-                <div className="w-[30%] flex flex-col items-center">
-                  <div className="flex flex-row mt-4">
-                    <div>
-                      <div className="flex flex-row">
-                        <button
-                          className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-10 xl:w-14 rounded-tl-lg rounded-bl-lg text-center"
-                          onClick={() => handleRemoveQuantity(item)}
-                        >
-                          -
-                        </button>
-                        <div className="bg-[#D9D9D966] w-6 md:w-8 lg:w-10 xl:w-14 text-center">
-                          {item.quantity}
-                        </div>
-                        <button
-                          className="bg-[#D9D9D9] w-6 md:w-8 lg:w-10 xl:w-14 rounded-tr-lg rounded-br-lg text-center"
-                          onClick={() => handleAddQuantity(item)}
-                        >
-                          +
-                        </button>
-                      </div>
-                      <div className="text-center mt-2 text-white">
-                        {duration === 0 ? (
-                          <p>{item.price * item.quantity}€</p>
-                        ) : (
-                          <p>{item.price * item.quantity * duration}€</p>
-                        )}
-                      </div>
+          <div className="bg-white flex justify-center flex-col md:p-4 items-center">
+            {items.map((item, index) => {
+              const itemAvailable =
+                availabilityResults[item.selectedOption.id]?.available;
+              const availableQty =
+                availabilityResults[item.selectedOption.id]?.availableQty;
+              return (
+                <div className="w-[95%] lg:w-[80%] flex flex-col">
+                  <div
+                    className=" w-full p-2 bg-green rounded-lg m-auto mt-4 flex justify-between items-center"
+                    key={index}
+                  >
+                    <div className="w-[20%] md:w-[25%] flex justify-center mt-2 mb-2">
+                      <img
+                        className="max-w-full max-h-14 md:max-h-16 lg:max-h-24 rounded-lg ml-1"
+                        src={item.pictures?.[0].url ?? ""}
+                        alt={item.name}
+                      />
                     </div>
-                    <div className="mt-1 ml-2 md:ml-3  lg:mb-4 lg:ml-5">
-                      <button onClick={() => handleRemoveClick(index)}>
-                        <img
-                          src="/assets/images/corbeille.png"
-                          alt="corbeille"
-                          className="w-4 h-4  lg:w-6 lg:h-6  m-auto"
-                        />{" "}
-                      </button>
+                    <div className="bg-[#D9D9D9] w-[40%] lg:w-[50%] p-1 rounded-lg">
+                      <p className="text-base sm:text-xl">
+                        {" "}
+                        {item.name} - {item.selectedOption.size}
+                      </p>
+
+                      <p className="text-xs sm:text-base">
+                        {item.price}€ / jour
+                      </p>
+                    </div>
+                    <div className="w-[30%] flex flex-col items-center">
+                      <div className="flex flex-row mt-4">
+                        <div>
+                          <div className="flex flex-row">
+                            <button
+                              className="bg-[#D9D9D9] w-6 h-6 md:w-8 lg:w-10 xl:w-14 rounded-tl-lg rounded-bl-lg text-center hover:cursor-pointer"
+                              onClick={() => handleRemoveQuantity(item)}
+                            >
+                              -
+                            </button>
+                            <div
+                              aria-label="quantity"
+                              className="bg-[#D9D9D966] w-6 md:w-8 lg:w-10 xl:w-14 text-center"
+                            >
+                              {item.quantity}
+                            </div>
+                            <button
+                              className="bg-[#D9D9D9] w-6 md:w-8 lg:w-10 xl:w-14 rounded-tr-lg rounded-br-lg text-center hover:cursor-pointer"
+                              onClick={() => handleAddQuantity(item)}
+                            >
+                              +
+                            </button>
+                          </div>
+                          <div className="text-center mt-2 text-white">
+                            {!duration || duration === 0 ? (
+                              <p>{item.price * item.quantity}€</p>
+                            ) : (
+                              <p>{item.price * item.quantity * duration}€</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-1 ml-2 md:ml-3  lg:mb-4 lg:ml-5 ">
+                          <button
+                            onClick={() => handleRemoveClick(index)}
+                            className="hover:cursor-pointer"
+                          >
+                            <img
+                              src="/assets/images/icons/corbeille.png"
+                              alt="corbeille"
+                              className="w-4 h-4  lg:w-6 lg:h-6  m-auto"
+                            />{" "}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                  {!itemAvailable && (
+                    <p className="text-red-600">
+                      {`Ce produit n'est pas disponible pour vos dates, il reste ${availableQty} exemplaires pour ces dates`}
+                    </p>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div className="w-1/2 m-auto mt-4 flex justify-between items-center mb-4">
             <p className="text-2xl">Total: </p>
             <p className="text-2xl">{total}€</p>
           </div>
           <div className="flex justify-center pb-8 pt-8">
-            <button
-              onClick={() => handleSubmit()}
-              className="md:w-1/4 m-auto bg-green text-white p-2 rounded-xl sm:text-xl"
+            <Button
+              className="md:w-1/4 m-auto bg-green hover:bg-green/50 hover:cursor-pointer text-white p-2  sm:text-xl py-5"
+              onClick={handleCheckout}
+              disabled={!allProductAvailable}
             >
-              Valider ma commande
-            </button>
+              Payer avec Stripe
+            </Button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

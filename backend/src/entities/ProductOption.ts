@@ -36,4 +36,5 @@ export class ProductOption extends BaseEntity {
     (product_in_order) => product_in_order.productOption
   )
   orders: ProductInOrder[];
+
 }

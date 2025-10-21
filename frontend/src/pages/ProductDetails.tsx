@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useNavigate, useParams } from "react-router-dom";
+
 import {
   useGetAvailableProductOptionsQuery,
   useGetProductByIdQuery,

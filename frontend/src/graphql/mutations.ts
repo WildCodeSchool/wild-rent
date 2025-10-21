@@ -78,9 +78,9 @@ export const CREATE_ORDER = gql`
 `;
 
 export const DELETE_USER = gql`
-  mutation DeleteUser($deleteUserId: Float!) {
-    deleteUser(id: $deleteUserId)
-  }
+  mutation DeleteUser($data: DeleteUserInput!) {
+  deleteUser(data: $data)
+}
 `;
 
 export const DELETE_ORDER_BY_ID = gql`
@@ -239,5 +239,11 @@ export const UPDATE_CATEGORY = gql`
 export const DELETE_CATEGORY = gql`
   mutation DeleteCategoryById($id: Float!) {
     deleteCategory(id: $id)
+  }
+`;
+
+export const CREATE_SESSION = gql`
+  mutation createCheckoutSession($data: [ProductForSessionInput!]!) {
+    createCheckoutSession(data: $data)
   }
 `;

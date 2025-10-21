@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import { cartContext } from "../context/CartContext";
 import "react-datepicker/dist/react-datepicker.css";
-import { useCheckProductAvailabilityLazyQuery } from "../generated/graphql-types";
-
+import {
+  useCheckProductAvailabilityLazyQuery,
+  useCreateCheckoutSessionMutation,
+} from "../generated/graphql-types";
 import { useRentalDates } from "@/hooks/useRentalDates";
-import { useCreateCheckoutSessionLazyQuery } from "@/generated/graphql-types";
 import { SelectRentalDates } from "@/components/SelectRentalDates";
 import { Button } from "@/components/ui/button";
 
@@ -25,7 +26,7 @@ const Cart = () => {
   const [availabilityResults, setAvailabilityResults] = useState<
     Record<number, AvailabilityResult>
   >({});
-  const [getStripeSession] = useCreateCheckoutSessionLazyQuery();
+  const [getStripeSession] = useCreateCheckoutSessionMutation();
   const [checkProductAvailability] = useCheckProductAvailabilityLazyQuery();
 
   const calculateDuration = (start: Date, end: Date) => {
@@ -134,7 +135,7 @@ const Cart = () => {
         </p>
       )}
       {items.length !== 0 && (
-        <div className="w-full">
+        <div className="w-full py-5">
           <div className="w-[90%] lg:w-[70%] m-auto">
             <div>
               {duration ? (

@@ -1,4 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
+
 import {
   useGetAvailableProductOptionsQuery,
   useGetProductByIdQuery,
@@ -48,11 +49,12 @@ const ProductDetails = () => {
   const isDisabled = selectedOption === null || !startDate || !endDate;
 
   if (loading || loadingOptions) return <p>Loading...</p>;
-  if (error || errorOptions) return <p>Error loading product</p>;
+  if (error) return <p>Error loading product</p>;
+  if (errorOptions) return <p>Error loading option</p>;
   const mainImage = activeImage || products?.pictures[0].url;
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center py-5">
       <SelectRentalDates />
       {(!startDate || !endDate) && (
         <p className="flex items-center gap-2 text-red-600">

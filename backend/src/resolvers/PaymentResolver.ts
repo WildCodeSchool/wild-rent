@@ -1,4 +1,4 @@
-import { Arg, Field, InputType, Int, Query, Resolver } from "type-graphql";
+import { Arg, Field, InputType, Int, Mutation, Resolver } from "type-graphql";
 
 import { GraphQLJSON } from "graphql-scalars";
 import paymentServices from "../services/paymentServices";
@@ -25,7 +25,7 @@ export default class PaymentResolver {
    *?  retourne énormément d'informations, impossible de tout couvrir
    *? facilement avec un type custom à nous
    *------------------------**/
-  @Query(() => GraphQLJSON)
+  @Mutation(() => GraphQLJSON)
   async createCheckoutSession(
     @Arg("data", () => [ProductForSessionInput]) data: ProductForSessionInput[]
   ) {

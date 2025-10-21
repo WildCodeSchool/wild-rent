@@ -376,7 +376,6 @@ export const GET_AVAILABLE_PRODUCT_OPTION = gql`
       endDate: $endDate
       startDate: $startDate
     ) {
-      availableQuantity
       id
       product {
         name
@@ -384,25 +383,25 @@ export const GET_AVAILABLE_PRODUCT_OPTION = gql`
       size
       total_quantity
     }
-}
-`
+  }
+`;
 export const GET_INVENTORY = gql`
   query GetInventoryByOptions($endDate: String!, $startDate: String!) {
-  getInventoryByOptions(endDate: $endDate, startDate: $startDate) {
-    option
-    product
-    reservations {
-      reservedQty
-      date
-      availableQty
-    }
-    totalQty
-    id
-    category {
-      title
+    getInventoryByOptions(endDate: $endDate, startDate: $startDate) {
+      option
+      product
+      reservations {
+        reservedQty
+        date
+        availableQty
+      }
+      totalQty
+      id
+      category {
+        title
+      }
     }
   }
-}
 `;
 
 export const GET_RESET_PASSWORD_TOKEN = gql`
@@ -412,18 +411,22 @@ export const GET_RESET_PASSWORD_TOKEN = gql`
 `;
 
 export const CHECK_PRODUCT_AVAILABILITY = gql`
-  query CheckProductAvailability($quantity: Float!, $productId: Float!, $endDate: String!, $startDate: String!) {
-  checkProductAvailability(quantity: $quantity, product_id: $productId, endDate: $endDate, startDate: $startDate) {
-    available
-    availableQty
-    productOptionId
+  query CheckProductAvailability(
+    $quantity: Float!
+    $productId: Float!
+    $endDate: String!
+    $startDate: String!
+  ) {
+    checkProductAvailability(
+      quantity: $quantity
+      product_id: $productId
+      endDate: $endDate
+      startDate: $startDate
+    ) {
+      available
+      availableQty
+      productOptionId
+    }
   }
-}
 `;
 
-
-export const CREATE_SESSION = gql`
-  query createCheckoutSession($data: [ProductForSessionInput!]!) {
-    createCheckoutSession(data: $data)
-  }
-`;

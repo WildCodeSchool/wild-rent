@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAddUserConfirmationMutation } from "@/generated/graphql-types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Eye, EyeClosed, EyeOff } from "lucide-react";
+import { Eye, EyeClosed } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";

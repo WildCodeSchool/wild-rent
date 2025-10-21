@@ -429,3 +429,11 @@ export const CHECK_PRODUCT_AVAILABILITY = gql`
     }
   }
 `;
+
+
+
+export const CREATE_SESSION = gql`
+  query createCheckoutSession($data: [ProductForSessionInput!]!) {
+    createCheckoutSession(data: $data)
+  }
+`;

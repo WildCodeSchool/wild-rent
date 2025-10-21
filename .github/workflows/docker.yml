@@ -6,8 +6,16 @@ on:
       - staging
 
 jobs:
+  build: 
+    runs-on: ubuntu-latest
+    steps: 
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: build frontend
+        run: cd frontend && npm ci && npm run codegen && npm run build 
   docker:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Check out code
         uses: actions/checkout@v2

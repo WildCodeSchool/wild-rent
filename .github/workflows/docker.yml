@@ -11,8 +11,12 @@ jobs:
     steps: 
       - name: Check out code
         uses: actions/checkout@v2
-      - name: build frontend
-        run: cd frontend && npm ci && npm run build 
+      - name: install backend
+        run: |
+          cd backend && npm ci && npm run start &
+          timeout 40s bash -c 'until curl --fail --request POST --header "content-type: application/json" --url "http://localhost:4000" --data "{\"query\":\"query { __typename }\"}" > /dev/null 2>&1; do sleep 1; done'
+      - name: Goto frontend and run build
+        run: cd frontend && npm ci && npm run codegen && npm run build 
   docker:
     runs-on: ubuntu-latest
     needs: build

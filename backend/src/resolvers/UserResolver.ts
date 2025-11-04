@@ -145,6 +145,7 @@ export class UserResolver {
       last_name: new_user_data.last_name,
       email: new_user_data.email,
       phone_number: new_user_data.phone_number,
+      rgpd_consent: new_user_data.rgpd_consent,
       hashed_password: await argon2.hash(new_user_data.password),
       random_code: random_code,
     });
@@ -243,6 +244,8 @@ export class UserResolver {
       phone_number: tempUser.phone_number,
       hashed_password: tempUser.hashed_password,
       created_at: new Date(),
+      rgpd_consent: tempUser.rgpd_consent,
+      rgpd_consent_at: new Date()
     });
     tempUser.remove();
     return "ok";

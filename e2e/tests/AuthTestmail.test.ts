@@ -26,6 +26,7 @@ test("register and login", async ({ page }) => {
     .fill("066666666");
   await page.getByRole("textbox", { name: "Mot de passe" }).click();
   await page.getByRole("textbox", { name: "Mot de passe" }).fill("password");
+  await page.getByRole("checkbox").check();
   await page.getByRole("button", { name: "S'inscrire" }).click();
 
   await expect(page.getByText("Consultez vos emails afin de")).toBeVisible();

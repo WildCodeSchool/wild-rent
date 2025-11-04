@@ -21,6 +21,7 @@ export const Register = () => {
           phone_number: data.phone_number,
           email: data.email,
           password: data.password,
+          rgpd_consent: data.rgpd_consent
         },
       },
       onCompleted: () => {
@@ -113,6 +114,22 @@ export const Register = () => {
               <span className="text-red-500 text-sm">Ce champ est requis</span>
             )}
           </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              {...register("rgpd_consent", { required: true })}
+              className="w-4 h-4"
+            />
+            <label className="text-gray-600 text-sm">
+              J'accepte la politique de confidentialité
+            </label>
+          </div>
+          {errors.rgpd_consent && (
+            <span className="text-red-500 text-sm">
+              Vous devez accepter la politique de confidentialité
+            </span>
+          )}
 
           <button
             type="submit"

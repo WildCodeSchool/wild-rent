@@ -45,6 +45,14 @@ export class User extends BaseEntity {
   @Column()
   created_at: Date;
 
+  @Column({ type: "boolean", default: false })
+  @Field()
+  rgpd_consent: boolean;
+
+  @Column({ type: "timestamp", nullable: true })
+  @Field(() => Date, { nullable: true })
+  rgpd_consent_at: Date;
+
   @Field(() => [Order])
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];

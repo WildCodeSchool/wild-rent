@@ -19,7 +19,7 @@ export class TempUser extends BaseEntity {
   @Field()
   email: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   hashed_password: string;
 
   @Column()
@@ -29,16 +29,24 @@ export class TempUser extends BaseEntity {
   @Field()
   phone_number: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   street: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   city: string;
 
-  @Column({nullable:true})
+  @Column({ nullable: true })
   zipcode: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   @Field()
-  role: string
+  role: string;
+
+  @Column({ type: "boolean", default: false })
+  @Field()
+  rgpd_consent: boolean;
+
+  @Column({ type: "timestamp", nullable: true })
+  @Field(() => Date, { nullable: true })
+  rgpd_consent_at: Date | null;
 }

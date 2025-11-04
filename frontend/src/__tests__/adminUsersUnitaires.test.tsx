@@ -18,6 +18,7 @@ const baseUsers = [
     email: "alice@example.com",
     phone_number: "0600000000",
     role: "ADMIN",
+    rgpd_consent: true,
   },
   {
     id: 2,
@@ -26,6 +27,7 @@ const baseUsers = [
     email: "stephane@example.com",
     phone_number: "0600000002",
     role: "USER",
+    rgpd_consent: true,
   },
 ];
 

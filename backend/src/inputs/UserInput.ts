@@ -19,6 +19,9 @@ export class UserInput implements Partial<User> {
 
   @Field()
   password: string;
+
+  @Field()
+  rgpd_consent: boolean;
 }
 
 @InputType()

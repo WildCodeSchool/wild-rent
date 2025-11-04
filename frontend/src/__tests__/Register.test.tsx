@@ -32,6 +32,7 @@ test("displays the registration page", async () => {
         const emailInput = screen.getByPlaceholderText("Email");
         const passwordInput = screen.getByPlaceholderText("Mot de passe"); 
         const submitButton = screen.getByRole("button", { name: "S'inscrire" }); //screen.getByRole permet de récupérer un élément par son rôle
+        const rgpdCheckbox = screen.getByRole("checkbox");
 
         // fireEvent.change simule une donnée mise par un utilisateur dans le champ de texte
         fireEvent.change(firstNameInput, { target: { value: "Pierre" } }); 
@@ -39,6 +40,7 @@ test("displays the registration page", async () => {
         fireEvent.change(phoneNumberInput, { target: { value: "0636656565" } });
         fireEvent.change(emailInput, { target: { value: "email@gmail.com" } });
         fireEvent.change(passwordInput, { target: { value: "password" } });
+        fireEvent.click(rgpdCheckbox);
         fireEvent.click(submitButton);
 
     await waitFor(() => { // waitFor permet d'attendre que l'élément soit affiché
@@ -50,7 +52,7 @@ test("displays the registration page", async () => {
         expect(registerMutationMock).toHaveBeenCalledWith(
             expect.objectContaining({  //expect.objectContaining permet de vérifier que l'objet contient les propriétés spécifiées
                 variables: { data: 
-                    { first_name: "Pierre", last_name: "Caillou", phone_number:"0636656565" , email: "email@gmail.com", password: "password" } },
+                    { first_name: "Pierre", last_name: "Caillou", phone_number:"0636656565" , email: "email@gmail.com", password: "password", rgpd_consent: true } },
             })
         );
     });

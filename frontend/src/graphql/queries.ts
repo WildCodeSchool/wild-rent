@@ -293,6 +293,8 @@ export const GET_ALL_TEMP_USERS = gql`
       last_name
       phone_number
       role
+      rgpd_consent
+      rgpd_consent_at 
     }
   }
 `;
